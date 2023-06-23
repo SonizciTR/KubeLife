@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeCronMonitor.BlazorApp", "KubeCronMonitor.BlazorApp\KubeCronMonitor.BlazorApp.csproj", "{968CAC7A-13A2-4384-9DA9-FF0FA3019212}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{968CAC7A-13A2-4384-9DA9-FF0FA3019212}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{968CAC7A-13A2-4384-9DA9-FF0FA3019212}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{968CAC7A-13A2-4384-9DA9-FF0FA3019212}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{968CAC7A-13A2-4384-9DA9-FF0FA3019212}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D1FBE9EA-B4B8-4259-B170-F6391C2C9DBE}
+	EndGlobalSection
+EndGlobal
