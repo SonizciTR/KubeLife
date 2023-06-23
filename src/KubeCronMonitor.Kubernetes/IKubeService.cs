@@ -1,7 +1,6 @@
 ﻿namespace KubeCronMonitor.Kubernetes
 {
-    public class Class1
+    public interface IKubeService
     {
-
     }
 }
