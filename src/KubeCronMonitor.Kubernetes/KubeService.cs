@@ -1,29 +1,24 @@
 ﻿using k8s;
+using KubeCronMonitor.Kubernetes.Models;
 
 namespace KubeCronMonitor.Kubernetes
 {
     public class KubeService : IKubeService
     {
-        public KubeService(string serverUrl, string accessToken, string userName, string passWord)
+        public KubeService(KubeConfigModel settings)
         {
-            ServerUrl = serverUrl;
-            AccessToken = accessToken;
-            UserName = userName;
-            PassWord = passWord;
+            Settings = settings;
         }
 
-        public string ServerUrl { get; }
-        public string AccessToken { get; }
-        public string UserName { get; }
-        public string PassWord { get; }
+        public KubeConfigModel Settings { get; }
 
         public async Task<bool> Get()
         {
             var config = new KubernetesClientConfiguration();
-            config.Host = ServerUrl;
-            config.Password = PassWord;
-            config.Username = UserName;
-            config.AccessToken = AccessToken;
+            config.Host = Settings.ServerUrl;
+            config.Password = Settings.PassWord;
+            config.Username = Settings.UserName;
+            config.AccessToken = Settings.AccessToken;
 
             var client = new k8s.Kubernetes(config);
 
