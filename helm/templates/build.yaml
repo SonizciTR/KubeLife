@@ -14,12 +14,6 @@ spec:
   strategy:
     type: Docker
     dockerStrategy:
-      env:
-        - name: NO_PROXY
-          value: >-
-            pypi.org, pypi.python.org, files.pythonhosted.org,
-            .thy.com,localhost,127.0.0.1,10.13.104.10,192.168.51.0/24,10.60.0.0/16,10.61.0.0/16,10.50.10.22,10.11.94.249,
-            .svc
       dockerfilePath: Dockerfile
   source:
     type: Git
