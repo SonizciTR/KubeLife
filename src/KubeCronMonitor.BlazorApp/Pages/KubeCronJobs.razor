@@ -1,9 +1,18 @@
 ﻿@page "/cronjobs"
+@using KubeCronMonitor.Kubernetes;
+@using KubeCronMonitor.Kubernetes.Models;
+
+@inject IKubeService kubeSerice;
 
 <h3>KubeCronJobs</h3>
 
 <PageTitle>CronJobs :)</PageTitle>
 
 @code {
+    private List<KubeCronJobModel> crnJobs;
 
+    protected override async Task OnInitializedAsync()
+    {
+        crnJobs = await kubeSerice.GetCronJobs();
+    }
 }

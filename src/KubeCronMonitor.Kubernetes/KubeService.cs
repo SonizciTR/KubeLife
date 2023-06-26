@@ -1,4 +1,5 @@
 ﻿using k8s;
+using KubeCronMonitor.Kubernetes.Extensions;
 using KubeCronMonitor.Kubernetes.Models;
 
 namespace KubeCronMonitor.Kubernetes
@@ -12,19 +13,22 @@ namespace KubeCronMonitor.Kubernetes
 
         public KubeConfigModel Settings { get; }
 
-        public async Task<bool> Get()
+        public async Task<List<KubeCronJobModel>> GetCronJobs()
         {
             var config = new KubernetesClientConfiguration();
             config.Host = Settings.ServerUrl;
-            config.Password = Settings.PassWord;
-            config.Username = Settings.UserName;
-            config.AccessToken = Settings.AccessToken;
+            if (!string.IsNullOrEmpty(Settings.AccessToken))
+                config.AccessToken = Settings.AccessToken;
+            else
+            {
+                config.Password = Settings.PassWord;
+                config.Username = Settings.UserName;
+            }
 
             var client = new k8s.Kubernetes(config);
 
-            var namespaces = await client.ListCronJobForAllNamespacesAsync();
-
-            return true;
+            var crnJobs = await client.ListCronJobForAllNamespacesAsync();
+            return crnJobs.ToKubeCronJobModelList();
         }
     }
 }
