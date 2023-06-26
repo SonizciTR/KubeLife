@@ -1,6 +1,9 @@
 ﻿using k8s;
+using k8s.Models;
 using KubeCronMonitor.Kubernetes.Extensions;
 using KubeCronMonitor.Kubernetes.Models;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace KubeCronMonitor.Kubernetes
 {
@@ -13,7 +16,7 @@ namespace KubeCronMonitor.Kubernetes
 
         public KubeConfigModel Settings { get; }
 
-        public async Task<List<KubeCronJobModel>> GetCronJobs()
+        private k8s.Kubernetes GetKubeClient()
         {
             var config = new KubernetesClientConfiguration();
             config.Host = Settings.ServerUrl;
@@ -26,9 +29,41 @@ namespace KubeCronMonitor.Kubernetes
             }
 
             var client = new k8s.Kubernetes(config);
+            return client;
+        }
+
+        public async Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel = null, bool includeJobDetails = true)
+        {
+            using k8s.Kubernetes client = GetKubeClient();
 
             var crnJobs = await client.ListCronJobForAllNamespacesAsync();
-            return crnJobs.ToKubeCronJobModelList();
+            var jobDetails = new Dictionary<string, List<KubeJobModel>>();
+            if (includeJobDetails)
+            {
+                foreach (var itm in crnJobs.Items)
+                {
+                    string tmpKey = itm.Metadata.NamespaceProperty;
+                    if (jobDetails.ContainsKey(tmpKey))
+                        continue;
+
+                    var tmpData = await GetJobsbyNamespace(tmpKey);
+                    jobDetails.Add(tmpKey, tmpData);
+                }
+            }
+
+            //var tmp = filterbyLabel == null ? crnJobs : crnJobs.Items.Where(x =>
+            //{
+            //    return x.Labels.Any(y => true);
+            //});
+
+            return crnJobs.ToKubeCronJobModelList(jobDetails);
+        }
+
+        public async Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace)
+        {
+            using k8s.Kubernetes client = GetKubeClient();
+            var jbs = await client.ListNamespacedJobAsync(kubeNamespace);
+            return jbs.ToKubeJobModelList();
         }
     }
 }

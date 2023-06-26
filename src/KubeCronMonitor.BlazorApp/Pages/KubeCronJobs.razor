@@ -8,11 +8,46 @@
 
 <PageTitle>CronJobs :)</PageTitle>
 
+@if (crnJobItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Namespace</th>
+                <th>Name</th>
+                <th>Timing</th>
+                <th>Last Run</th>
+                <th>Avg Runtime (min)</th>
+                <th>Success Count</th>
+                <th>Fail Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in crnJobItems)
+            {
+                <tr>
+                    <td>@forecast.Namespace</td>
+                    <td>@forecast.CronJobName</td>
+                    <td>@forecast.TimingRaw</td>
+                    <td>@forecast.LastStartTime</td>
+                    <td>@forecast.AvgRunTimeMinutes</td>
+                    <td>@forecast.SuccessCount</td>
+                    <td>@forecast.FailureCount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 @code {
-    private List<KubeCronJobModel> crnJobs;
+    private List<KubeCronJobModel> crnJobItems;
 
     protected override async Task OnInitializedAsync()
     {
-        crnJobs = await kubeSerice.GetCronJobs();
+        crnJobItems = await kubeSerice.GetCronJobs("AdvancedAnalytic");
     }
 }
