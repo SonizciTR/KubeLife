@@ -15,4 +15,8 @@
     <ProjectReference Include="..\KubeCronMonitor.Kubernetes\KubeCronMonitor.Kubernetes.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>
