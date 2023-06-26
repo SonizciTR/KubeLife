@@ -13,6 +13,6 @@ namespace KubeCronMonitor.Kubernetes.Extensions
 
         public static T ToModel<T>(this string jsonString) where T : class => JsonSerializer.Deserialize<T>(jsonString);
 
-        public static T DeepCopy<T>(this T model) where T: class => model.ToJson().ToModel<T>();
+        public static T DeepCopyJson<T>(this T model) where T: class => model.ToJson().ToModel<T>();
     }
 }

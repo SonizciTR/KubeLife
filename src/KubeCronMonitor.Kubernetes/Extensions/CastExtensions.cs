@@ -63,7 +63,7 @@ namespace KubeCronMonitor.Kubernetes.Extensions
 
         public static V1CronJobList WhereLabelContains(this V1CronJobList source, string filterbyLabel)
         {
-            var target = source.DeepCopy();
+            var target = source.DeepCopyJson();
             target.Items = target.Items.Where(x => x.Labels()?
                                                     .Any(y => y.Key == filterbyLabel || y.Value == filterbyLabel) 
                                                     ?? false)
