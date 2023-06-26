@@ -1,10 +1,12 @@
-﻿using k8s.Models;
+﻿using k8s;
+using k8s.Models;
 using KubeCronMonitor.Kubernetes.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace KubeCronMonitor.Kubernetes.Extensions
 {
@@ -24,7 +26,7 @@ namespace KubeCronMonitor.Kubernetes.Extensions
                 tmp.LastStartTime = itmCron.Status.LastScheduleTime;
                 tmp.LastEndTime = itmCron.Status.LastSuccessfulTime;
 
-                if(jobData != null)
+                if (jobData != null)
                 {
                     if (!jobData.TryGetValue(tmp.Namespace, out var tmpJobDetail))
                         continue;
@@ -39,7 +41,7 @@ namespace KubeCronMonitor.Kubernetes.Extensions
             return target;
         }
 
-        public static List<KubeJobModel> ToKubeJobModelList(this V1JobList source) 
+        public static List<KubeJobModel> ToKubeJobModelList(this V1JobList source)
         {
             var target = new List<KubeJobModel>();
 
@@ -56,6 +58,16 @@ namespace KubeCronMonitor.Kubernetes.Extensions
                 target.Add(tmp);
             }
 
+            return target;
+        }
+
+        public static V1CronJobList WhereLabelContains(this V1CronJobList source, string filterbyLabel)
+        {
+            var target = source.DeepCopy();
+            target.Items = target.Items.Where(x => x.Labels()?
+                                                    .Any(y => y.Key == filterbyLabel || y.Value == filterbyLabel) 
+                                                    ?? false)
+                                        .ToList();
             return target;
         }
     }

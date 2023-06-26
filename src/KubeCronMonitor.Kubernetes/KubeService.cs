@@ -36,11 +36,12 @@ namespace KubeCronMonitor.Kubernetes
         {
             using k8s.Kubernetes client = GetKubeClient();
 
-            var crnJobs = await client.ListCronJobForAllNamespacesAsync();
+            var allCronnJobs = await client.ListCronJobForAllNamespacesAsync();
+            var tmpCrns = filterbyLabel == null ? allCronnJobs : allCronnJobs.WhereLabelContains(filterbyLabel);
             var jobDetails = new Dictionary<string, List<KubeJobModel>>();
             if (includeJobDetails)
             {
-                foreach (var itm in crnJobs.Items)
+                foreach (var itm in tmpCrns.Items)
                 {
                     string tmpKey = itm.Metadata.NamespaceProperty;
                     if (jobDetails.ContainsKey(tmpKey))
@@ -51,12 +52,7 @@ namespace KubeCronMonitor.Kubernetes
                 }
             }
 
-            //var tmp = filterbyLabel == null ? crnJobs : crnJobs.Items.Where(x =>
-            //{
-            //    return x.Labels.Any(y => true);
-            //});
-
-            return crnJobs.ToKubeCronJobModelList(jobDetails);
+            return tmpCrns.ToKubeCronJobModelList(jobDetails);
         }
 
         public async Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace)
