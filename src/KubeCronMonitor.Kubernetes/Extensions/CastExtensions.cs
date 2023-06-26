@@ -32,7 +32,7 @@ namespace KubeCronMonitor.Kubernetes.Extensions
                         continue;
 
                     tmp.IsJobDetailSet = true;
-                    tmp.JobDetails = tmpJobDetail;
+                    tmp.JobDetails = tmpJobDetail.Where(x => x.OwnerCronJobName == tmp.CronJobName).ToList();
                 }
 
                 target.Add(tmp);
@@ -49,8 +49,10 @@ namespace KubeCronMonitor.Kubernetes.Extensions
             {
                 var tmp = new KubeJobModel();
 
-                tmp.JobName = item.Metadata.Name;
+                tmp.JobUniqueName = item.Metadata.Name;
                 tmp.KubeNamespace = item.Metadata.NamespaceProperty;
+                if (item.Metadata.OwnerReferences.Any())
+                    tmp.OwnerCronJobName = item.Metadata.OwnerReferences[0].Name;
                 tmp.StartTime = item.Status.StartTime;
                 tmp.EndTime = item.Status.CompletionTime;
                 tmp.IsSuccess = item.Status.Succeeded == 1;
@@ -65,7 +67,7 @@ namespace KubeCronMonitor.Kubernetes.Extensions
         {
             var target = source.DeepCopyJson();
             target.Items = target.Items.Where(x => x.Labels()?
-                                                    .Any(y => y.Key == filterbyLabel || y.Value == filterbyLabel) 
+                                                    .Any(y => y.Key == filterbyLabel || y.Value == filterbyLabel)
                                                     ?? false)
                                         .ToList();
             return target;
