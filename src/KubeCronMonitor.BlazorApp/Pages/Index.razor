@@ -50,17 +50,22 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        crnJobItems = await kubeSerice.GetCronJobs("AdvancedAnalytic");
+        await CallCronJobs();
 
-        CreateTimer();
+        await CreateTimer();
     }
 
-    private void CreateTimer()
+    private async Task CallCronJobs()
+    {
+        crnJobItems = await kubeSerice.GetCronJobs("AdvancedAnalytic");
+        LastUpdateTime = DateTime.Now;
+    }
+
+    private async Task CreateTimer()
     {
         timer = new System.Threading.Timer(async (object? stateInfo) =>
         {
-            crnJobItems = await kubeSerice.GetCronJobs("AdvancedAnalytic");
-            LastUpdateTime = DateTime.Now;
+            await CallCronJobs();
             InvokeAsync(() =>
             {
                 this.StateHasChanged();
