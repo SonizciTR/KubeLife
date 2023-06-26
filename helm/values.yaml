@@ -1,0 +1,3 @@
+appname: kubecronmonitor
+replicacount: 1
+gitadress: ""
