@@ -5,9 +5,7 @@
 
 @inject IKubeService kubeSerice;
 
-<h3>KubeCronJobs</h3>
-
-<PageTitle>CronJobs</PageTitle>
+<h3>CronJobs (@LastUpdateTime)</h3>
 
 @if (crnJobItems == null)
 {
@@ -46,9 +44,27 @@ else
 
 @code {
     private List<KubeCronJobModel> crnJobItems;
+    private DateTime LastUpdateTime = DateTime.Now;
+    private System.Threading.Timer? timer;
+    private const int refreshTimeMs = 10 * 1000;
 
     protected override async Task OnInitializedAsync()
     {
         crnJobItems = await kubeSerice.GetCronJobs("AdvancedAnalytic");
+
+        CreateTimer();
+    }
+
+    private void CreateTimer()
+    {
+        timer = new System.Threading.Timer(async (object? stateInfo) =>
+        {
+            crnJobItems = await kubeSerice.GetCronJobs("AdvancedAnalytic");
+            LastUpdateTime = DateTime.Now;
+            InvokeAsync(() =>
+            {
+                this.StateHasChanged();
+            });
+        }, new System.Threading.AutoResetEvent(false), refreshTimeMs, refreshTimeMs);
     }
 }
