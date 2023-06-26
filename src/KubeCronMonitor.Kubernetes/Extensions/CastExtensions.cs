@@ -18,7 +18,7 @@ namespace KubeCronMonitor.Kubernetes.Extensions
             {
                 var tmp = new KubeCronJobModel();
                 tmp.Namespace = item.Metadata.NamespaceProperty;
-                tmp.CranJobName = item.Metadata.Name;
+                tmp.CronJobName = item.Metadata.Name;
                 tmp.TimingRaw = item.Spec.Schedule;
                 tmp.IsSuspended = item.Spec.Suspend ?? false;
                 tmp.LastStartTime = item.Status.LastScheduleTime;

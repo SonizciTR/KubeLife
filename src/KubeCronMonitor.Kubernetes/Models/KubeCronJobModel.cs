@@ -9,7 +9,7 @@ namespace KubeCronMonitor.Kubernetes.Models
     public class KubeCronJobModel
     {
         public string Namespace { get; set; }
-        public string CranJobName { get; set; }
+        public string CronJobName { get; set; }
         public string  TimingRaw { get; set; }
         public int SuccessCount { get; set; }
         public int FailureCount { get; set; }
