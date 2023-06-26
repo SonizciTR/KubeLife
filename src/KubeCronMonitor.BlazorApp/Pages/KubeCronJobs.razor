@@ -1,5 +1,6 @@
 ﻿@page "/cronjobs"
 @using KubeCronMonitor.Kubernetes;
+@using KubeCronMonitor.Kubernetes.Extensions;
 @using KubeCronMonitor.Kubernetes.Models;
 
 @inject IKubeService kubeSerice;
@@ -17,8 +18,8 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Namespace</th>
                 <th>Name</th>
+                <th>Namespace</th>
                 <th>Timing</th>
                 <th>Last Run</th>
                 <th>Avg Runtime (min)</th>
@@ -30,10 +31,10 @@ else
             @foreach (var forecast in crnJobItems)
             {
                 <tr>
-                    <td>@forecast.Namespace</td>
                     <td>@forecast.CronJobName</td>
+                    <td>@forecast.Namespace</td>
                     <td>@forecast.TimingRaw</td>
-                    <td>@forecast.LastStartTime</td>
+                    <td>@forecast.LastStartTime.ToDateFormat()</td>
                     <td>@forecast.AvgRunTimeMinutes</td>
                     <td>@forecast.SuccessCount</td>
                     <td>@forecast.FailureCount</td>
