@@ -6,7 +6,7 @@ We were in need for cron job monitor for kubernetes. So I wrote a simple web pag
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
-* [Install](#Install)
+* [Installation](#Installation)
 
 ## General info
 This project is for displaying kubernetes cronjobs. 
@@ -27,10 +27,11 @@ I only use "KubernetesSetting:ServerUrl" and "KubernetesSetting:AccessToken" pai
 	
 ## Technologies
 Project is created with:
-* ASP.NET Core 6 Blazor App
+* ASP.NET Core 6 
+* Blazor App
 * Helm v3
 	
-## Install
+## Installation
 Download&Install Helm package manager and run this command:
 
 ```bash
@@ -39,15 +40,12 @@ helm install kubecronmonitorapp [helm package location]
 
 That is it :)
 
-**More detail:**
-This project is for kubernetes so logical way is to deploy to kubernetes. You can find helm packages under helm folder.
-Helm is a tool that automates the creation, packaging, configuration, and deployment of Kubernetes applications by combining your configuration files into a single reusable package
-
 Just do not forget to change "secret.app.yaml" file with your system values.
 
+**More detail:**
+This project is for kubernetes so logical way to deploy is kubernetes. You can find helm packages under helm folder.
+Helm is a tool that automates the creation, packaging, configuration, and deployment of Kubernetes applications by combining your configuration files into a single reusable package
 
-
-
-
+My kubernetes environment is Openshift. So I prefer DeploymenyConfig over Deployment. But I put commented Deployment.yaml to the helm folders. If your environment not support DeploymentConfig, comment out it and uncomment Deployment.yaml ;)
 
 
