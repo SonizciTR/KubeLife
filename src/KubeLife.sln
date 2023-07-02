@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeLife.Kubernetes", "Kube
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeLife.Core", "KubeLife.Core\KubeLife.Core.csproj", "{BED3B666-BA52-477E-A91A-C45C7B3686FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{BB785DCF-F6F9-48C5-95F3-15DF7CF0238E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeLife.Core.Tests", "..\unittests\KubeLife.Core.Tests\KubeLife.Core.Tests.csproj", "{4B04A9DE-1DC0-4F2E-BA44-DE73FF4AEC9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +31,16 @@ Global
 		{BED3B666-BA52-477E-A91A-C45C7B3686FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BED3B666-BA52-477E-A91A-C45C7B3686FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BED3B666-BA52-477E-A91A-C45C7B3686FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B04A9DE-1DC0-4F2E-BA44-DE73FF4AEC9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B04A9DE-1DC0-4F2E-BA44-DE73FF4AEC9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B04A9DE-1DC0-4F2E-BA44-DE73FF4AEC9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B04A9DE-1DC0-4F2E-BA44-DE73FF4AEC9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4B04A9DE-1DC0-4F2E-BA44-DE73FF4AEC9D} = {BB785DCF-F6F9-48C5-95F3-15DF7CF0238E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D1FBE9EA-B4B8-4259-B170-F6391C2C9DBE}
