@@ -11,5 +11,10 @@ namespace KubeLife.Core.Extensions
         {
             return source == null ? "[Not Found]" : ((DateTime)source).ToString(CnstDateTimeFilter);
         }
+
+        public static string ToDateFormat(this DateTime source)
+        {
+            return source == null ? "[Not Found]" : (source).ToString(CnstDateTimeFilter);
+        }
     }
 }

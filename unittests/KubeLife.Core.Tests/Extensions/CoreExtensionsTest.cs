@@ -4,35 +4,18 @@ namespace KubeLife.Core.Tests.Extensions
 {
     public class CoreExtensionsTest
     {
-        [Fact]
-        public void IsAny_NullCheck_ReturnsFalse()
+        public static IEnumerable<object[]> dataForIsAny => new List<object[]> {
+                            new object[]{ null, false },
+                            new object[]{ new List<string>(), false },
+                            new object[]{ new List<string> { "1"  }, true },
+        };
+
+        [Theory, MemberData(nameof(dataForIsAny))]
+        public void IsAny_PossibleValuesCheck_DynamicResult(List<string> data, bool expectedResult)
         {
-            List<string> target = null;
+            var rslt = data.IsAny();
 
-            var rslt = target.IsAny();
-
-            Assert.False(rslt);
-        }
-
-        [Fact]
-        public void IsAny_EmptyCheck_ReturnsFalse()
-        {
-            List<string> target = new List<string>();
-
-            var rslt = target.IsAny();
-
-            Assert.False(rslt);
-        }
-
-        [Fact]
-        public void IsAny_NonEmptyCheck_ReturnsTrue()
-        {
-            List<string> target = new List<string>();
-            target.Add("a");
-
-            var rslt = target.IsAny();
-
-            Assert.True(rslt);
+            Assert.Equal(expectedResult, rslt);
         }
     }
 }
