@@ -73,11 +73,5 @@ namespace KubeLife.Kubernetes.Extensions
                                         .ToList();
             return target;
         }
-
-        private const string CnstDateTimeFilter = "dd.MM.yyyy HH:mm:ss";
-        public static string ToDateFormat(this DateTime? source)
-        {
-            return source == null ? "[Not Found]" : ((DateTime)source).ToString(CnstDateTimeFilter);
-        }
     }
 }
