@@ -1,11 +1,11 @@
 ﻿using k8s;
 using k8s.Models;
-using KubeCronMonitor.Kubernetes.Extensions;
-using KubeCronMonitor.Kubernetes.Models;
+using KubeLife.Kubernetes.Extensions;
+using KubeLife.Kubernetes.Models;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace KubeCronMonitor.Kubernetes
+namespace KubeLife.Kubernetes
 {
     public class KubeService : IKubeService
     {

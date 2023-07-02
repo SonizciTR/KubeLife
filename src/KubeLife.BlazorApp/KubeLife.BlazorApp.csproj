@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KubeCronMonitor.Kubernetes\KubeCronMonitor.Kubernetes.csproj" />
+    <ProjectReference Include="..\KubeLife.Kubernetes\KubeLife.Kubernetes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

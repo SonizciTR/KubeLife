@@ -1,4 +1,4 @@
-using KubeCronMonitor.BlazorApp;
+using KubeLife.BlazorApp;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 

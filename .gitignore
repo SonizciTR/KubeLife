@@ -438,5 +438,6 @@ API
 Training
 Blog
 About
-/src/KubeCronMonitor.BlazorApp/appsettings.thy.json
-/src/KubeCronMonitor.BlazorApp/appsettings.Development.json
+
+#Custom
+/src/KubeLife.BlazorApp/appsettings.Development.json

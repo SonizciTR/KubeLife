@@ -1,6 +1,6 @@
 ﻿using k8s;
 using k8s.Models;
-using KubeCronMonitor.Kubernetes.Models;
+using KubeLife.Kubernetes.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 
-namespace KubeCronMonitor.Kubernetes.Extensions
+namespace KubeLife.Kubernetes.Extensions
 {
     public static class CastExtensions
     {

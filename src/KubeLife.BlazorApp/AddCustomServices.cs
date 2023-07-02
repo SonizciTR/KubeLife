@@ -1,8 +1,8 @@
-﻿using KubeCronMonitor.Kubernetes;
-using KubeCronMonitor.Kubernetes.Models;
+﻿using KubeLife.Kubernetes;
+using KubeLife.Kubernetes.Models;
 using Microsoft.Extensions.Configuration;
 
-namespace KubeCronMonitor.BlazorApp
+namespace KubeLife.BlazorApp
 {
     public static class AddCustomServices
     {

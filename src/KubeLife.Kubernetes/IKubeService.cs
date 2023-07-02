@@ -1,6 +1,6 @@
-﻿using KubeCronMonitor.Kubernetes.Models;
+﻿using KubeLife.Kubernetes.Models;
 
-namespace KubeCronMonitor.Kubernetes
+namespace KubeLife.Kubernetes
 {
     public interface IKubeService
     {

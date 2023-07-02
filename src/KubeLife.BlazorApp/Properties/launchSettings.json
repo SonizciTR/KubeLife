@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "KubeCronMonitor.BlazorApp": {
+    "KubeLife.BlazorApp": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace KubeCronMonitor.Kubernetes.Extensions
+namespace KubeLife.Kubernetes.Extensions
 {
     internal static class JsonExtension
     {
