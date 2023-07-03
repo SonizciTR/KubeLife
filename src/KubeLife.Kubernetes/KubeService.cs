@@ -20,7 +20,7 @@ namespace KubeLife.Kubernetes
         {
             var config = new KubernetesClientConfiguration
             {
-                SkipTlsVerify = false,
+                SkipTlsVerify = true,
             };
             
             config.Host = Settings.ServerUrl;
