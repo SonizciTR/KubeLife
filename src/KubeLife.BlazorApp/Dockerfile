@@ -5,13 +5,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["KubeLife.BlazorApp.csproj", "."]
-RUN dotnet restore "KubeLife.BlazorApp.csproj"
+COPY [".", "."]
+RUN dotnet restore "/KubeLife.BlazorApp/KubeLife.BlazorApp.csproj"
 COPY . .
-RUN dotnet build "KubeLife.BlazorApp.csproj" -c Release -o /app/build
+RUN dotnet build "/KubeLife.BlazorApp/KubeLife.BlazorApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "KubeLife.BlazorApp.csproj" -c Release -o /app/publish
+RUN dotnet publish "/KubeLife.BlazorApp/KubeLife.BlazorApp.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
