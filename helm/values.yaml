@@ -1,3 +1,4 @@
-appname: KubeLife
+appname: kubelifeapp
 replicacount: 1
-gitadress: ""
+gitadress: "https://github.com/SonizciTR/KubeLife.git"
+dockerpath: "/src/KubeLife.BlazorApp/"
