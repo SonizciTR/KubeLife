@@ -16,10 +16,10 @@ namespace KubeLife.BlazorApp
         private static KubeConfigModel GetFromConfig(IConfiguration config)
         {
             var target = new KubeConfigModel();
-            target.ServerUrl = config.GetValue<string>("KubernetesSetting:ServerUrl");
-            target.AccessToken = config.GetValue<string>("KubernetesSetting:AccessToken");
-            target.UserName = config.GetValue<string>("KubernetesSetting:UserName");
-            target.PassWord = config.GetValue<string>("KubernetesSetting:PassWord");
+            target.ServerUrl = config.GetValue<string>("KubeServerUrl");
+            target.AccessToken = config.GetValue<string>("KubeAccessToken");
+            target.UserName = config.GetValue<string>("KubeUserName");
+            target.PassWord = config.GetValue<string>("KubePassWord");
             return target;
         }
     }
