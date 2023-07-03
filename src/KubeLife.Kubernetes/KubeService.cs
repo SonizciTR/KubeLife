@@ -18,7 +18,11 @@ namespace KubeLife.Kubernetes
 
         private k8s.Kubernetes GetKubeClient()
         {
-            var config = new KubernetesClientConfiguration();
+            var config = new KubernetesClientConfiguration
+            {
+                SkipTlsVerify = false,
+            };
+            
             config.Host = Settings.ServerUrl;
             if (!string.IsNullOrEmpty(Settings.AccessToken))
                 config.AccessToken = Settings.AccessToken;
@@ -29,6 +33,7 @@ namespace KubeLife.Kubernetes
             }
 
             var client = new k8s.Kubernetes(config);
+            
             return client;
         }
 
