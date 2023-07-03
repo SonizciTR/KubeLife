@@ -12,7 +12,6 @@ RUN ls -al
 
 WORKDIR /src/KubeLife.BlazorApp
 RUN dotnet restore "KubeLife.BlazorApp.csproj"
-COPY . .
 RUN dotnet build "KubeLife.BlazorApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
