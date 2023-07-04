@@ -8,7 +8,7 @@
 @using KubeLife.Core.Extensions;
 @using KubeLife.Kubernetes.Models;
 
-@inject IKubernetesDomain kubeSerice;
+@inject IKubernetesDomain domainService;
 
 <h3>CronJobs (@LastUpdateTime)</h3>
 
@@ -67,7 +67,7 @@ else
 
     private async Task CallCronJobs()
     {
-        crnJobItems = await kubeSerice.GetCronJobs("AdvancedAnalytic");
+        crnJobItems = await domainService.GetCronJobs("AdvancedAnalytic");
         LastUpdateTime = DateTime.Now;
     }
 
@@ -85,14 +85,14 @@ else
 
     private void NavigateToLogView(string cronJobName)
     {
+        var tmp = crnJobItems.FirstOrDefault(x => x.CronJobName == cronJobName);
+        var latestJob = tmp.JobDetails.OrderByDescending(x => x.StartTime).FirstOrDefault();
         var queryParams = new Dictionary<string, string>
-            {
-                ["CronJobName"] = cronJobName
-            };
+        {
+            ["JobDetail"] = latestJob.JobUniqueName,
+            ["Namespace"] = latestJob.KubeNamespace
+        };
 
         NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
-
-        //Navigation.NavigateTo($"LogViewer");
-        //Navigation.NavigateTo($"LogViewer/{cronJobName}");
     }
 }

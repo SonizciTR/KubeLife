@@ -21,6 +21,14 @@ namespace KubeLife.Kubernetes
         /// <param name="kubeNamespace">Filters by kubernetes namespace</param>
         /// <returns>Jobs detail</returns>
         Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace);
+        
+        /// <summary>
+        /// Gives the pod's terminal log as string
+        /// </summary>
+        /// <param name="kubeNamespace">Pod's namespace</param>
+        /// <param name="podName">Pod name</param>
+        /// <returns>Terminal log as string</returns>
+        Task<string> GetLogofPod(string kubeNamespace, string podName);
 
         /// <summary>
         /// Gets the Pods Information

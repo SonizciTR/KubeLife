@@ -1,13 +1,14 @@
 ﻿@page "/LogViewer"
 
 @using Microsoft.AspNetCore.WebUtilities
+@using KubeLife.BlazorApp.Extensions
 @inject NavigationManager NavManager
 
 @using KubeLife.Domain;
 @using KubeLife.Core.Extensions;
 @using KubeLife.Kubernetes.Models;
 
-@inject IKubernetesDomain kubeSerice;
+@inject IKubernetesDomain domainService;
 
 
 @if (string.IsNullOrEmpty(QueryResult))
@@ -17,23 +18,25 @@
 else
 {
     <p><em>QueryResult</em></p>
+    <p>LogDetail</p>
 }
 
 @code {
-    public string CronJobName { get; set; }
+    public string JobName { get; set; }
+    public string KubeNamespace { get; set; }
 
     public string QueryResult { get; set; }
+    public string LogDetail { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
-        var queryStrings = QueryHelpers.ParseQuery(uri.Query);
-        if (queryStrings.TryGetValue("CronJobName", out var name))
-        {
-            CronJobName = name;
-        }
+        KubeNamespace = NavManager.QueryStringSingle("Namespace");
+        JobName = NavManager.QueryStringSingle("JobDetail");
+        if (string.IsNullOrWhiteSpace(JobName))
+            QueryResult = "There is no 'Job Detail' provided.";
 
-        int x = 0;
+        var logResult = await domainService.GetLogofJob(KubeNamespace, JobName);
+        QueryResult = !logResult.IsSuccess ? logResult.Message : logResult.Result;
     }
 }
 

@@ -4,6 +4,7 @@ using KubeLife.Kubernetes.Extensions;
 using KubeLife.Kubernetes.Models;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using KubeLife.Core.Extensions;
 
 namespace KubeLife.Kubernetes
 {
@@ -82,7 +83,7 @@ namespace KubeLife.Kubernetes
         }
 
         /// <summary>
-        /// Gets the Pods Information
+        /// Gets the Pod's Information
         /// </summary>
         /// <param name="kubeNamespace">Filters by kubernetes namespace</param>
         /// <returns>Pods Information</returns>
@@ -92,6 +93,20 @@ namespace KubeLife.Kubernetes
             var pods = await client.ListNamespacedPodAsync(kubeNamespace);
 
             return pods.ToKubePodModelList();
+        }
+
+        /// <summary>
+        /// Gives the pod's terminal log as string
+        /// </summary>
+        /// <param name="kubeNamespace">Pod's namespace</param>
+        /// <param name="podName">Pod name</param>
+        /// <returns>Terminal log as string</returns>
+        public async Task<string> GetLogofPod(string kubeNamespace, string podName)
+        {
+            using k8s.Kubernetes client = GetKubeClient();
+            var logStream = await client.ReadNamespacedPodLogAsync(podName, kubeNamespace);
+
+            return logStream.ToStringForm();
         }
     }
 }

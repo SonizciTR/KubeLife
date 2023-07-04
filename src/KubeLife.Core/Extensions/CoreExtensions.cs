@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -44,6 +45,14 @@ namespace KubeLife.Core.Extensions
         {
             TypeConverter tc = TypeDescriptor.GetConverter(typeof(T));
             return (T)tc.ConvertFrom(value);
+        }
+
+        public static string ToStringForm(this Stream source)
+        {
+            using(var sr = new StreamReader(source))
+            {
+                return sr.ReadToEnd();
+            }
         }
     }
 }
