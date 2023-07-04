@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\KubeLife.Core\KubeLife.Core.csproj" />
+    <ProjectReference Include="..\KubeLife.Domain\KubeLife.Domain.csproj" />
     <ProjectReference Include="..\KubeLife.Kubernetes\KubeLife.Kubernetes.csproj" />
   </ItemGroup>
 

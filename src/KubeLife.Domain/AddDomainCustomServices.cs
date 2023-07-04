@@ -1,16 +1,18 @@
 ﻿using KubeLife.Kubernetes;
 using KubeLife.Kubernetes.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace KubeLife.BlazorApp
+namespace KubeLife.Domain
 {
-    public static class AddCustomServices
+    public static class AddDomainCustomServices
     {
-        public static void AddAppServices(this IServiceCollection services, IConfiguration config)
+        public static void AddDomainServices(this IServiceCollection services, IConfiguration config)
         {
             var kubeSetting = GetFromConfig(config);
 
             services.AddSingleton<IKubeService>(new KubeService(kubeSetting));
+            services.AddSingleton<IKubernetesDomain, KubernetesDomain>();
         }
 
         private static KubeConfigModel GetFromConfig(IConfiguration config)

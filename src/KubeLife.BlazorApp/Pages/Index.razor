@@ -1,10 +1,9 @@
 ﻿@page "/"
-@using KubeLife.Kubernetes;
+@using KubeLife.Domain;
 @using KubeLife.Core.Extensions;
-@using KubeLife.Kubernetes.Extensions;
 @using KubeLife.Kubernetes.Models;
 
-@inject IKubeService kubeSerice;
+@inject IKubernetesDomain kubeSerice;
 
 <h3>CronJobs (@LastUpdateTime)</h3>
 
