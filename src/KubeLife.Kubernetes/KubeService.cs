@@ -7,6 +7,9 @@ using System.ComponentModel;
 
 namespace KubeLife.Kubernetes
 {
+    /// <summary>
+    /// Establishes communication with Kubernetes APIs
+    /// </summary>
     public class KubeService : IKubeService
     {
         public KubeService(KubeConfigModel settings)
@@ -37,6 +40,12 @@ namespace KubeLife.Kubernetes
             return client;
         }
 
+        /// <summary>
+        /// Gives the CronJobs Information
+        /// </summary>
+        /// <param name="filterbyLabel">Filters the with label match</param>
+        /// <param name="includeJobDetails">Makes extra query for CronJobs Detail</param>
+        /// <returns>CronJobs detail</returns>
         public async Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel = null, bool includeJobDetails = true)
         {
             using k8s.Kubernetes client = GetKubeClient();
@@ -60,11 +69,29 @@ namespace KubeLife.Kubernetes
             return tmpCrns.ToKubeCronJobModelList(jobDetails);
         }
 
+        /// <summary>
+        /// Get the Jobs Information
+        /// </summary>
+        /// <param name="kubeNamespace">Filters by kubernetes namespace</param>
+        /// <returns>Jobs detail</returns>
         public async Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace)
         {
             using k8s.Kubernetes client = GetKubeClient();
             var jbs = await client.ListNamespacedJobAsync(kubeNamespace);
             return jbs.ToKubeJobModelList();
+        }
+
+        /// <summary>
+        /// Gets the Pods Information
+        /// </summary>
+        /// <param name="kubeNamespace">Filters by kubernetes namespace</param>
+        /// <returns>Pods Information</returns>
+        public async Task<List<KubePodModel>> GetPodsofNamespace(string kubeNamespace)
+        {
+            using k8s.Kubernetes client = GetKubeClient();
+            var pods = await client.ListNamespacedPodAsync(kubeNamespace);
+
+            return pods.ToKubePodModelList();
         }
     }
 }

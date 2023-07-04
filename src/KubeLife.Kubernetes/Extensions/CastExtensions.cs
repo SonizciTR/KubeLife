@@ -11,7 +11,7 @@ using KubeLife.Core.Extensions;
 
 namespace KubeLife.Kubernetes.Extensions
 {
-    public static class CastExtensions
+    internal static class CastExtensions
     {
         public static List<KubeCronJobModel> ToKubeCronJobModelList(this V1CronJobList source, Dictionary<string, List<KubeJobModel>>? jobData = null)
         {
@@ -61,7 +61,8 @@ namespace KubeLife.Kubernetes.Extensions
                 target.Add(tmp);
             }
 
-            return target;
+            return target; //cronjob-retrain-score-28139130-5mpr6
+
         }
 
         public static V1CronJobList WhereLabelContains(this V1CronJobList source, string filterbyLabel)
@@ -71,6 +72,22 @@ namespace KubeLife.Kubernetes.Extensions
                                                     .Any(y => y.Key == filterbyLabel || y.Value == filterbyLabel)
                                                     ?? false)
                                         .ToList();
+            return target;
+        }
+
+        public static List<KubePodModel> ToKubePodModelList(this V1PodList source)
+        {
+            var target = new List<KubePodModel>();
+
+            foreach (var itm in source.Items)
+            {
+                var tmp = new KubePodModel();
+
+                tmp.PodName = itm.Metadata.Name;
+
+                target.Add(tmp);
+            }
+
             return target;
         }
     }
