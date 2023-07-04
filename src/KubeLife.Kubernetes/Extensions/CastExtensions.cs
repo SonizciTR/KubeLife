@@ -84,6 +84,10 @@ namespace KubeLife.Kubernetes.Extensions
                 var tmp = new KubePodModel();
 
                 tmp.PodName = itm.Metadata.Name;
+                tmp.Namespace = itm.Metadata.Namespace();
+                tmp.CreateDate = itm.Metadata.CreationTimestamp;
+                if (itm.Metadata.OwnerReferences.IsAny())
+                    tmp.OwnerName = itm.Metadata.OwnerReferences[0].Name;
 
                 target.Add(tmp);
             }

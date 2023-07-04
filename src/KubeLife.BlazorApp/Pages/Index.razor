@@ -1,4 +1,9 @@
 ﻿@page "/"
+
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavManager
+
 @using KubeLife.Domain;
 @using KubeLife.Core.Extensions;
 @using KubeLife.Kubernetes.Models;
@@ -26,16 +31,21 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in crnJobItems)
+            @foreach (var crnJob in crnJobItems)
             {
                 <tr>
-                    <td>@forecast.CronJobName</td>
-                    <td>@forecast.Namespace</td>
-                    <td>@forecast.TimingRaw</td>
-                    <td>@forecast.LastStartTime.ToDateFormat()</td>
-                    <td>@forecast.AvgRunTimeMinutes</td>
-                    <td>@forecast.SuccessCount</td>
-                    <td>@forecast.FailureCount</td>
+                    <td>@crnJob.CronJobName</td>
+                    <td>@crnJob.Namespace</td>
+                    <td>@crnJob.TimingRaw</td>
+                    <td>@crnJob.LastStartTime.ToDateFormat()</td>
+                    <td>@crnJob.AvgRunTimeMinutes</td>
+                    <td>@crnJob.SuccessCount</td>
+                    <td>@crnJob.FailureCount</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => NavigateToLogView(crnJob.CronJobName)">
+                            Log
+                        </button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -66,10 +76,23 @@ else
         timer = new System.Threading.Timer(async (object? stateInfo) =>
         {
             await CallCronJobs();
-            InvokeAsync(() =>
+            await InvokeAsync(() =>
             {
                 this.StateHasChanged();
             });
         }, new System.Threading.AutoResetEvent(false), refreshTimeMs, refreshTimeMs);
+    }
+
+    private void NavigateToLogView(string cronJobName)
+    {
+        var queryParams = new Dictionary<string, string>
+            {
+                ["CronJobName"] = cronJobName
+            };
+
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
+
+        //Navigation.NavigateTo($"LogViewer");
+        //Navigation.NavigateTo($"LogViewer/{cronJobName}");
     }
 }

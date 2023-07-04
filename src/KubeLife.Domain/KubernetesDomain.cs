@@ -7,14 +7,16 @@ namespace KubeLife.Domain
     {
         public KubernetesDomain(IKubeService kubeService)
         {
-            KubeService = kubeService;
+            this.kubeService = kubeService;
         }
 
-        private readonly IKubeService KubeService;
+        private readonly IKubeService kubeService;
 
         public async Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel)
         {
-            return await KubeService.GetCronJobs(filterbyLabel, true);
+            var data = await kubeService.GetCronJobs(filterbyLabel, true);
+
+            return data;
         }
     }
 }

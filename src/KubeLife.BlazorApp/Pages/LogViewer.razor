@@ -1,0 +1,39 @@
+﻿@page "/LogViewer"
+
+@using Microsoft.AspNetCore.WebUtilities
+@inject NavigationManager NavManager
+
+@using KubeLife.Domain;
+@using KubeLife.Core.Extensions;
+@using KubeLife.Kubernetes.Models;
+
+@inject IKubernetesDomain kubeSerice;
+
+
+@if (string.IsNullOrEmpty(QueryResult))
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p><em>QueryResult</em></p>
+}
+
+@code {
+    public string CronJobName { get; set; }
+
+    public string QueryResult { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var queryStrings = QueryHelpers.ParseQuery(uri.Query);
+        if (queryStrings.TryGetValue("CronJobName", out var name))
+        {
+            CronJobName = name;
+        }
+
+        int x = 0;
+    }
+}
+
