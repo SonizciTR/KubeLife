@@ -104,9 +104,22 @@ namespace KubeLife.Kubernetes
         public async Task<string> GetLogofPod(string kubeNamespace, string podName)
         {
             using k8s.Kubernetes client = GetKubeClient();
-            var logStream = await client.ReadNamespacedPodLogAsync(podName, kubeNamespace);
+            try
+            {
+                var logStream = await client.ReadNamespacedPodLogAsync(podName, kubeNamespace);
 
-            return logStream.ToStringForm();
+                return logStream.ToStringForm();
+            }
+            catch(k8s.Autorest.HttpOperationException exKube)
+            {
+                return exKube.Message;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+            return null;
         }
     }
 }

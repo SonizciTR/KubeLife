@@ -26,7 +26,7 @@ namespace KubeLife.Domain
             var foundPod = allPods.FirstOrDefault(x => x.OwnerName == jobName);
             if (foundPod == null) return new KubeLifeResult<string>(false, $"Pod could not found on cluster");
 
-            var log = await kubeService.GetLogofPod(foundPod.PodName, foundPod.Namespace);
+            var log = await kubeService.GetLogofPod(foundPod.Namespace, foundPod.PodName);
             if (log == null) return new KubeLifeResult<string>(false, "No log found of Pod");
 
             return new KubeLifeResult<string>(log);
