@@ -17,8 +17,12 @@
 }
 else
 {
-    <p><em>@QueryResult</em></p>
-    <p>@LogDetail</p>
+    <p>
+        "@JobName" Job's Latest Log:
+    </p>
+    <p style="background-color:black; color:white;">
+        <em>@((MarkupString)QueryResult)</em>        
+    </p>
 }
 
 @code {
@@ -26,7 +30,6 @@ else
     public string KubeNamespace { get; set; }
 
     public string QueryResult { get; set; }
-    public string LogDetail { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,7 +39,7 @@ else
             QueryResult = "There is no 'Job Detail' provided.";
 
         var logResult = await domainService.GetLogofJob(KubeNamespace, JobName);
-        QueryResult = !logResult.IsSuccess ? logResult.Message : logResult.Result;
+        QueryResult = !logResult.IsSuccess ? logResult.Message : logResult.Result.ToHtml();
     }
 }
 
