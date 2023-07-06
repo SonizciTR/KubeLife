@@ -1,23 +1,39 @@
-﻿using KubeLife.Core.Models;
+﻿using AutoMapper;
+using k8s.KubeConfigModels;
+using KubeLife.Core.Models;
+using KubeLife.Domain.Models;
 using KubeLife.Kubernetes;
 using KubeLife.Kubernetes.Models;
+using NCrontab;
+using KubeLife.Core.Extensions;
 
 namespace KubeLife.Domain
 {
     public class KubernetesDomain : IKubernetesDomain
     {
-        public KubernetesDomain(IKubeService kubeService)
+        public KubernetesDomain(IKubeService kubeService, IMapper mapper)
         {
             this.kubeService = kubeService;
+            this.mapper = mapper;
         }
 
         private readonly IKubeService kubeService;
+        private readonly IMapper mapper;
 
-        public async Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel)
+        public async Task<List<KubeCronJobModelView>> GetCronJobs(string filterbyLabel)
         {
             var data = await kubeService.GetCronJobs(filterbyLabel, true);
+            var target = new List<KubeCronJobModelView>();
 
-            return data;
+            foreach (var itm in data)
+            {
+                var tmp = mapper.Map<KubeCronJobModelView>(itm);
+                var schedule = CrontabSchedule.Parse(tmp.TimingRaw);
+                tmp.NextRunTime = schedule.GetNextOccurrence(DateTime.Now);
+                target.Add(tmp);
+            }
+
+            return target;
         }
 
         public async Task<KubeLifeResult<string>> GetLogofJob(string kubeNamespace, string jobName)

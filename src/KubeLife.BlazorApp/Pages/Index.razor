@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @inject NavigationManager Navigation
+@using KubeLife.Domain.Models;
 @using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager NavManager
 
@@ -25,6 +26,7 @@ else
                 <th>Namespace</th>
                 <th>Timing</th>
                 <th>Last Run</th>
+                <th>Next Run</th>
                 <th>Avg Runtime (min)</th>
                 <th>Success Count</th>
                 <th>Fail Count</th>
@@ -38,6 +40,7 @@ else
                     <td>@crnJob.Namespace</td>
                     <td>@crnJob.TimingRaw</td>
                     <td>@crnJob.LastStartTime.ToDateFormat()</td>
+                    <td>@crnJob.NextRunTime.ToDateFormat()</td>
                     <td>@crnJob.AvgRunTimeMinutes</td>
                     <td>@crnJob.SuccessCount</td>
                     <td>@crnJob.FailureCount</td>
@@ -53,7 +56,7 @@ else
 }
 
 @code {
-    private List<KubeCronJobModel> crnJobItems;
+    private List<KubeCronJobModelView> crnJobItems;
     private DateTime LastUpdateTime = DateTime.Now;
     private System.Threading.Timer? timer;
     private const int refreshTimeMs = 10 * 1000;
