@@ -4,6 +4,7 @@
 @using KubeLife.Domain.Models;
 @using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager NavManager
+@inject IJSRuntime jsRuntime
 
 @using KubeLife.Domain;
 @using KubeLife.Core.Extensions;
@@ -38,7 +39,9 @@ else
                 <tr>
                     <td>@crnJob.CronJobName</td>
                     <td>@crnJob.Namespace</td>
-                    <td>@crnJob.TimingRaw</td>
+                    <td>
+                        @crnJob.TimingRaw <button class="oi oi-cloud-upload"  @onclick="() => NavigateToCronTimeView(crnJob.TimingRaw)" />
+                    </td>
                     <td>@crnJob.LastStartTime.ToDateFormat()</td>
                     <td>@crnJob.NextRunTime.ToDateFormat()</td>
                     <td>@crnJob.AvgRunTimeMinutes</td>
@@ -97,5 +100,11 @@ else
         };
 
         NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
+    }
+
+    public async Task NavigateToCronTimeView(string cronTiming)
+    {
+        string url = $"https://crontab.guru/#{cronTiming.Replace(" ", "_")}";
+        await jsRuntime.InvokeVoidAsync("open", url, "_blank");
     }
 }
