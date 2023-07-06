@@ -23,8 +23,15 @@ namespace KubeLife.Domain
         public async Task<List<KubeCronJobModelView>> GetCronJobs(string filterbyLabel)
         {
             var data = await kubeService.GetCronJobs(filterbyLabel, true);
-            var target = new List<KubeCronJobModelView>();
 
+            var target = EnrichingCronJobViewModel(data);
+
+            return target;
+        }
+
+        private List<KubeCronJobModelView> EnrichingCronJobViewModel(List<KubeCronJobModel> data)
+        {
+            var target = new List<KubeCronJobModelView>();
             foreach (var itm in data)
             {
                 var tmp = mapper.Map<KubeCronJobModelView>(itm);
