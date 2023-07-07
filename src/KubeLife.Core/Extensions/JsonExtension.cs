@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace KubeLife.Core.Extensions
 {
@@ -12,6 +14,20 @@ namespace KubeLife.Core.Extensions
             if (string.IsNullOrWhiteSpace(jsonString)) return default;
 
             return JsonSerializer.Deserialize<T>(jsonString);
+        }//var dynamicObject = JsonConvert.DeserializeObject<dynamic>(jsonString)!;
+
+        public static string GetNodeValueAsString(this string jsonString, params string[] keys)
+        {
+            if (string.IsNullOrWhiteSpace(jsonString)) return default;
+
+            var node = JsonSerializer.Deserialize<JsonNode>(jsonString)!;
+
+            foreach ( var key in keys ) 
+            {
+                node = node[key];
+            }
+
+            return node.GetValue<string>();
         }
 
         public static T DeepCopyJson<T>(this T model) where T : class => model.ToJson().ToModel<T>();

@@ -1,4 +1,6 @@
-﻿using KubeLife.Kubernetes.Models;
+﻿using KubeLife.Core.Models;
+using KubeLife.Kubernetes.Models;
+using KubeLife.Kubernetes.Services;
 
 namespace KubeLife.Kubernetes
 {
@@ -35,5 +37,6 @@ namespace KubeLife.Kubernetes
         /// <param name="kubeNamespace">Filters by kubernetes namespace</param>
         /// <returns>Pods Information</returns>
         Task<List<KubePodModel>> GetPodsofNamespace(string kubeNamespace);
+        Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName);
     }
 }

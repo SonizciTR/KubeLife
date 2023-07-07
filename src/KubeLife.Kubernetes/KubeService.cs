@@ -5,6 +5,8 @@ using KubeLife.Kubernetes.Models;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using KubeLife.Core.Extensions;
+using KubeLife.Kubernetes.Services;
+using KubeLife.Core.Models;
 
 namespace KubeLife.Kubernetes
 {
@@ -13,9 +15,11 @@ namespace KubeLife.Kubernetes
     /// </summary>
     public class KubeService : IKubeService
     {
+        private readonly IKubeRestService restService;
         public KubeService(KubeConfigModel settings)
         {
             Settings = settings;
+            restService = new KubeRestService(Settings);
         }
 
         public KubeConfigModel Settings { get; }
@@ -108,6 +112,11 @@ namespace KubeLife.Kubernetes
             }
 
             return null;
+        }
+
+        public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName)
+        {
+            return await restService.TriggerBuildConfig(namespaceParameter, buildConfigName);
         }
     }
 }
