@@ -28,9 +28,9 @@ else
                 <th>Timing</th>
                 <th>Last Run</th>
                 <th>Next Run</th>
-                <th>Avg Runtime (min)</th>
-                <th>Success Count</th>
-                <th>Fail Count</th>
+                <th>Avg (min)</th>
+                <th>Success</th>
+                <th>Fail</th>
             </tr>
         </thead>
         <tbody>
@@ -40,7 +40,7 @@ else
                     <td>@crnJob.CronJobName</td>
                     <td>@crnJob.Namespace</td>
                     <td>
-                        @crnJob.TimingRaw <button class="oi oi-cloud-upload" @onclick="() => NavigateToCronTimeView(crnJob.TimingRaw)" />
+                        <button class="btn btn-secondary" @onclick="() => NavigateToCronTimeView(crnJob.TimingRaw)"> @crnJob.TimingRaw</button>
                     </td>
                     <td>@crnJob.LastStartTimeLatest.ToDateFormat()</td>
                     <td>@crnJob.NextRunTime.ToDateFormat()</td>
