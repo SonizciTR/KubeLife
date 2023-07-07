@@ -13,7 +13,7 @@ namespace KubeLife.Kubernetes.Extensions
 {
     internal static class CastExtensions
     {
-        public static List<KubeCronJobModel> ToKubeCronJobModelList(this V1CronJobList source, Dictionary<string, List<KubeJobModel>>? jobData = null)
+        public static List<KubeCronJobModel> ToKubeCronJobModelList(this V1CronJobList source)
         {
             var target = new List<KubeCronJobModel>();
 
@@ -26,15 +26,6 @@ namespace KubeLife.Kubernetes.Extensions
                 tmp.IsSuspended = itmCron.Spec.Suspend ?? false;
                 tmp.LastStartTime = itmCron.Status.LastScheduleTime;
                 tmp.LastEndTime = itmCron.Status.LastSuccessfulTime;
-
-                if (jobData != null)
-                {
-                    if (!jobData.TryGetValue(tmp.Namespace, out var tmpJobDetail))
-                        continue;
-
-                    tmp.IsJobDetailSet = true;
-                    tmp.JobDetails = tmpJobDetail.Where(x => x.OwnerCronJobName == tmp.CronJobName).ToList();
-                }
 
                 target.Add(tmp);
             }

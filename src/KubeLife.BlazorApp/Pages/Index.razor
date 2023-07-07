@@ -40,9 +40,9 @@ else
                     <td>@crnJob.CronJobName</td>
                     <td>@crnJob.Namespace</td>
                     <td>
-                        @crnJob.TimingRaw <button class="oi oi-cloud-upload"  @onclick="() => NavigateToCronTimeView(crnJob.TimingRaw)" />
+                        @crnJob.TimingRaw <button class="oi oi-cloud-upload" @onclick="() => NavigateToCronTimeView(crnJob.TimingRaw)" />
                     </td>
-                    <td>@crnJob.LastStartTime.ToDateFormat()</td>
+                    <td>@crnJob.LastStartTimeLatest.ToDateFormat()</td>
                     <td>@crnJob.NextRunTime.ToDateFormat()</td>
                     <td>@crnJob.AvgRunTimeMinutes</td>
                     <td>@crnJob.SuccessCount</td>

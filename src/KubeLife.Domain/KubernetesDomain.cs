@@ -6,6 +6,7 @@ using KubeLife.Kubernetes;
 using KubeLife.Kubernetes.Models;
 using NCrontab;
 using KubeLife.Core.Extensions;
+using System.Collections.Generic;
 
 namespace KubeLife.Domain
 {
@@ -22,25 +23,40 @@ namespace KubeLife.Domain
 
         public async Task<List<KubeCronJobModelView>> GetCronJobs(string filterbyLabel)
         {
-            var data = await kubeService.GetCronJobs(filterbyLabel, true);
+            var crnJobsSource = await kubeService.GetCronJobs(filterbyLabel);
+            var target = mapper.Map<List<KubeCronJobModelView>>(crnJobsSource);
 
-            var target = EnrichingCronJobViewModel(data);
+            var jobDetails = new Dictionary<string, List<KubeJobModel>>();
+            foreach (var itm in target)
+            {
+                string tmpKey = itm.Namespace;
+                List<KubeJobModel> tmpDetail;
+                if (jobDetails.ContainsKey(tmpKey))
+                    tmpDetail = jobDetails[tmpKey];
+                else
+                {
+                    tmpDetail = await kubeService.GetJobsbyNamespace(tmpKey);
+                    jobDetails.Add(tmpKey, tmpDetail);
+                }   
+
+                itm.IsJobDetailSet = true;
+                itm.JobDetails = tmpDetail;
+            }
+
+            target = AddingNextRunTime(target);
 
             return target;
         }
 
-        private List<KubeCronJobModelView> EnrichingCronJobViewModel(List<KubeCronJobModel> data)
+        internal List<KubeCronJobModelView> AddingNextRunTime(List<KubeCronJobModelView> data)
         {
-            var target = new List<KubeCronJobModelView>();
             foreach (var itm in data)
             {
-                var tmp = mapper.Map<KubeCronJobModelView>(itm);
-                var schedule = CrontabSchedule.Parse(tmp.TimingRaw);
-                tmp.NextRunTime = schedule.GetNextOccurrence(DateTime.Now);
-                target.Add(tmp);
+                var schedule = CrontabSchedule.Parse(itm.TimingRaw);
+                itm.NextRunTime = schedule.GetNextOccurrence(DateTime.Now);
             }
 
-            return target;
+            return data;
         }
 
         public async Task<KubeLifeResult<string>> GetLogofJob(string kubeNamespace, string jobName)

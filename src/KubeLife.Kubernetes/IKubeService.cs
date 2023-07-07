@@ -11,9 +11,8 @@ namespace KubeLife.Kubernetes
         /// Gives the CronJobs Information
         /// </summary>
         /// <param name="filterbyLabel">Filters the with label match</param>
-        /// <param name="includeJobDetails">Makes extra query for CronJobs Detail</param>
         /// <returns>CronJobs detail</returns>
-        Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel = null, bool includeJobDetails = true);
+        Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel = null);
 
         /// <summary>
         /// Get the Jobs Information

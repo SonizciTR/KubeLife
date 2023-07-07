@@ -47,27 +47,15 @@ namespace KubeLife.Kubernetes
         /// <param name="filterbyLabel">Filters the with label match</param>
         /// <param name="includeJobDetails">Makes extra query for CronJobs Detail</param>
         /// <returns>CronJobs detail</returns>
-        public async Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel = null, bool includeJobDetails = true)
+        public async Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel = null)
         {
             using k8s.Kubernetes client = GetKubeClient();
 
             var allCronnJobs = await client.ListCronJobForAllNamespacesAsync();
             var tmpCrns = filterbyLabel == null ? allCronnJobs : allCronnJobs.WhereLabelContains(filterbyLabel);
-            var jobDetails = new Dictionary<string, List<KubeJobModel>>();
-            if (includeJobDetails)
-            {
-                foreach (var itm in tmpCrns.Items)
-                {
-                    string tmpKey = itm.Metadata.NamespaceProperty;
-                    if (jobDetails.ContainsKey(tmpKey))
-                        continue;
+            
 
-                    var tmpData = await GetJobsbyNamespace(tmpKey);
-                    jobDetails.Add(tmpKey, tmpData);
-                }
-            }
-
-            return tmpCrns.ToKubeCronJobModelList(jobDetails);
+            return tmpCrns.ToKubeCronJobModelList();
         }
 
         /// <summary>
