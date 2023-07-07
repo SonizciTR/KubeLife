@@ -40,7 +40,7 @@ else
                     <td>@crnJob.CronJobName</td>
                     <td>@crnJob.Namespace</td>
                     <td>
-                        <button class="btn btn-secondary" @onclick="() => NavigateToCronTimeView(crnJob.TimingRaw)"> @crnJob.TimingRaw</button>
+                        <button class="btn btn-link" @onclick="() => NavigateToCronTimeView(crnJob.TimingRaw)"> @crnJob.TimingRaw</button>
                     </td>
                     <td>@crnJob.LastStartTimeLatest.ToDateFormat()</td>
                     <td>@crnJob.NextRunTime.ToDateFormat()</td>
@@ -50,6 +50,11 @@ else
                     <td>
                         <button class="btn btn-primary" @onclick="() => NavigateToLogView(crnJob.CronJobName)">
                             Log
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-dark" @onclick="() => TriggerBuild(crnJob.Namespace, crnJob.CronJobName)">
+                            Build
                         </button>
                     </td>
                 </tr>
@@ -106,5 +111,12 @@ else
     {
         string url = $"https://crontab.guru/#{cronTiming.Replace(" ", "_")}";
         await jsRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    public async Task TriggerBuild(string nameSpaceParam, string buildName)
+    {
+        var result = await domainService.TriggerBuild(nameSpaceParam, buildName);
+        var message = result.IsSuccess ? "Successfully Triggered" : $"Error : {result.Message}";
+        await jsRuntime.InvokeVoidAsync("Alert", message);
     }
 }

@@ -7,6 +7,7 @@ using KubeLife.Kubernetes.Models;
 using NCrontab;
 using KubeLife.Core.Extensions;
 using System.Collections.Generic;
+using KubeLife.Kubernetes.Services;
 
 namespace KubeLife.Domain
 {
@@ -69,6 +70,11 @@ namespace KubeLife.Domain
             if (log == null) return new KubeLifeResult<string>(false, "No log found of Pod");
 
             return new KubeLifeResult<string>(log);
+        }
+
+        public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName)
+        {
+            return await kubeService.TriggerBuildConfig(namespaceParameter, buildConfigName);
         }
     }
 }
