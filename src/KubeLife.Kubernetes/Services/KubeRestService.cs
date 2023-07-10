@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using KubeLife.Core.Extensions;
 using System.Text.Json.Nodes;
 using System.Text.Json;
+using System.Net;
 
 namespace KubeLife.Kubernetes.Services
 {
@@ -37,10 +38,17 @@ namespace KubeLife.Kubernetes.Services
 
             string tmpBody = BodyTriggerBuildConfig.Replace("REPLACE_NAME", buildConfigName);
             var content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(tmpBody));
-            
+
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            HttpClient client = new HttpClient();
+            var handler = new HttpClientHandler(); //Openshift SSL is custom so it generates error
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                };
+            HttpClient client = new HttpClient(handler);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Settings.AccessToken);
 
             var response = await client.PostAsync(url, content);
