@@ -1,11 +1,58 @@
 ﻿@page "/routes"
 
+@inject NavigationManager NavManager
+@inject IJSRuntime jsRuntime
+
 @using KubeLife.Domain;
+@using KubeLife.Kubernetes.Models;
 
 @inject IKubernetesDomain domainService;
 
 <h3>Routes</h3>
+@if (routeItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Namespace</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var itmRoutes in routeItems)
+            {
+                <tr>
+                    <td>@itmRoutes.Name</td>
+                    <td>@itmRoutes.Namespace</td>
+                    <td>
+                        <button class="btn btn-link" @onclick="() => NavigateToUrl(itmRoutes.HostLink)"> @itmRoutes.HostLink</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
+    private List<KubeRouteModel> routeItems;
+    protected override async Task OnInitializedAsync()
+    {
+        await CallCronJobs();
+    }
 
+    private async Task CallCronJobs()
+    {
+        var rslt = await domainService.GetAllRoutesForCluster();
+        routeItems = rslt.Result;
+    }
+
+    public async Task NavigateToUrl(string url)
+    {
+        await jsRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
 }
