@@ -13,14 +13,11 @@ using KubeLife.Core.Extensions;
 using System.Text.Json.Nodes;
 using System.Text.Json;
 using System.Net;
+using KubeLife.Kubernetes.Models.Routes;
+using KubeLife.Kubernetes.Extensions;
 
 namespace KubeLife.Kubernetes.Services
 {
-    public class KubeBuildModel
-    {
-        public string BuildName { get; internal set; }
-        public string Namespace { get; internal set; }
-    }
     internal class KubeRestService : IKubeRestService
     {
         public KubeRestService(KubeConfigModel settings)
@@ -30,14 +27,9 @@ namespace KubeLife.Kubernetes.Services
 
         public KubeConfigModel Settings { get; }
 
-        private const string BodyTriggerBuildConfig = "{\"kind\":\"BuildRequest\",\"apiVersion\":\"build.openshift.io/v1\",\"metadata\":{\"name\":\"REPLACE_NAME\", \"namespace\":\"REPLACE_PROJECT\"},\"triggeredBy\":[{\"message\":\"Manually triggered\"}],\"dockerStrategyOptions\":{},\"sourceStrategyOptions\":{}}";
-        public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName)
+        private async Task<HttpResponseMessage?> CallApi(string url, bool isPostCall, string body)
         {
-            //https://api.ocplab.thy.com:6443/apis/build.openshift.io/v1/namespaces/kubelife/buildconfigs/kubelifeapp/instantiate
-            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namespaceParameter}/buildconfigs/{buildConfigName}/instantiate";
-
-            string tmpBody = BodyTriggerBuildConfig.Replace("REPLACE_NAME", buildConfigName).Replace("REPLACE_PROJECT", namespaceParameter);
-            var content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(tmpBody));
+            var content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(body));
 
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -51,7 +43,17 @@ namespace KubeLife.Kubernetes.Services
             HttpClient client = new HttpClient(handler);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Settings.AccessToken);
 
-            var response = await client.PostAsync(url, content);
+            return await (isPostCall ? client.PostAsync(url, content) : client.GetAsync(url));
+        }
+
+        private const string BodyTriggerBuildConfig = "{\"kind\":\"BuildRequest\",\"apiVersion\":\"build.openshift.io/v1\",\"metadata\":{\"name\":\"REPLACE_NAME\", \"namespace\":\"REPLACE_PROJECT\"},\"triggeredBy\":[{\"message\":\"Manually triggered\"}],\"dockerStrategyOptions\":{},\"sourceStrategyOptions\":{}}";
+        public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName)
+        {
+            //https://[Server adress and port]/apis/build.openshift.io/v1/namespaces/kubelife/buildconfigs/kubelifeapp/instantiate
+            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namespaceParameter}/buildconfigs/{buildConfigName}/instantiate";
+
+            string tmpBody = BodyTriggerBuildConfig.Replace("REPLACE_NAME", buildConfigName).Replace("REPLACE_PROJECT", namespaceParameter);
+            var response = await CallApi(url, true, tmpBody);
 
             var respJson = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode) return new KubeLifeResult<KubeBuildModel>(false, respJson);
@@ -60,6 +62,19 @@ namespace KubeLife.Kubernetes.Services
             target.BuildName = respJson.GetNodeValueAsString("metadata", "name");
             target.Namespace = respJson.GetNodeValueAsString("metadata", "namespace");
             return new KubeLifeResult<KubeBuildModel>(target);
+        }
+
+        public async Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutesForCluster(int routeCount = 500, string filterbyLabel = null)
+        {
+            //https://[Server adress and port]/apis/route.openshift.io/v1/routes?limit=500
+            string url = $"{Settings.ServerUrl}/apis/route.openshift.io/v1/routes?limit={500}";
+            var response = await CallApi(url, false, "");
+
+            var respJson = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return new KubeLifeResult<List<KubeRouteModel>>(false, respJson);
+
+            var modelRaw = respJson.ToModel<KubeCustomObjectforRoute>();
+            return new KubeLifeResult<List<KubeRouteModel>>(modelRaw.ToKubeRouteModelList(filterbyLabel));
         }
     }
 }

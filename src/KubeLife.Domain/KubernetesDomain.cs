@@ -7,7 +7,6 @@ using KubeLife.Kubernetes.Models;
 using NCrontab;
 using KubeLife.Core.Extensions;
 using System.Collections.Generic;
-using KubeLife.Kubernetes.Services;
 
 namespace KubeLife.Domain
 {

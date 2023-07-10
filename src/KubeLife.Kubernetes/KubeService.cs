@@ -57,7 +57,8 @@ namespace KubeLife.Kubernetes
 
             var allCronnJobs = await client.ListCronJobForAllNamespacesAsync();
             var tmpCrns = filterbyLabel == null ? allCronnJobs : allCronnJobs.WhereLabelContains(filterbyLabel);
-            
+
+            var tmpx = await GetAllRoutes(500, filterbyLabel);
 
             return tmpCrns.ToKubeCronJobModelList();
         }
@@ -114,9 +115,20 @@ namespace KubeLife.Kubernetes
             return null;
         }
 
+        /// <summary>
+        /// Triggring a Build from BuildConfig Template
+        /// </summary>
+        /// <param name="namespaceParameter">Project name</param>
+        /// <param name="buildConfigName">BuildConfig name</param>
+        /// <returns>Build details</returns>
         public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName)
         {
             return await restService.TriggerBuildConfig(namespaceParameter, buildConfigName);
+        }
+
+        public async Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutes(int routeCount = 500, string filterbyLabel = null)
+        {
+            return await restService.GetAllRoutesForCluster(routeCount, filterbyLabel);
         }
     }
 }

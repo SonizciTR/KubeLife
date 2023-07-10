@@ -1,7 +1,6 @@
 ﻿using KubeLife.Core.Models;
 using KubeLife.Domain.Models;
 using KubeLife.Kubernetes.Models;
-using KubeLife.Kubernetes.Services;
 
 namespace KubeLife.Domain
 {

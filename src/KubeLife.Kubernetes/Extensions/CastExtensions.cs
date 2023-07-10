@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using KubeLife.Core.Extensions;
+using KubeLife.Kubernetes.Models.Routes;
 
 namespace KubeLife.Kubernetes.Extensions
 {
@@ -79,6 +80,26 @@ namespace KubeLife.Kubernetes.Extensions
                 tmp.CreateDate = itm.Metadata.CreationTimestamp;
                 if (itm.Metadata.OwnerReferences.IsAny())
                     tmp.OwnerName = itm.Metadata.OwnerReferences[0].Name;
+
+                target.Add(tmp);
+            }
+
+            return target;
+        }
+
+        public static List<KubeRouteModel> ToKubeRouteModelList(this KubeCustomObjectforRoute source, string filterbyLabel)
+        {
+            var target = new List<KubeRouteModel>();
+            var filtered = string.IsNullOrWhiteSpace(filterbyLabel) ? source.items
+                                            : source.items.Where(x => x.metadata.labels
+                                                    .Any(y => y.Key == filterbyLabel || y.Value == filterbyLabel)
+                                                    ).ToList();
+            foreach (var itm in filtered)
+            {
+                var tmp = new KubeRouteModel();
+                tmp.Name = itm.metadata.name;
+                tmp.Namespace = itm.metadata._namespace;
+                tmp.Host = itm.spec.host;
 
                 target.Add(tmp);
             }
