@@ -13,7 +13,7 @@ namespace KubeLife.Domain
         {
             var kubeSetting = GetFromConfig(config);
 
-            services.AddSingleton<IKubeService>(new KubeService(kubeSetting));
+            services.AddSingleton<IKubeService>(new KubeService(kubeSetting, null));
             services.AddSingleton<IKubernetesDomain, KubernetesDomain>();
 
             AddAutoMapper(services);

@@ -2,7 +2,7 @@
 
 namespace KubeLife.Kubernetes.Services
 {
-    internal interface IKubeRestService
+    public interface IKubeRestService
     {
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName);
     }

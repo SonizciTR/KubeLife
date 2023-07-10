@@ -16,10 +16,10 @@ namespace KubeLife.Kubernetes
     public class KubeService : IKubeService
     {
         private readonly IKubeRestService restService;
-        public KubeService(KubeConfigModel settings)
+        public KubeService(KubeConfigModel settings, IKubeRestService kubeRestService)
         {
             Settings = settings;
-            restService = new KubeRestService(Settings);
+            restService = kubeRestService ?? new KubeRestService(Settings);
         }
 
         public KubeConfigModel Settings { get; }
