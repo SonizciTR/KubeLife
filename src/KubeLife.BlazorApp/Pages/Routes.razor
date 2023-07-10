@@ -24,13 +24,18 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var itmRoutes in routeItems)
+            @foreach (var itmRoute in routeItems)
             {
                 <tr>
-                    <td>@itmRoutes.Name</td>
-                    <td>@itmRoutes.Namespace</td>
+                    <td>@itmRoute.Name</td>
+                    <td>@itmRoute.Namespace</td>
                     <td>
-                        <button class="btn btn-link" @onclick="() => NavigateToUrl(itmRoutes.HostLink)"> @itmRoutes.HostLink</button>
+                        <button class="btn btn-link" @onclick="() => NavigateToUrl(itmRoute.HostLink)"> @itmRoute.HostLink</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-dark" @onclick="() => TriggerBuild(itmRoute.Namespace, itmRoute.Name)">
+                            Build
+                        </button>
                     </td>
                 </tr>
             }
@@ -54,5 +59,12 @@ else
     public async Task NavigateToUrl(string url)
     {
         await jsRuntime.InvokeVoidAsync("open", url, "_blank");
+    }
+
+    public async Task TriggerBuild(string nameSpaceParam, string buildName)
+    {
+        var result = await domainService.TriggerBuild(nameSpaceParam, buildName);
+        string message = result.IsSuccess ? $"Successfully Triggered : {result.Result.BuildName}" : $"Error : {result.Message}";
+        await jsRuntime.InvokeVoidAsync("alert", message);
     }
 }
