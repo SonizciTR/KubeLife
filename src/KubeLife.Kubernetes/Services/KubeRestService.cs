@@ -41,7 +41,7 @@ namespace KubeLife.Kubernetes.Services
 
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var handler = new HttpClientHandler(); //Openshift SSL is custom so it generates error
+            var handler = new HttpClientHandler(); //Openshift SSL is custom so validation fails, workaround
             handler.ClientCertificateOptions = ClientCertificateOption.Manual;
             handler.ServerCertificateCustomValidationCallback =
                 (httpRequestMessage, cert, cetChain, policyErrors) =>
