@@ -6,7 +6,7 @@ namespace KubeLife.Domain
 {
     public interface IKubernetesDomain
     {
-        Task<List<KubeCronJobModelView>> GetCronJobs(string filterbyLabel);
+        Task<List<KubeCronJobModelView>> GetCronJobs();
         Task<KubeLifeResult<string>> GetLogofJob(string kubeNamespace, string jobName);
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName);
     }

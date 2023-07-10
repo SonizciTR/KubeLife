@@ -20,10 +20,11 @@ namespace KubeLife.Domain
 
         private readonly IKubeService kubeService;
         private readonly IMapper mapper;
+        private const string KeyFilterName = "AdvancedAnalytic";
 
-        public async Task<List<KubeCronJobModelView>> GetCronJobs(string filterbyLabel)
+        public async Task<List<KubeCronJobModelView>> GetCronJobs()
         {
-            var crnJobsSource = await kubeService.GetCronJobs(filterbyLabel);
+            var crnJobsSource = await kubeService.GetCronJobs(KeyFilterName);
             var target = mapper.Map<List<KubeCronJobModelView>>(crnJobsSource);
 
             var jobDetails = new Dictionary<string, List<KubeJobModel>>();
@@ -74,6 +75,11 @@ namespace KubeLife.Domain
         public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName)
         {
             return await kubeService.TriggerBuildConfig(namespaceParameter, buildConfigName);
+        }
+
+        public async Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutesForCluster()
+        {
+            return await kubeService.GetAllRoutes(500, KeyFilterName);
         }
     }
 }

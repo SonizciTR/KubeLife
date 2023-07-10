@@ -76,7 +76,7 @@ else
 
     private async Task CallCronJobs()
     {
-        crnJobItems = await domainService.GetCronJobs("AdvancedAnalytic");
+        crnJobItems = await domainService.GetCronJobs();
         LastUpdateTime = DateTime.Now;
     }
 
