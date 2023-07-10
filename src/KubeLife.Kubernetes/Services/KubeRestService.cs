@@ -30,13 +30,13 @@ namespace KubeLife.Kubernetes.Services
 
         public KubeConfigModel Settings { get; }
 
-        private const string BodyTriggerBuildConfig = "{\"kind\":\"BuildRequest\",\"apiVersion\":\"build.openshift.io/v1\",\"metadata\":{\"name\":\"{REPLACE_NAME}\"},\"triggeredBy\":[{\"message\":\"Manually triggered\"}],\"dockerStrategyOptions\":{},\"sourceStrategyOptions\":{}}";
+        private const string BodyTriggerBuildConfig = "{\"kind\":\"BuildRequest\",\"apiVersion\":\"build.openshift.io/v1\",\"metadata\":{\"name\":\"REPLACE_NAME\", \"namespace\":\"REPLACE_PROJECT\"},\"triggeredBy\":[{\"message\":\"Manually triggered\"}],\"dockerStrategyOptions\":{},\"sourceStrategyOptions\":{}}";
         public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName)
         {
             //https://api.ocplab.thy.com:6443/apis/build.openshift.io/v1/namespaces/kubelife/buildconfigs/kubelifeapp/instantiate
             string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namespaceParameter}/buildconfigs/{buildConfigName}/instantiate";
 
-            string tmpBody = BodyTriggerBuildConfig.Replace("REPLACE_NAME", buildConfigName);
+            string tmpBody = BodyTriggerBuildConfig.Replace("REPLACE_NAME", buildConfigName).Replace("REPLACE_PROJECT", namespaceParameter);
             var content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(tmpBody));
 
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

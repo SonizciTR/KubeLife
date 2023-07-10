@@ -114,7 +114,7 @@ else
     public async Task TriggerBuild(string nameSpaceParam, string buildName)
     {
         var result = await domainService.TriggerBuild(nameSpaceParam, buildName);
-        string message = result.IsSuccess ? "Successfully Triggered" : $"Error : {result.Message}";
+        string message = result.IsSuccess ? $"Successfully Triggered : {result.Result.BuildName}" : $"Error : {result.Message}";
         await jsRuntime.InvokeVoidAsync("alert", message);
     }
 }
