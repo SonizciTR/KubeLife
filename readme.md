@@ -1,9 +1,15 @@
 # KubeLife
 
-##Simple Kubernetes Monitor (Cron Jobs for now)
+##Simple Kubernetes Monitor
 
-We were in need for cron job monitor for kubernetes. So I wrote a simple web page. Hope you enjoy.
+We were in need for cron job monitor for Openshift environment. So I wrote a simple web page. Hope you enjoy.
 I am planing to add more features if I will have time. Open to suggestions ;)
+
+#### Notes
+
+*First of all, when i started this project, I tought it can be Kubernetes oriented. But our datascientist demanded other features and it become more focused on Openshift features like BuildConfig, DeploymentConfig, Routes,...*
+
+*Our main approach to deploy an application or cronjobs is giving same name to the each objects in Openshift. Every name is same at DeploymentConfig, Services, Routes, Cronjobs, etc... So this make easy to trigger anything as we like to.*
 
 ## Table of contents
 
