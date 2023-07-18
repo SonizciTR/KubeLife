@@ -1,4 +1,4 @@
-﻿namespace KubeLife.Kubernetes.Models.Routes
+﻿namespace KubeLife.Kubernetes.Models.RestCommon
 {
     public class KubeIngress
     {

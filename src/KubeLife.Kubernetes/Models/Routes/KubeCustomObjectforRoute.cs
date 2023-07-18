@@ -1,11 +1,11 @@
-﻿namespace KubeLife.Kubernetes.Models.Routes
+﻿using KubeLife.Kubernetes.Models.RestCommon;
+
+namespace KubeLife.Kubernetes.Models.Routes
 {
-    public class KubeCustomObjectforRoute
+
+    public class KubeCustomObjectforRoute : KubeCustomObjectBase
     {
-        public string kind { get; set; }
-        public string apiVersion { get; set; }
-        public KubeMetadata metadata { get; set; }
-        public List<KubeItem> items { get; set; } = new List<KubeItem>();
+        public List<KubeRouteItem> items { get; set; } = new List<KubeRouteItem>();
     }
 
 }

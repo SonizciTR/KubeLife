@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Net;
 using KubeLife.Kubernetes.Models.Routes;
 using KubeLife.Kubernetes.Extensions;
+using KubeLife.Kubernetes.Models.Service;
 
 namespace KubeLife.Kubernetes.Services
 {
@@ -75,6 +76,19 @@ namespace KubeLife.Kubernetes.Services
 
             var modelRaw = respJson.ToModel<KubeCustomObjectforRoute>();
             return new KubeLifeResult<List<KubeRouteModel>>(modelRaw.ToKubeRouteModelList(filterbyLabel));
+        }
+
+        public async Task<KubeLifeResult<KubeServiceModel>> GetRoutesService(string namespacePrm, string serviceName)
+        {
+            //https:/[Server adress and port]/apis/route.openshift.io/v1/namespaces/standy-prod/routes/streamlit-standby
+            string url = $"{Settings.ServerUrl}/apis/route.openshift.io/v1/namespaces/{namespacePrm}/routes/{serviceName}";
+            var response = await CallApi(url, false, "");
+
+            var respJson = await response.Content.ReadAsStringAsync();
+            if (!response.IsSuccessStatusCode) return new KubeLifeResult<KubeServiceModel>(false, respJson);
+
+            var modelRaw = respJson.ToModel<KubeCustomObjectforService>();
+            return new KubeLifeResult<KubeServiceModel>(modelRaw.ToKubeServiceModel());
         }
     }
 }

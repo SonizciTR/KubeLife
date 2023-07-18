@@ -58,7 +58,8 @@ namespace KubeLife.Kubernetes
             var allCronnJobs = await client.ListCronJobForAllNamespacesAsync();
             var tmpCrns = filterbyLabel == null ? allCronnJobs : allCronnJobs.WhereLabelContains(filterbyLabel);
 
-            var tmpx = await GetAllRoutes(500, filterbyLabel);
+            
+            var tmpx = await GetRoutesPods("standy-prod", "streamlit-standby");
 
             return tmpCrns.ToKubeCronJobModelList();
         }
@@ -126,9 +127,22 @@ namespace KubeLife.Kubernetes
             return await restService.TriggerBuildConfig(namespaceParameter, buildConfigName);
         }
 
+        /// <summary>
+        /// Getting all routes available for cluster
+        /// </summary>
+        /// <param name="routeCount">Max route count query</param>
+        /// <param name="filterbyLabel">label name to filter</param>
+        /// <returns></returns>
         public async Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutes(int routeCount = 500, string filterbyLabel = null)
         {
             return await restService.GetAllRoutesForCluster(routeCount, filterbyLabel);
+        }
+
+        public async Task<bool> GetRoutesPods(string namespaceParam, string routeName)
+        {
+            var services = await restService.GetRoutesService(namespaceParam, routeName);
+
+            return true;
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using KubeLife.Core.Extensions;
 using KubeLife.Kubernetes.Models.Routes;
+using KubeLife.Kubernetes.Models.Service;
 
 namespace KubeLife.Kubernetes.Extensions
 {
@@ -103,6 +104,18 @@ namespace KubeLife.Kubernetes.Extensions
 
                 target.Add(tmp);
             }
+
+            return target;
+        }
+
+        public static KubeServiceModel ToKubeServiceModel(this KubeCustomObjectforService source)
+        {
+            var target = new KubeServiceModel();
+            target.HostName = source.spec.host;
+            target.ServiceName = source.spec.to.name;
+            target.ServicePortName = source.spec.port.targetPort;
+            target.TlsTermination = source.spec.tls.termination;
+            target.WildcardPolicy = source.spec.wildcardPolicy;
 
             return target;
         }

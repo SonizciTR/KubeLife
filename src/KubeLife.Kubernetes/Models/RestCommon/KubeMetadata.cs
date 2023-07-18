@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace KubeLife.Kubernetes.Models.Routes
+namespace KubeLife.Kubernetes.Models.RestCommon
 {
-    public class KubeMetadata1
+    public class KubeMetadata
     {
         public string name { get; set; }
         [JsonPropertyName("namespace")]
