@@ -58,9 +58,6 @@ namespace KubeLife.Kubernetes
             var allCronnJobs = await client.ListCronJobForAllNamespacesAsync();
             var tmpCrns = filterbyLabel == null ? allCronnJobs : allCronnJobs.WhereLabelContains(filterbyLabel);
 
-            
-            var tmpx = await GetRoutesPods("standy-prod", "streamlit-standby");
-
             return tmpCrns.ToKubeCronJobModelList();
         }
 
@@ -138,11 +135,38 @@ namespace KubeLife.Kubernetes
             return await restService.GetAllRoutesForCluster(routeCount, filterbyLabel);
         }
 
-        public async Task<bool> GetRoutesPods(string namespaceParam, string routeName)
+        /// <summary>
+        /// List all services of project
+        /// </summary>
+        /// <param name="namespaceParam">project name</param>
+        /// <returns>service info list</returns>
+        public async Task<List<KubeServiceModel>> GetAllServices(string namespaceParam)
         {
-            var services = await restService.GetRoutesService(namespaceParam, routeName);
+            using k8s.Kubernetes client = GetKubeClient();
 
-            return true;
+            var rawServices = await client.ListNamespacedServiceAsync(namespaceParam);
+
+            return rawServices.ToKubeServiceModelList();
+        }
+
+        /// <summary>
+        /// Finds the Route's services
+        /// </summary>
+        /// <param name="namespaceParam">project name</param>
+        /// <param name="routeName">route name</param>
+        /// <returns></returns>
+        public async Task<KubeServiceModel> GetServiceOfRoute(string namespaceParam, string routeName)
+        {
+            var serviceRoute = await restService.GetRouteByNamespace(namespaceParam, routeName);
+            if (!serviceRoute.IsSuccess) return null;
+
+            using k8s.Kubernetes client = GetKubeClient();
+
+            var rawServices = await client.ListNamespacedServiceAsync(namespaceParam);
+
+            var allServices = rawServices.ToKubeServiceModelList();
+
+            return allServices?.FirstOrDefault(x => x.ServiceName == serviceRoute.Result.ServiceName);
         }
     }
 }

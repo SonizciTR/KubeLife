@@ -29,7 +29,7 @@ namespace KubeLife.Core.Extensions
             return target;
         }
 
-        public static List<Tout> CasttoList<Tout, Kin>(this List<Kin> source, Func<Kin, Tout> methodConvert)
+        public static List<Tout> CasttoList<Tout, Kin>(this IList<Kin> source, Func<Kin, Tout> methodConvert)
         {
             if (!source.IsAny())
                 return new List<Tout>();

@@ -78,17 +78,17 @@ namespace KubeLife.Kubernetes.Services
             return new KubeLifeResult<List<KubeRouteModel>>(modelRaw.ToKubeRouteModelList(filterbyLabel));
         }
 
-        public async Task<KubeLifeResult<KubeServiceModel>> GetRoutesService(string namespacePrm, string serviceName)
+        public async Task<KubeLifeResult<KubeRouteModel>> GetRouteByNamespace(string namespacePrm, string serviceName)
         {
             //https:/[Server adress and port]/apis/route.openshift.io/v1/namespaces/standy-prod/routes/streamlit-standby
             string url = $"{Settings.ServerUrl}/apis/route.openshift.io/v1/namespaces/{namespacePrm}/routes/{serviceName}";
             var response = await CallApi(url, false, "");
 
             var respJson = await response.Content.ReadAsStringAsync();
-            if (!response.IsSuccessStatusCode) return new KubeLifeResult<KubeServiceModel>(false, respJson);
+            if (!response.IsSuccessStatusCode) return new KubeLifeResult<KubeRouteModel>(false, respJson);
 
             var modelRaw = respJson.ToModel<KubeCustomObjectforService>();
-            return new KubeLifeResult<KubeServiceModel>(modelRaw.ToKubeServiceModel());
+            return new KubeLifeResult<KubeRouteModel>(modelRaw.ToKubeRouteModel());
         }
     }
 }

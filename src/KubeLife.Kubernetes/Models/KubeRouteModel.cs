@@ -12,6 +12,11 @@ namespace KubeLife.Kubernetes.Models
         public string Namespace { get; set; }
         public string Host { get; internal set; }
         public string HostLink => $"https://{Host}";
+
+        public string ServiceName { get; internal set; }
+        public string ServicePortName { get; internal set; }
+        public string TlsTermination { get; internal set; }
+        public string WildcardPolicy { get; internal set; }
     }
 
 }

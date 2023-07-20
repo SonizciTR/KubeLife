@@ -48,5 +48,6 @@ namespace KubeLife.Kubernetes
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName);
 
         Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutes(int routeCount = 500, string filterbyLabel = null);
+        Task<KubeServiceModel> GetServiceOfRoute(string namespaceParam, string routeName);
     }
 }

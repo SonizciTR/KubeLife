@@ -10,6 +10,7 @@ using System.Text.Json;
 using KubeLife.Core.Extensions;
 using KubeLife.Kubernetes.Models.Routes;
 using KubeLife.Kubernetes.Models.Service;
+using KubeLife.Core.Extensions;
 
 namespace KubeLife.Kubernetes.Extensions
 {
@@ -108,14 +109,35 @@ namespace KubeLife.Kubernetes.Extensions
             return target;
         }
 
-        public static KubeServiceModel ToKubeServiceModel(this KubeCustomObjectforService source)
+        public static KubeRouteModel ToKubeRouteModel(this KubeCustomObjectforService source)
         {
-            var target = new KubeServiceModel();
-            target.HostName = source.spec.host;
+            var target = new KubeRouteModel();
+            target.Name = source.metadata.name;
+            target.Namespace = source.metadata._namespace;
+            target.Host = source.spec.host.ToString();
             target.ServiceName = source.spec.to.name;
             target.ServicePortName = source.spec.port.targetPort;
             target.TlsTermination = source.spec.tls.termination;
             target.WildcardPolicy = source.spec.wildcardPolicy;
+
+            return target;
+        }
+
+        public static List<KubeServiceModel> ToKubeServiceModelList(this V1ServiceList source)
+        {
+            return source.Items.CasttoList<KubeServiceModel, V1Service>(ToKubeServiceModel);
+        }
+
+        public static KubeServiceModel ToKubeServiceModel(this V1Service source)
+        {
+            var target = new KubeServiceModel();
+
+            target.ServiceName = source.Metadata.Name;
+            target.Namespace = source.Metadata.Namespace();
+            target.ServicePortName = source.Spec.Ports[0].Name;
+            target.Selector = source.Spec.Selector;
+            target.ClusterIP = source.Spec.ClusterIP;
+            target.InternalTrafficPolicy = source.Spec.InternalTrafficPolicy;
 
             return target;
         }

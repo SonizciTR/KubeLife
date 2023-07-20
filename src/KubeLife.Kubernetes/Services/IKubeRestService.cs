@@ -7,6 +7,6 @@ namespace KubeLife.Kubernetes.Services
     {
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName);
         Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutesForCluster(int routeCount = 500, string filterbyLabel = null);
-        Task<KubeLifeResult<KubeServiceModel>> GetRoutesService(string namespacePrm, string serviceName);
+        Task<KubeLifeResult<KubeRouteModel>> GetRouteByNamespace(string namespacePrm, string serviceName);
     }
 }
