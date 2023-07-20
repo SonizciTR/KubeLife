@@ -168,5 +168,21 @@ namespace KubeLife.Kubernetes
 
             return allServices?.FirstOrDefault(x => x.ServiceName == serviceRoute.Result.ServiceName);
         }
+
+        /// <summary>
+        /// Gets the pods that mapped to given service
+        /// </summary>
+        /// <param name="serviceInfo">service name</param>
+        /// <returns>list of pod info</returns>
+        public async Task<List<KubePodModel>> GetPodsOfService(KubeServiceModel serviceInfo)
+        {
+            var allPods = await GetPodsofNamespace(serviceInfo.Namespace);
+
+            var filterdPods = allPods.Where(
+                x => x.Labels.Any(y => serviceInfo.Selector.ContainsKey(y.Key) && serviceInfo.Selector[y.Key] == y.Value)
+                ).ToList();
+
+            return filterdPods;
+        }
     }
 }

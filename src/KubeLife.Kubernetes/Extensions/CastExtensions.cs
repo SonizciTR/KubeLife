@@ -80,6 +80,7 @@ namespace KubeLife.Kubernetes.Extensions
                 tmp.PodName = itm.Metadata.Name;
                 tmp.Namespace = itm.Metadata.Namespace();
                 tmp.CreateDate = itm.Metadata.CreationTimestamp;
+                tmp.Labels = itm.Metadata.Labels.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);;
                 if (itm.Metadata.OwnerReferences.IsAny())
                     tmp.OwnerName = itm.Metadata.OwnerReferences[0].Name;
 

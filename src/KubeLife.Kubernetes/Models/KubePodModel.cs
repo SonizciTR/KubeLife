@@ -12,5 +12,6 @@ namespace KubeLife.Kubernetes.Models
         public string Namespace { get; set; }
         public string OwnerName { get; internal set; }
         public DateTime? CreateDate { get; internal set; }
+        public Dictionary<string, string> Labels { get; set; } = new Dictionary<string, string>();
     }
 }

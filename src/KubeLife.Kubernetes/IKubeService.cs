@@ -47,7 +47,34 @@ namespace KubeLife.Kubernetes
         /// <returns>Build details</returns>
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName);
 
+        /// <summary>
+        /// Getting all routes available for cluster
+        /// </summary>
+        /// <param name="routeCount">Max route count query</param>
+        /// <param name="filterbyLabel">label name to filter</param>
+        /// <returns></returns>
         Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutes(int routeCount = 500, string filterbyLabel = null);
+
+        /// <summary>
+        /// List all services of project
+        /// </summary>
+        /// <param name="namespaceParam">project name</param>
+        /// <returns>service info list</returns>
+        Task<List<KubeServiceModel>> GetAllServices(string namespaceParam);
+
+        /// <summary>
+        /// Finds the Route's services
+        /// </summary>
+        /// <param name="namespaceParam">project name</param>
+        /// <param name="routeName">route name</param>
+        /// <returns></returns>
         Task<KubeServiceModel> GetServiceOfRoute(string namespaceParam, string routeName);
+
+        /// <summary>
+        /// Gets the pods that mapped to given service
+        /// </summary>
+        /// <param name="serviceInfo">service name</param>
+        /// <returns>list of pod info</returns>
+        Task<List<KubePodModel>> GetPodsOfService(KubeServiceModel serviceInfo);
     }
 }
