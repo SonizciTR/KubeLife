@@ -60,17 +60,41 @@ namespace KubeLife.Domain
             return data;
         }
 
-        public async Task<KubeLifeResult<string>> GetLogofJob(string kubeNamespace, string jobName)
+        public async Task<KubeLifeResult<KubePodModel>> GetPodofJob(string kubeNamespace, string jobName)
         {
             var allPods = await kubeService.GetPodsofNamespace(kubeNamespace);
             var foundPod = allPods.FirstOrDefault(x => x.OwnerName == jobName);
-            if (foundPod == null) return new KubeLifeResult<string>(false, $"Pod could not found on cluster");
+            if (foundPod == null) return new KubeLifeResult<KubePodModel>(false, $"Pod could not found on cluster");
 
-            var log = await kubeService.GetLogofPod(foundPod.Namespace, foundPod.PodName);
-            if (log == null) return new KubeLifeResult<string>(false, "No log found of Pod");
-
-            return new KubeLifeResult<string>(log);
+            return new KubeLifeResult<KubePodModel>(foundPod);
         }
+
+        public async Task<KubeLogModel> GetLogOfPod(string kubeNamespace, string podName)
+        {
+            var log = await kubeService.GetLogofPod(kubeNamespace, podName);
+            if (log == null) return new KubeLogModel(false, "No log found of Pod");
+
+            return new KubeLogModel(kubeNamespace, podName, log);
+        }
+
+        public async Task<List<KubeLogModel>> GetLogOfAllPods(string kubeNamespace, List<string> podNames)
+        {
+            var allLogs = new List<KubeLogModel>();
+            foreach (var podName in podNames)
+            {
+                var log = await kubeService.GetLogofPod(kubeNamespace, podName);
+                if (string.IsNullOrWhiteSpace(log))
+                {
+                    allLogs.Add(new KubeLogModel(false, "No log found of Pod"));
+                    continue;
+                }
+
+                allLogs.Add(new KubeLogModel(kubeNamespace, podName, log));
+            }
+
+            return allLogs;
+        }
+
 
         public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName)
         {
@@ -80,6 +104,13 @@ namespace KubeLife.Domain
         public async Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutesForCluster()
         {
             return await kubeService.GetAllRoutes(500, KeyFilterName);
+        }
+
+        public async Task<List<KubePodModel>> GetPodsOfRoute(string namepsaceParam, string routeName)
+        {
+            var serviceData = await kubeService.GetServiceOfRoute(namepsaceParam, routeName);
+
+            return await kubeService.GetPodsOfService(serviceData);
         }
     }
 }

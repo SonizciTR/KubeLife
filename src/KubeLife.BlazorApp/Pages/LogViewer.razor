@@ -1,5 +1,6 @@
 ﻿@page "/LogViewer"
 
+@using KubeLife.Domain.Models;
 @using Microsoft.AspNetCore.WebUtilities
 @using KubeLife.BlazorApp.Extensions
 @inject NavigationManager NavManager
@@ -11,35 +12,39 @@
 @inject IKubernetesDomain domainService;
 
 
-@if (string.IsNullOrEmpty(QueryResult))
+@if (!LogResults.IsAny())
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <p>
-        "@JobName" Job's Latest Log:
-    </p>
+    @if (!string.IsNullOrWhiteSpace(QueryResult))
+    {
+        <p>
+            <em>@((MarkupString)QueryResult)</em>
+        </p>
+    }
     <p style="background-color:black; color:white;">
         <em>@((MarkupString)QueryResult)</em>        
     </p>
 }
 
 @code {
-    public string JobName { get; set; }
+    public string PodNamesRaw { get; set; }
     public string KubeNamespace { get; set; }
 
     public string QueryResult { get; set; }
+    public List<KubeLogModel> LogResults { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         KubeNamespace = NavManager.QueryStringSingle("Namespace");
-        JobName = NavManager.QueryStringSingle("JobDetail");
-        if (string.IsNullOrWhiteSpace(JobName))
+        PodNamesRaw = NavManager.QueryStringSingle("PodNames");
+        var podNames = PodNamesRaw.Split(",").ToList();
+        if (string.IsNullOrWhiteSpace(PodNamesRaw) || !podNames.IsAny())
             QueryResult = "There is no 'Job Detail' provided.";
 
-        var logResult = await domainService.GetLogofJob(KubeNamespace, JobName);
-        QueryResult = !logResult.IsSuccess ? logResult.Message : logResult.Result.ToHtml();
+        LogResults = await domainService.GetLogOfAllPods(KubeNamespace, podNames);
     }
 }
 

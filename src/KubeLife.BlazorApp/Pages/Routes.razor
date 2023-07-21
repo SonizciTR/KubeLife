@@ -1,10 +1,13 @@
 ﻿@page "/routes"
 
+@using Microsoft.AspNetCore.WebUtilities
+
 @inject NavigationManager NavManager
 @inject IJSRuntime jsRuntime
 
 @using KubeLife.Domain;
 @using KubeLife.Kubernetes.Models;
+@using KubeLife.Core.Extensions;
 
 @inject IKubernetesDomain domainService;
 
@@ -31,6 +34,11 @@ else
                     <td>@itmRoute.Namespace</td>
                     <td>
                         <button class="btn btn-link" @onclick="() => NavigateToUrl(itmRoute.HostLink)"> @itmRoute.HostLink</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => NavigateToLogView(itmRoute.Name)">
+                            Log
+                        </button>
                     </td>
                     <td>
                         <button class="btn btn-dark" @onclick="() => TriggerBuild(itmRoute.Namespace, itmRoute.Name)">
@@ -66,5 +74,18 @@ else
         var result = await domainService.TriggerBuild(nameSpaceParam, buildName);
         string message = result.IsSuccess ? $"Successfully Triggered : {result.Result.BuildName}" : $"Error : {result.Message}";
         await jsRuntime.InvokeVoidAsync("alert", message);
+    }
+
+    private async Task NavigateToLogView(string cronJobName)
+    {
+        var tmp = routeItems.FirstOrDefault(x => x.Name == cronJobName);
+        var allPods = await domainService.GetPodsOfRoute(tmp.Namespace, tmp.Name);
+        var queryParams = new Dictionary<string, string>
+            {
+                ["PodNames"] = allPods.Select(x => x.PodName).ToList().StringJoin(),
+                ["Namespace"] = allPods[0].Namespace
+            };
+
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
     }
 }

@@ -92,15 +92,16 @@ else
         }, new System.Threading.AutoResetEvent(false), refreshTimeMs, refreshTimeMs);
     }
 
-    private void NavigateToLogView(string cronJobName)
+    private async Task NavigateToLogView(string cronJobName)
     {
         var tmp = crnJobItems.FirstOrDefault(x => x.CronJobName == cronJobName);
         var latestJob = tmp.JobDetails.OrderByDescending(x => x.StartTime).FirstOrDefault();
+        var podOfJob = await domainService.GetPodofJob(latestJob.KubeNamespace, latestJob.JobUniqueName);
         var queryParams = new Dictionary<string, string>
-        {
-            ["JobDetail"] = latestJob.JobUniqueName,
-            ["Namespace"] = latestJob.KubeNamespace
-        };
+            {
+                ["PodNames"] = podOfJob.Result.PodName,
+                ["Namespace"] = latestJob.KubeNamespace
+            };
 
         NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
     }

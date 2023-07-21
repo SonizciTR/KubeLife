@@ -8,7 +8,10 @@ namespace KubeLife.Domain
     {
         Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutesForCluster();
         Task<List<KubeCronJobModelView>> GetCronJobs();
-        Task<KubeLifeResult<string>> GetLogofJob(string kubeNamespace, string jobName);
+        Task<KubeLifeResult<KubePodModel>> GetPodofJob(string kubeNamespace, string jobName);
+        Task<KubeLogModel> GetLogOfPod(string kubeNamespace, string podName);
+        Task<List<KubeLogModel>> GetLogOfAllPods(string kubeNamespace, List<string> podNames);
+        Task<List<KubePodModel>> GetPodsOfRoute(string namepsaceParam, string routeName);
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName);
     }
 }

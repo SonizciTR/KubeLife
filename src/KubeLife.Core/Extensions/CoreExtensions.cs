@@ -54,5 +54,10 @@ namespace KubeLife.Core.Extensions
                 return sr.ReadToEnd();
             }
         }
+
+        public static string StringJoin(this IEnumerable<string> values, string separator = ",")
+        {
+            return string.Join(separator, values);
+        }
     }
 }
