@@ -117,7 +117,7 @@ namespace KubeLife.Kubernetes.Extensions
             target.Namespace = source.metadata._namespace;
             target.Host = source.spec.host.ToString();
             target.ServiceName = source.spec.to.name;
-            target.ServicePortName = source.spec.port.targetPort;
+            target.ServicePortName = source.spec.port.targetPort?.ToString();
             target.TlsTermination = source.spec.tls.termination;
             target.WildcardPolicy = source.spec.wildcardPolicy;
 

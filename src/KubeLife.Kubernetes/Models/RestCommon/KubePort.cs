@@ -2,7 +2,7 @@
 {
     public class KubePort
     {
-        public string targetPort { get; set; }
+        public object targetPort { get; set; }
     }
 
 }

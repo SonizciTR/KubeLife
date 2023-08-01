@@ -21,15 +21,17 @@ namespace KubeLife.Domain.Models
 
         public KubeLogModel(string kubeNamespace, string podName, string log)
         {
+            IsLogFound = true;
             this.Namespace = kubeNamespace;
             PodName = podName;
-            this.LogDetail = log;
+            this.LogText = log;
         }
 
         public bool IsLogFound { get; set; }
         public string PodName { get; set; }
         public string Namespace { get; set; }
-        public string LogDetail { get; set; }
+        public string LogText { get; set; }
+        public string LogTextHtml => LogText.Replace("\n", "<br />");
         public string ErrorMessage { get; set; }
     }
 }

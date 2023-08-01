@@ -24,9 +24,23 @@ else
             <em>@((MarkupString)QueryResult)</em>
         </p>
     }
-    <p style="background-color:black; color:white;">
-        <em>@((MarkupString)QueryResult)</em>        
-    </p>
+
+    if (LogResults.IsAny())
+    {
+        <div>
+            <label for="pods">Pods : </label>
+            <select name="pods" @onchange="PodComboBoxChanged">
+                @foreach (var itm in LogResults)
+                {
+                    <option>@itm.PodName</option>
+                }
+            </select>
+        </div>
+        <br/>
+        <p style="background-color:black; color:white;">
+            @((MarkupString)LogText)
+        </p>
+    }
 }
 
 @code {
@@ -35,6 +49,7 @@ else
 
     public string QueryResult { get; set; }
     public List<KubeLogModel> LogResults { get; set; }
+    public string LogText { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,6 +60,28 @@ else
             QueryResult = "There is no 'Job Detail' provided.";
 
         LogResults = await domainService.GetLogOfAllPods(KubeNamespace, podNames);
+        if (!LogResults.IsAny())
+            QueryResult = "There is no 'POD' data found.";
+        else
+            await PodNameChanged(LogResults[0].PodName);
+    }
+
+    public async Task PodComboBoxChanged(ChangeEventArgs e)
+    {
+        var tmpPodName = e.Value.ToString();
+        await PodNameChanged(tmpPodName);
+    }
+
+    public async Task PodNameChanged(string podName)
+    {
+        var log = await domainService.GetLogOfPod(KubeNamespace, podName);
+        if (log.IsLogFound)
+            LogText = log.LogTextHtml;
+        else
+        {
+            LogText = "";
+            QueryResult = log.ErrorMessage;
+        }
     }
 }
 
