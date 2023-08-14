@@ -99,8 +99,9 @@ else
         var podOfJob = await domainService.GetPodofJob(latestJob.KubeNamespace, latestJob.JobUniqueName);
         var queryParams = new Dictionary<string, string>
             {
-                ["PodNames"] = podOfJob.Result.PodName,
-                ["Namespace"] = latestJob.KubeNamespace
+                ["PodNames"] = podOfJob.IsSuccess ? podOfJob.Result.PodName : "",
+                ["Namespace"] = latestJob.KubeNamespace,
+                ["UserMsg"] = podOfJob.Message
             };
 
         NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));

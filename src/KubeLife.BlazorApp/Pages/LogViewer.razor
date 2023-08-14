@@ -12,42 +12,38 @@
 @inject IKubernetesDomain domainService;
 
 
-@if (!LogResults.IsAny())
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    @if (!string.IsNullOrWhiteSpace(QueryResult))
-    {
-        <p>
-            <em>@((MarkupString)QueryResult)</em>
-        </p>
-    }
 
-    if (LogResults.IsAny())
-    {
-        <div>
-            <label for="pods">Pods : </label>
-            <select name="pods" @onchange="PodComboBoxChanged">
-                @foreach (var itm in LogResults)
-                {
-                    <option>@itm.PodName</option>
-                }
-            </select>
-        </div>
-        <br/>
-        <p style="background-color:black; color:white;">
-            @((MarkupString)LogText)
-        </p>
-    }
+
+@if (!string.IsNullOrWhiteSpace(QueryResult))
+{
+    <p>
+        <em>@((MarkupString)QueryResult)</em>
+    </p>
 }
+
+@if (LogResults.IsAny())
+{
+    <div>
+        <label for="pods">Pods : </label>
+        <select name="pods" @onchange="PodComboBoxChanged">
+            @foreach (var itm in LogResults)
+            {
+                <option>@itm.PodName</option>
+            }
+        </select>
+    </div>
+    <br/>
+    <p style="background-color:black; color:white;">
+        @((MarkupString)LogText)
+    </p>
+}
+
 
 @code {
     public string PodNamesRaw { get; set; }
     public string KubeNamespace { get; set; }
 
-    public string QueryResult { get; set; }
+    public string QueryResult { get; set; } = "Loading...";
     public List<KubeLogModel> LogResults { get; set; }
     public string LogText { get; set; }
 
@@ -56,8 +52,11 @@ else
         KubeNamespace = NavManager.QueryStringSingle("Namespace");
         PodNamesRaw = NavManager.QueryStringSingle("PodNames");
         var podNames = PodNamesRaw.Split(",").ToList();
-        if (string.IsNullOrWhiteSpace(PodNamesRaw) || !podNames.IsAny())
-            QueryResult = "There is no 'Job Detail' provided.";
+        if (string.IsNullOrWhiteSpace(PodNamesRaw) || !podNames.IsAny()){
+            string sysMsg = NavManager.QueryStringSingle("UserMsg");
+            QueryResult = !string.IsNullOrEmpty(sysMsg) ? sysMsg : "There is no 'Job Detail' provided.";
+            return;
+        }
 
         LogResults = await domainService.GetLogOfAllPods(KubeNamespace, podNames);
         if (!LogResults.IsAny())
