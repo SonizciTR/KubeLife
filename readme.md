@@ -2,7 +2,8 @@
 
 ##Simple Kubernetes Monitor
 
-We were in need for cron job monitor for Openshift environment. So I wrote a simple web page. Hope you enjoy.
+We were in need for simple UI help us about our Openshift environment. So I wrote a simple web page. Hope you enjoy.
+Basicly you could trigger builds, monitor corn jobs, look your logs...
 I am planing to add more features if I will have time. Open to suggestions ;)
 
 #### Notes
