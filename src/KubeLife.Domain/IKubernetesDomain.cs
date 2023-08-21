@@ -11,7 +11,7 @@ namespace KubeLife.Domain
         Task<KubeLifeResult<KubePodModel>> GetPodofJob(string kubeNamespace, string jobName);
         Task<KubeLifeResult<KubeLogModel>> GetLogOfPod(string kubeNamespace, string podName);
         Task<List<KubeLifeResult<KubeLogModel>>> GetLogOfAllPods(string kubeNamespace, List<string> podNames);
-        Task<List<KubePodModel>> GetPodsOfRoute(string namepsaceParam, string routeName);
+        Task<KubeLifeResult<List<KubePodModel>>> GetPodsOfRoute(string namepsaceParam, string routeName);
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName);
     }
 }

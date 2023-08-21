@@ -97,7 +97,6 @@ namespace KubeLife.Domain
             return allLogs;
         }
 
-
         public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName)
         {
             return await kubeService.TriggerBuildConfig(namespaceParameter, buildConfigName);
@@ -108,11 +107,13 @@ namespace KubeLife.Domain
             return await kubeService.GetAllRoutes(500, KeyFilterName);
         }
 
-        public async Task<List<KubePodModel>> GetPodsOfRoute(string namepsaceParam, string routeName)
+        public async Task<KubeLifeResult<List<KubePodModel>>> GetPodsOfRoute(string namepsaceParam, string routeName)
         {
             var serviceData = await kubeService.GetServiceOfRoute(namepsaceParam, routeName);
 
-            return await kubeService.GetPodsOfService(serviceData);
+            var pods = await kubeService.GetPodsOfService(serviceData);
+
+            return new KubeLifeResult<List<KubePodModel>>(pods);
         }
     }
 }

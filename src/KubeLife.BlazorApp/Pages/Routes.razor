@@ -79,7 +79,8 @@ else
     private async Task NavigateToLogView(string cronJobName)
     {
         var tmp = routeItems.FirstOrDefault(x => x.Name == cronJobName);
-        var allPods = await domainService.GetPodsOfRoute(tmp.Namespace, tmp.Name);
+        var tmpAllPodsResult = await domainService.GetPodsOfRoute(tmp.Namespace, tmp.Name);
+        var allPods = tmpAllPodsResult.Result;
         var queryParams = new Dictionary<string, string>
             {
                 ["PodNames"] = allPods.Select(x => x.PodName).ToList().StringJoin(),
