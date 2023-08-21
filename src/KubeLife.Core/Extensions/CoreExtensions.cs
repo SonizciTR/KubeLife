@@ -11,12 +11,6 @@ namespace KubeLife.Core.Extensions
     {
         public static bool IsAny<T>(this IEnumerable<T> source) => source != null && source.Any();
 
-        public static void ForEach<T>(this IEnumerable<T> source, Action<T> functoApply)
-        {
-            foreach (var itm in source)
-                functoApply(itm);
-        }
-
         public static List<Tout> CasttoList<Tout, Kin>(this Kin[] source, Func<Kin, Tout> methodConvert)
         {
             if (!source.IsAny())

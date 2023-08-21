@@ -1,4 +1,5 @@
 using KubeLife.Core.Extensions;
+using KubeLife.Core.Tests.Extensions.Mocks;
 
 namespace KubeLife.Core.Tests.Extensions
 {
@@ -19,20 +20,39 @@ namespace KubeLife.Core.Tests.Extensions
         }
 
         [Fact]
-        public void ForEach_ChangeValue_ValuesShouldBeAdded()
+        public void CasttoList_ArrayBasedAssignValue_ShouldBeConvertedTargetClass()
         {
-            var data = new List<int>() { 1, 2, 3 };
-            int checkValue = data.Sum(x => x);
+            var source = new SimpleClass1[] { new SimpleClass1("1"), new SimpleClass1("2") };
 
-            int total = 0;
-            void IncrementValues(int i)
+            SimpleClass2 CastInner(SimpleClass1 source)
             {
-                total += i;
+                var tmp = new SimpleClass2();
+                tmp.Name2 = source.Name1;
+                return tmp;
             }
 
-            data.ForEach(IncrementValues);
+            var target = CoreExtensions.CasttoList<SimpleClass2, SimpleClass1>(source, CastInner);
 
-            Assert.Equal(checkValue, total);
+            Assert.Equal(source.Length, target.Count);
+            Assert.Equal(source[0].Name1, target[0].Name2);
+        }
+
+        [Fact]
+        public void CasttoList_ListBasedAssignValue_ShouldBeConvertedTargetClass()
+        {
+            var source = new List<SimpleClass1> { new SimpleClass1("1"), new SimpleClass1("2") };
+
+            SimpleClass2 CastInner(SimpleClass1 source)
+            {
+                var tmp = new SimpleClass2();
+                tmp.Name2 = source.Name1;
+                return tmp;
+            }
+
+            var target = CoreExtensions.CasttoList<SimpleClass2, SimpleClass1>(source, CastInner);
+
+            Assert.Equal(source.Count, target.Count);
+            Assert.Equal(source[0].Name1, target[0].Name2);
         }
     }
 }
