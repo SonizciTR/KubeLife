@@ -37,6 +37,8 @@ namespace KubeLife.Core.Extensions
 
         public static T ChangeType<T>(this object value)
         {
+            if (value.GetType() == typeof(T)) return (T)value;
+
             TypeConverter tc = TypeDescriptor.GetConverter(typeof(T));
             return (T)tc.ConvertFrom(value);
         }

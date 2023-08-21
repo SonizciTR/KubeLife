@@ -54,5 +54,15 @@ namespace KubeLife.Core.Tests.Extensions
             Assert.Equal(source.Count, target.Count);
             Assert.Equal(source[0].Name1, target[0].Name2);
         }
+
+        [Theory]
+        [InlineData("1", 1)]
+        [InlineData("2", 2)]
+        [InlineData(3, 3)]
+        public void ChangeType_TypeConversion_CastingShouldBeOk(object rawValue, int expectedValue)
+        {
+            var target = rawValue.ChangeType<int>();
+            Assert.True(target == expectedValue);
+        }
     }
 }
