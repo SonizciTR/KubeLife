@@ -17,5 +17,21 @@ namespace KubeLife.Core.Tests.Extensions
 
             Assert.Equal(expectedResult, rslt);
         }
+
+        [Fact]
+        public void ForEach_ChangeValue_ValuesShouldIncrement()
+        {
+            var data = new List<int>() { 1, 2, 3 };
+
+            int total = 0;
+            void IncrementValues(int i)
+            {
+                total += i;
+            }
+
+            data.ForEach(IncrementValues);
+
+            Assert.Equal(6, total);
+        }
     }
 }
