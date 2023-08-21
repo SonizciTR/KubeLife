@@ -1,4 +1,4 @@
-using KubeLife.Core.Extensions;
+﻿using KubeLife.Core.Extensions;
 using KubeLife.Core.Tests.Extensions.Mocks;
 
 namespace KubeLife.Core.Tests.Extensions
@@ -63,6 +63,34 @@ namespace KubeLife.Core.Tests.Extensions
         {
             var target = rawValue.ChangeType<int>();
             Assert.True(target == expectedValue);
+        }
+
+        [Theory]
+        [InlineData("12345677890")]
+        [InlineData("!'^+%&/()=")]
+        [InlineData("qwerrtyuop")]
+        [InlineData("ğüşiöçı")]
+        public void ToStringForm_StreamShouldBeConverted_StringShoulBeMatched(string expected)
+        {
+            var strmTarget = new MemoryStream();
+            var writer = new StreamWriter(strmTarget);
+            writer.Write(expected);
+            writer.Flush();
+            strmTarget.Position = 0;
+            
+            var actual = strmTarget.ToStringForm();
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void StringJoin_ListToStringWithCustomChar()
+        {
+            var data = new List<string> { "a", "b", "c" };
+
+            var target = data.StringJoin("*");
+
+            Assert.Matches("a*b*c", target.ToString());
         }
     }
 }
