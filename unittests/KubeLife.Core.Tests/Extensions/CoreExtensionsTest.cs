@@ -19,9 +19,10 @@ namespace KubeLife.Core.Tests.Extensions
         }
 
         [Fact]
-        public void ForEach_ChangeValue_ValuesShouldIncrement()
+        public void ForEach_ChangeValue_ValuesShouldBeAdded()
         {
             var data = new List<int>() { 1, 2, 3 };
+            int checkValue = data.Sum(x => x);
 
             int total = 0;
             void IncrementValues(int i)
@@ -31,7 +32,7 @@ namespace KubeLife.Core.Tests.Extensions
 
             data.ForEach(IncrementValues);
 
-            Assert.Equal(6, total);
+            Assert.Equal(checkValue, total);
         }
     }
 }
