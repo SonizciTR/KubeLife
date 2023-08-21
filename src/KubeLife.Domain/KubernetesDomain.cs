@@ -22,7 +22,7 @@ namespace KubeLife.Domain
         private readonly IMapper mapper;
         private const string KeyFilterName = "AdvancedAnalytic";
 
-        public async Task<List<KubeCronJobModelView>> GetCronJobs()
+        public async Task<KubeLifeResult<List<KubeCronJobModelView>>> GetCronJobs()
         {
             var crnJobsSource = await kubeService.GetCronJobs(KeyFilterName);
             var target = mapper.Map<List<KubeCronJobModelView>>(crnJobsSource);
@@ -46,7 +46,7 @@ namespace KubeLife.Domain
 
             target = AddingNextRunTime(target);
 
-            return target;
+            return new KubeLifeResult<List<KubeCronJobModelView>>(target);
         }
 
         internal List<KubeCronJobModelView> AddingNextRunTime(List<KubeCronJobModelView> data)
