@@ -69,27 +69,29 @@ namespace KubeLife.Domain
             return new KubeLifeResult<KubePodModel>(foundPod);
         }
 
-        public async Task<KubeLogModel> GetLogOfPod(string kubeNamespace, string podName)
+        public async Task<KubeLifeResult<KubeLogModel>> GetLogOfPod(string kubeNamespace, string podName)
         {
             var log = await kubeService.GetLogofPod(kubeNamespace, podName);
-            if (log == null) return new KubeLogModel(false, "No log found of Pod");
+            if (log == null) return new KubeLifeResult<KubeLogModel>(false, "No log found of Pod");
 
-            return new KubeLogModel(kubeNamespace, podName, log);
+            var model = new KubeLogModel(kubeNamespace, podName, log);
+
+            return new KubeLifeResult<KubeLogModel>(model);
         }
 
-        public async Task<List<KubeLogModel>> GetLogOfAllPods(string kubeNamespace, List<string> podNames)
+        public async Task<List<KubeLifeResult<KubeLogModel>>> GetLogOfAllPods(string kubeNamespace, List<string> podNames)
         {
-            var allLogs = new List<KubeLogModel>();
+            var allLogs = new List<KubeLifeResult<KubeLogModel>>();
             foreach (var podName in podNames)
             {
                 var log = await kubeService.GetLogofPod(kubeNamespace, podName);
                 if (string.IsNullOrWhiteSpace(log))
                 {
-                    allLogs.Add(new KubeLogModel(false, "No log found of Pod"));
+                    allLogs.Add(new KubeLifeResult<KubeLogModel>(false, "No log found of Pod"));
                     continue;
                 }
 
-                allLogs.Add(new KubeLogModel(kubeNamespace, podName, log));
+                allLogs.Add(new KubeLifeResult<KubeLogModel>(new KubeLogModel(kubeNamespace, podName, log)));
             }
 
             return allLogs;

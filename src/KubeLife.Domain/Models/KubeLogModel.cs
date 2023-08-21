@@ -9,14 +9,9 @@ namespace KubeLife.Domain.Models
 {
     public class KubeLogModel
     {
-        public KubeLogModel()
-        {   
-        }
-
-        public KubeLogModel(bool isFound, string errorMessage)
+        public KubeLogModel(bool isFound)
         {
             this.IsLogFound = isFound;
-            this.ErrorMessage = errorMessage;
         }
 
         public KubeLogModel(string kubeNamespace, string podName, string log)
@@ -32,6 +27,5 @@ namespace KubeLife.Domain.Models
         public string Namespace { get; set; }
         public string LogText { get; set; }
         public string LogTextHtml => LogText.Replace("\n", "<br />");
-        public string ErrorMessage { get; set; }
     }
 }

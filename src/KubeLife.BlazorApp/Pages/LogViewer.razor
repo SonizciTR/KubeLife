@@ -1,5 +1,6 @@
 ﻿@page "/LogViewer"
 
+@using KubeLife.Core.Models;
 @using KubeLife.Domain.Models;
 @using Microsoft.AspNetCore.WebUtilities
 @using KubeLife.BlazorApp.Extensions
@@ -28,7 +29,7 @@
         <select name="pods" @onchange="PodComboBoxChanged">
             @foreach (var itm in LogResults)
             {
-                <option>@itm.PodName</option>
+                <option>@itm.Result.PodName</option>
             }
         </select>
     </div>
@@ -44,7 +45,7 @@
     public string KubeNamespace { get; set; }
 
     public string QueryResult { get; set; } = "Loading...";
-    public List<KubeLogModel> LogResults { get; set; }
+    public List<KubeLifeResult<KubeLogModel>> LogResults { get; set; }
     public string LogText { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -62,7 +63,7 @@
         if (!LogResults.IsAny())
             QueryResult = "There is no 'POD' data found.";
         else
-            await PodNameChanged(LogResults[0].PodName);
+            await PodNameChanged(LogResults[0].Result.PodName);
     }
 
     public async Task PodComboBoxChanged(ChangeEventArgs e)
@@ -74,12 +75,12 @@
     public async Task PodNameChanged(string podName)
     {
         var log = await domainService.GetLogOfPod(KubeNamespace, podName);
-        if (log.IsLogFound)
-            LogText = log.LogTextHtml;
+        if (log.IsSuccess)
+            LogText = log.Result.LogTextHtml;
         else
         {
             LogText = "";
-            QueryResult = log.ErrorMessage;
+            QueryResult = log.Message;
         }
     }
 }
