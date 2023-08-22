@@ -18,11 +18,14 @@ namespace KubeLife.Domain.Tests
         }
 
         [Fact]
-        public void Test1()
+        public async Task GetCronJobs_ThereIsNoData_EmptyReturn()
         {
             var service = GetSerivce();
+            var result = await service.GetCronJobs();
 
-            Assert.True(service != null);
+            Assert.True(result.IsSuccess);
+            Assert.True(result.Result.Any());
+            Assert.True(result.Result[0].JobDetails.Any());
         }
     }
 }

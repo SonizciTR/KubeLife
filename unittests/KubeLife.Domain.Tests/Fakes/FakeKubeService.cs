@@ -9,8 +9,29 @@ using System.Threading.Tasks;
 
 namespace KubeLife.Domain.Tests.Fakes
 {
-    internal class FakeSuccessEmptyKubeService : IKubeService
+    internal class FakeKubeService : IKubeService
     {
+        public async Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel = null)
+        {
+            var jobs = new List<KubeCronJobModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var jobitm = new KubeCronJobModel
+                {
+                    LastStartTime = DateTime.Now,
+                    CronJobName = $"UnitTestJobName - {i + 1}",
+                    IsSuspended = false ,
+                    LastEndTime = DateTime.Now,
+                    Namespace = $"UnitTestNamespace",
+                    TimingRaw = "5 4 * * *"
+                };
+
+                jobs.Add(jobitm);
+            }
+
+            return jobs;
+        }
+
         public async Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutes(int routeCount = 500, string filterbyLabel = null)
         {
             return new KubeLifeResult<List<KubeRouteModel>>(true, "Unit test error");
@@ -21,14 +42,24 @@ namespace KubeLife.Domain.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public Task<List<KubeCronJobModel>> GetCronJobs(string filterbyLabel = null)
+        public async Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace)
         {
-            throw new NotImplementedException();
-        }
+            var target = new List<KubeJobModel>();
 
-        public Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace)
-        {
-            throw new NotImplementedException();
+            for (int i = 0; i < 3; i++)
+            {
+                var itm = new KubeJobModel
+                {
+                    EndTime = DateTime.Now,
+                    IsSuccess = true,
+                    JobUniqueName = $"UnitTest-{kubeNamespace}-Job-{i+1}" ,
+                    KubeNamespace = $"UnitTestNamespace",
+                    StartTime = DateTime.Now,
+                    OwnerCronJobName = $"UnitTestJobName - {i + 1}",
+                };
+                target.Add(itm);
+            }
+            return target;
         }
 
         public Task<string> GetLogofPod(string kubeNamespace, string podName)
