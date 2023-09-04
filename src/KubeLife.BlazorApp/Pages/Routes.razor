@@ -69,9 +69,25 @@ else
 
 @code {
     private List<KubeRouteViewModel> routeItems;
+    private const int refreshTimeMs = 10 * 1000;
+    private System.Threading.Timer? timer;
+
     protected override async Task OnInitializedAsync()
     {
         await CallCronJobs();
+        await CreateTimer();
+    }
+
+    private async Task CreateTimer()
+    {
+        timer = new System.Threading.Timer(async (object? stateInfo) =>
+        {
+            await CallCronJobs();
+            await InvokeAsync(() =>
+            {
+                this.StateHasChanged();
+            });
+        }, new System.Threading.AutoResetEvent(false), refreshTimeMs, refreshTimeMs);
     }
 
     private async Task CallCronJobs()
