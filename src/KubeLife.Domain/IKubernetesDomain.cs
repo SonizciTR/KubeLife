@@ -7,7 +7,7 @@ namespace KubeLife.Domain
     public interface IKubernetesDomain
     {
         Task<KubeLifeResult<List<KubeCronJobModelView>>> GetCronJobs();
-        Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutesForCluster();
+        Task<KubeLifeResult<List<KubeRouteViewModel>>> GetAllRoutesForCluster();
         Task<KubeLifeResult<KubePodModel>> GetPodofJob(string kubeNamespace, string jobName);
         Task<KubeLifeResult<KubeLogModel>> GetLogOfPod(string kubeNamespace, string podName);
         Task<List<KubeLifeResult<KubeLogModel>>> GetLogOfAllPods(string kubeNamespace, List<string> podNames);

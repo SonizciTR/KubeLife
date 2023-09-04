@@ -124,9 +124,22 @@ namespace KubeLife.Domain
             return await kubeService.TriggerBuildConfig(namespaceParameter, buildConfigName);
         }
 
-        public async Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutesForCluster()
+        public async Task<KubeLifeResult<List<KubeRouteViewModel>>> GetAllRoutesForCluster()
         {
-            return await kubeService.GetAllRoutes(500, KeyFilterName);
+            var allRoutesRaw = await kubeService.GetAllRoutes(500, KeyFilterName);
+            if (!allRoutesRaw.IsSuccess) return new KubeLifeResult<List<KubeRouteViewModel>>(false, allRoutesRaw.Message);
+
+            var allRoutes = mapper.Map<List<KubeRouteViewModel>>(allRoutesRaw.Result);
+
+            foreach (var route in allRoutes)
+            {
+                var allBuilds = await kubeService.GetAllBuildsOfBuildConfig(route.Namespace, route.Name);
+                if (!allBuilds.IsSuccess) continue;
+
+                route.LastBuild = allBuilds.Result[0];
+            }
+
+            return new KubeLifeResult<List<KubeRouteViewModel>>(allRoutes);
         }
 
         public async Task<KubeLifeResult<List<KubePodModel>>> GetPodsOfRoute(string namepsaceParam, string routeName)

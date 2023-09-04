@@ -39,15 +39,15 @@ else
                     <td>
                         @if (crnJob.LastBuild.StatusPhase == "Complete")
                         {
-                            <i class="bi bi-check-circle" title="@crnJob.LastBuild.BuildName - @crnJob.LastBuild.StatusPhase" />
+                            <i class="bi bi-check-circle" title="@crnJob.LastBuild.BuildName -> @crnJob.LastBuild.StatusPhase" />
                         }
                         else if (crnJob.LastBuild.StatusPhase == "Running")
                         {
-                            <i class="bi bi-play-circle" title="@crnJob.LastBuild.BuildName - @crnJob.LastBuild.StatusPhase" />
+                            <i class="bi bi-play-circle" title="@crnJob.LastBuild.BuildName -> @crnJob.LastBuild.StatusPhase" />
                         }
                         else
                         {
-                            <i class="bi bi-x-circle" title="@crnJob.LastBuild.BuildName - @crnJob.LastBuild.StatusPhase" />
+                            <i class="bi bi-x-circle" title="@crnJob.LastBuild.BuildName -> @crnJob.LastBuild.StatusPhase" />
                         }
 
                     </td>

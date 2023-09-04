@@ -1,5 +1,6 @@
 ﻿@page "/routes"
 
+@using KubeLife.Domain.Models;
 @using Microsoft.AspNetCore.WebUtilities
 
 @inject NavigationManager NavManager
@@ -21,6 +22,7 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th> </th>
                 <th>Name</th>
                 <th>Namespace</th>
                 <th>Link</th>
@@ -30,6 +32,20 @@ else
             @foreach (var itmRoute in routeItems)
             {
                 <tr>
+                    <td>
+                        @if (itmRoute.LastBuild.StatusPhase == "Complete")
+                        {
+                            <i class="bi bi-check-circle" title="@itmRoute.LastBuild.BuildName -> @itmRoute.LastBuild.StatusPhase" />
+                        }
+                        else if (itmRoute.LastBuild.StatusPhase == "Running")
+                        {
+                            <i class="bi bi-play-circle" title="@itmRoute.LastBuild.BuildName -> @itmRoute.LastBuild.StatusPhase" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-x-circle" title="@itmRoute.LastBuild.BuildName -> @itmRoute.LastBuild.StatusPhase" />
+                        }
+                    </td>
                     <td>@itmRoute.Name</td>
                     <td>@itmRoute.Namespace</td>
                     <td>
@@ -52,7 +68,7 @@ else
 }
 
 @code {
-    private List<KubeRouteModel> routeItems;
+    private List<KubeRouteViewModel> routeItems;
     protected override async Task OnInitializedAsync()
     {
         await CallCronJobs();

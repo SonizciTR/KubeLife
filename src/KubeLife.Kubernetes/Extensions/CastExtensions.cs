@@ -146,7 +146,7 @@ namespace KubeLife.Kubernetes.Extensions
 
         public static List<KubeBuildModel> ToKubeBuildModelList(this RawKubeBuildMain source)
         {
-            var tmpSorted = source.items.OrderByDescending(x => x.status.completionTimestamp).ToList();
+            var tmpSorted = source.items.OrderByDescending(x => x.status.startTimestamp).ToList();
             var target = new List<KubeBuildModel>();
 
             foreach (var itm in tmpSorted)
