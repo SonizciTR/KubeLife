@@ -76,5 +76,13 @@ namespace KubeLife.Kubernetes
         /// <param name="serviceInfo">service name</param>
         /// <returns>list of pod info</returns>
         Task<List<KubePodModel>> GetPodsOfService(KubeServiceModel serviceInfo);
+
+        /// <summary>
+        /// List all builds from specific BuildConfig
+        /// </summary>
+        /// <param name="namepspacePrm">namespace</param>
+        /// <param name="buildConfig">name of BuildConfig</param>
+        /// <returns></returns>
+        Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namepspacePrm, string buildConfig);
     }
 }

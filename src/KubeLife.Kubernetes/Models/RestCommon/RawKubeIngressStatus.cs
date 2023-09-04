@@ -1,6 +1,6 @@
 ﻿namespace KubeLife.Kubernetes.Models.RestCommon
 {
-    public class KubeStatus
+    public class RawKubeIngressStatus
     {
         public KubeIngress[] ingress { get; set; }
     }

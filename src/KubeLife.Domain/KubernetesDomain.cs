@@ -24,6 +24,7 @@ namespace KubeLife.Domain
 
         public async Task<KubeLifeResult<List<KubeCronJobModelView>>> GetCronJobs()
         {
+            var tmp = await kubeService.GetAllBuildsOfBuildConfig("standy-prod", "cronjob-model-scoring");
             var crnJobsSource = await kubeService.GetCronJobs(KeyFilterName);
             var target = mapper.Map<List<KubeCronJobModelView>>(crnJobsSource);
 

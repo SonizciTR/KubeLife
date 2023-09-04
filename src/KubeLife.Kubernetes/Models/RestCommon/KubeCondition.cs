@@ -4,6 +4,7 @@
     {
         public string type { get; set; }
         public string status { get; set; }
+        public DateTime lastUpdateTime { get; set; }
         public DateTime lastTransitionTime { get; set; }
     }
 

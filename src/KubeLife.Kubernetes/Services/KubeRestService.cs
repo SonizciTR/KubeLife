@@ -16,6 +16,7 @@ using System.Net;
 using KubeLife.Kubernetes.Models.Routes;
 using KubeLife.Kubernetes.Extensions;
 using KubeLife.Kubernetes.Models.Service;
+using KubeLife.Kubernetes.Models.RestCommon;
 
 namespace KubeLife.Kubernetes.Services
 {
@@ -62,6 +63,7 @@ namespace KubeLife.Kubernetes.Services
             var target = new KubeBuildModel();
             target.BuildName = respJson.GetNodeValueAsString("metadata", "name");
             target.Namespace = respJson.GetNodeValueAsString("metadata", "namespace");
+            target.CreateDate = DateTime.Now;
             return new KubeLifeResult<KubeBuildModel>(target);
         }
 
@@ -89,6 +91,20 @@ namespace KubeLife.Kubernetes.Services
 
             var modelRaw = respJson.ToModel<KubeCustomObjectforService>();
             return new KubeLifeResult<KubeRouteModel>(modelRaw.ToKubeRouteModel());
+        }
+
+        public async Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namepspacePrm, string buildConfig)
+        {
+            //https://[Server adress and port]/apis/build.openshift.io/v1/namespaces/standy-prod/builds?labelSelector=buildconfig%3Dcronjob-model-scoring&limit=500
+            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namepspacePrm}/builds?labelSelector=buildconfig%3D{buildConfig}&limit=500";
+
+            var response = await CallApi(url, false, "");
+
+            var respJson = await response.Content.ReadAsStringAsync();
+
+            var model = respJson.ToModel<RawKubeBuildMain>();
+
+            return new KubeLifeResult<List<KubeBuildModel>>();
         }
     }
 }

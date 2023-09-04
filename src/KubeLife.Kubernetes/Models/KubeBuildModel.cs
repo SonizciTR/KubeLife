@@ -4,5 +4,6 @@
     {
         public string BuildName { get; internal set; }
         public string Namespace { get; internal set; }
+        public DateTime CreateDate { get; set; }
     }
 }

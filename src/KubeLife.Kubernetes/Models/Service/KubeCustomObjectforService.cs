@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KubeLife.Kubernetes.Models.Service
 {
-    public class KubeCustomObjectforService : KubeCustomObjectBase
+    public class KubeCustomObjectforService : RawKubeCustomObjectBase
     {
         public KubeServiceSpec spec { get; set; }
     }

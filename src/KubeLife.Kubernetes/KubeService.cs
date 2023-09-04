@@ -184,5 +184,16 @@ namespace KubeLife.Kubernetes
 
             return filterdPods;
         }
+
+        /// <summary>
+        /// List all builds from specific BuildConfig
+        /// </summary>
+        /// <param name="namepspacePrm">namespace</param>
+        /// <param name="buildConfig">name of BuildConfig</param>
+        /// <returns></returns>
+        public async Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namepspacePrm, string buildConfig)
+        {
+            return await restService.GetAllBuildsOfBuildConfig(namepspacePrm, buildConfig);
+        }
     }
 }

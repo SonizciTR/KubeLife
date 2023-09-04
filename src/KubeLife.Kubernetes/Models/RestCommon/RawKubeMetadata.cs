@@ -2,7 +2,7 @@
 
 namespace KubeLife.Kubernetes.Models.RestCommon
 {
-    public class KubeMetadata
+    public class RawKubeMetadata
     {
         public string name { get; set; }
         [JsonPropertyName("namespace")]

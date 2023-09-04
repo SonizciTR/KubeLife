@@ -4,9 +4,9 @@ namespace KubeLife.Kubernetes.Models.Routes
 {
     public class KubeRouteItem
     {
-        public KubeMetadata metadata { get; set; }
+        public RawKubeMetadata metadata { get; set; }
         public KubeSpec spec { get; set; }
-        public KubeStatus status { get; set; }
+        public RawKubeIngressStatus status { get; set; }
     }
 
 }
