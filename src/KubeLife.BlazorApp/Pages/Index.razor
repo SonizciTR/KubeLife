@@ -21,6 +21,7 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th> </th>
                 <th>Name</th>
                 <th>Namespace</th>
                 <th>Timing</th>
@@ -35,6 +36,21 @@ else
             @foreach (var crnJob in crnJobItems)
             {
                 <tr>
+                    <td>
+                        @if (crnJob.LastBuild.StatusPhase == "Complete")
+                        {
+                            <i class="bi bi-check-circle" title="@crnJob.LastBuild.BuildName - @crnJob.LastBuild.StatusPhase" />
+                        }
+                        else if (crnJob.LastBuild.StatusPhase == "Running")
+                        {
+                            <i class="bi bi-play-circle" title="@crnJob.LastBuild.BuildName - @crnJob.LastBuild.StatusPhase" />
+                        }
+                        else
+                        {
+                            <i class="bi bi-x-circle" title="@crnJob.LastBuild.BuildName - @crnJob.LastBuild.StatusPhase" />
+                        }
+
+                    </td>
                     <td>@crnJob.CronJobName</td>
                     <td>@crnJob.Namespace</td>
                     <td>
