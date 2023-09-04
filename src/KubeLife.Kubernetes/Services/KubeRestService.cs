@@ -102,9 +102,10 @@ namespace KubeLife.Kubernetes.Services
 
             var respJson = await response.Content.ReadAsStringAsync();
 
-            var model = respJson.ToModel<RawKubeBuildMain>();
+            var rawModel = respJson.ToModel<RawKubeBuildMain>();
+            var model = rawModel.ToKubeBuildModelList();
 
-            return new KubeLifeResult<List<KubeBuildModel>>();
+            return new KubeLifeResult<List<KubeBuildModel>>(model);
         }
     }
 }

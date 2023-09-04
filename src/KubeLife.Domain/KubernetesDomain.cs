@@ -24,10 +24,33 @@ namespace KubeLife.Domain
 
         public async Task<KubeLifeResult<List<KubeCronJobModelView>>> GetCronJobs()
         {
-            var tmp = await kubeService.GetAllBuildsOfBuildConfig("standy-prod", "cronjob-model-scoring");
             var crnJobsSource = await kubeService.GetCronJobs(KeyFilterName);
             var target = mapper.Map<List<KubeCronJobModelView>>(crnJobsSource);
 
+            target = await AddingJobDetails(target);
+
+            target = AddingNextRunTime(target);
+
+            target = await AddingJobLastBuild(target);
+
+            return new KubeLifeResult<List<KubeCronJobModelView>>(target);
+        }
+
+        internal async Task<List<KubeCronJobModelView>> AddingJobLastBuild(List<KubeCronJobModelView> target)
+        {
+            foreach (var itm in target)
+            {
+                var allBuilds = await kubeService.GetAllBuildsOfBuildConfig(itm.Namespace, itm.CronJobName);
+                if (!allBuilds.IsSuccess) continue;
+
+                itm.LastBuild = allBuilds.Result[0];
+            }
+
+            return target;
+        }
+
+        internal async Task<List<KubeCronJobModelView>> AddingJobDetails(List<KubeCronJobModelView> target)
+        {
             var jobDetails = new Dictionary<string, List<KubeJobModel>>();
             foreach (var itm in target)
             {
@@ -39,15 +62,13 @@ namespace KubeLife.Domain
                 {
                     tmpDetail = await kubeService.GetJobsbyNamespace(tmpKey);
                     jobDetails.Add(tmpKey, tmpDetail);
-                }   
+                }
 
                 itm.IsJobDetailSet = true;
                 itm.JobDetails = tmpDetail;
             }
 
-            target = AddingNextRunTime(target);
-
-            return new KubeLifeResult<List<KubeCronJobModelView>>(target);
+            return target;
         }
 
         internal List<KubeCronJobModelView> AddingNextRunTime(List<KubeCronJobModelView> data)

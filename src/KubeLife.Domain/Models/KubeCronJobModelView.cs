@@ -12,7 +12,9 @@ namespace KubeLife.Domain.Models
         public DateTime NextRunTime { get; set; }
 
         public bool IsJobDetailSet { get; internal set; } = false;
-        public List<KubeJobModel> JobDetails { get; internal set; } = new List<KubeJobModel>();
+        public List<KubeJobModel> JobDetails { get; set; } = new List<KubeJobModel>();
+
+        public KubeBuildModel LastBuild { get; internal set; }
 
         #region Calculated Properties
         public DateTime? LastStartTimeLatest
@@ -65,6 +67,8 @@ namespace KubeLife.Domain.Models
                 return JobDetails.Count(x => !x.IsSuccess);
             }
         }
+
+        
 
         #endregion
     }

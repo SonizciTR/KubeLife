@@ -9,7 +9,7 @@ namespace KubeLife.Domain
         public MappingProfile()
         {
             CreateMap<KubeCronJobModel, KubeCronJobModelView>();
-            //CreateMap<List<KubeCronJobModel>, List<KubeCronJobModelView>>();
+            //CreateMap<KubeJobModel, KubeJobViewModel>();
         }
     }
 }

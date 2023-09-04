@@ -11,6 +11,7 @@ using KubeLife.Core.Extensions;
 using KubeLife.Kubernetes.Models.Routes;
 using KubeLife.Kubernetes.Models.Service;
 using KubeLife.Core.Extensions;
+using KubeLife.Kubernetes.Models.RestCommon;
 
 namespace KubeLife.Kubernetes.Extensions
 {
@@ -80,7 +81,7 @@ namespace KubeLife.Kubernetes.Extensions
                 tmp.PodName = itm.Metadata.Name;
                 tmp.Namespace = itm.Metadata.Namespace();
                 tmp.CreateDate = itm.Metadata.CreationTimestamp;
-                tmp.Labels = itm.Metadata.Labels.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);;
+                tmp.Labels = itm.Metadata.Labels.ToDictionary(kvp => kvp.Key, kvp => kvp.Value); ;
                 if (itm.Metadata.OwnerReferences.IsAny())
                     tmp.OwnerName = itm.Metadata.OwnerReferences[0].Name;
 
@@ -139,6 +140,26 @@ namespace KubeLife.Kubernetes.Extensions
             target.Selector = source.Spec.Selector;
             target.ClusterIP = source.Spec.ClusterIP;
             target.InternalTrafficPolicy = source.Spec.InternalTrafficPolicy;
+
+            return target;
+        }
+
+        public static List<KubeBuildModel> ToKubeBuildModelList(this RawKubeBuildMain source)
+        {
+            var tmpSorted = source.items.OrderByDescending(x => x.status.completionTimestamp).ToList();
+            var target = new List<KubeBuildModel>();
+
+            foreach (var itm in tmpSorted)
+            {
+                var tmp = new KubeBuildModel();
+                tmp.BuildName = itm.metadata.name;
+                tmp.Namespace = itm.metadata._namespace;
+                tmp.CreateDate = itm.metadata.creationTimestamp;
+                tmp.StatusPhase = itm.status.phase;
+                tmp.CompletationTime = itm.status.completionTimestamp;
+
+                target.Add(tmp);
+            }
 
             return target;
         }
