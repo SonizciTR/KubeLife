@@ -1,0 +1,12 @@
+﻿@if (BuildData.StatusPhase == "Complete")
+{
+    <i class="bi bi-check-circle" title="@BuildData.BuildName -> @BuildData.StatusPhase" />
+}
+else if (BuildData.StatusPhase == "Running")
+{
+    <i class="bi bi-play-circle" title="@BuildData.BuildName -> @BuildData.StatusPhase" />
+}
+else
+{
+    <i class="bi bi-x-circle" title="@BuildData.BuildName -> @BuildData.StatusPhase" />
+}

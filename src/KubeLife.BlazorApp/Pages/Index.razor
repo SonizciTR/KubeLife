@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @inject NavigationManager Navigation
+@using KubeLife.BlazorApp.Components
 @using KubeLife.Domain.Models;
 @using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager NavManager
@@ -37,19 +38,7 @@ else
             {
                 <tr>
                     <td>
-                        @if (crnJob.LastBuild.StatusPhase == "Complete")
-                        {
-                            <i class="bi bi-check-circle" title="@crnJob.LastBuild.BuildName -> @crnJob.LastBuild.StatusPhase" />
-                        }
-                        else if (crnJob.LastBuild.StatusPhase == "Running")
-                        {
-                            <i class="bi bi-play-circle" title="@crnJob.LastBuild.BuildName -> @crnJob.LastBuild.StatusPhase" />
-                        }
-                        else
-                        {
-                            <i class="bi bi-x-circle" title="@crnJob.LastBuild.BuildName -> @crnJob.LastBuild.StatusPhase" />
-                        }
-
+                        <BuildImageShow BuildData="@crnJob.LastBuild"/>
                     </td>
                     <td>@crnJob.CronJobName</td>
                     <td>@crnJob.Namespace</td>

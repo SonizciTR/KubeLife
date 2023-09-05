@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeLife.Core.Tests", "..\u
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeLife.Domain", "KubeLife.Domain\KubeLife.Domain.csproj", "{39740ACB-3A6F-4EC2-9B88-23202E68AA34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KubeLife.Domain.Tests", "..\unittests\KubeLife.Domain.Tests\KubeLife.Domain.Tests.csproj", "{E9310915-7947-4AAB-ADD0-0D92D98DF2BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KubeLife.Domain.Tests", "..\unittests\KubeLife.Domain.Tests\KubeLife.Domain.Tests.csproj", "{E9310915-7947-4AAB-ADD0-0D92D98DF2BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

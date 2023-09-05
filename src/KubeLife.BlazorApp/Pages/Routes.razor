@@ -1,5 +1,6 @@
 ﻿@page "/routes"
 
+@using KubeLife.BlazorApp.Components
 @using KubeLife.Domain.Models;
 @using Microsoft.AspNetCore.WebUtilities
 
@@ -33,18 +34,7 @@ else
             {
                 <tr>
                     <td>
-                        @if (itmRoute.LastBuild.StatusPhase == "Complete")
-                        {
-                            <i class="bi bi-check-circle" title="@itmRoute.LastBuild.BuildName -> @itmRoute.LastBuild.StatusPhase" />
-                        }
-                        else if (itmRoute.LastBuild.StatusPhase == "Running")
-                        {
-                            <i class="bi bi-play-circle" title="@itmRoute.LastBuild.BuildName -> @itmRoute.LastBuild.StatusPhase" />
-                        }
-                        else
-                        {
-                            <i class="bi bi-x-circle" title="@itmRoute.LastBuild.BuildName -> @itmRoute.LastBuild.StatusPhase" />
-                        }
+                        <BuildImageShow BuildData="@itmRoute.LastBuild"/>
                     </td>
                     <td>@itmRoute.Name</td>
                     <td>@itmRoute.Namespace</td>
