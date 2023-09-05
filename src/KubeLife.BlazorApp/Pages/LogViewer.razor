@@ -33,6 +33,14 @@
         </select>
     </div>
     <br/>
+}
+@if (!string.IsNullOrWhiteSpace(LabelForLog))
+{
+    <label>@LabelForLog</label>
+    <br />
+}
+@if (!string.IsNullOrWhiteSpace(LogText))
+{
     <p style="background-color:black; color:white;">
         @((MarkupString)LogText)
     </p>

@@ -150,5 +150,9 @@ namespace KubeLife.Domain
 
             return new KubeLifeResult<List<KubePodModel>>(pods);
         }
+        public async Task<KubeLifeResult<string>> GetLogOfBuild(string namepspacePrm, string buildConfig)
+        { 
+            return await kubeService.GetLogOfBuild(namepspacePrm, buildConfig);
+        }
     }
 }

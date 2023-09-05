@@ -11,15 +11,48 @@ namespace KubeLife.BlazorApp.Pages
     {
         public string PodNamesRaw { get; set; }
         public string KubeNamespace { get; set; }
+        public string BuildNamesRaw { get; set; }
 
         public string QueryResult { get; set; } = "Loading...";
         public List<KubeLifeResult<KubeLogModel>> LogResults { get; set; }
         public string LogText { get; set; }
+        public string LabelForLog { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
             KubeNamespace = NavManager.QueryStringSingle("Namespace");
             PodNamesRaw = NavManager.QueryStringSingle("PodNames");
+            BuildNamesRaw = NavManager.QueryStringSingle("BuildName");
+
+            var isPodLog = !string.IsNullOrEmpty(PodNamesRaw);
+            var isBuildLog = !string.IsNullOrEmpty(BuildNamesRaw);
+
+            if (string.IsNullOrEmpty(KubeNamespace)) QueryResult = "Sorry,'Namespace' information is missing.";
+            else if (isPodLog) await ShowPodLog();
+            else if (isBuildLog) await ShowBuildLog();
+            else
+            {
+                string sysMsg = NavManager.QueryStringSingle("UserMsg");
+                QueryResult = !string.IsNullOrEmpty(sysMsg) ? sysMsg : "Sorry, There is missing information.";
+                return;
+            }
+        }
+
+        public async Task ShowBuildLog()
+        {
+            var logInfo = await domainService.GetLogOfBuild(KubeNamespace, BuildNamesRaw);
+            if (!logInfo.IsSuccess)
+            {
+                QueryResult = logInfo.Message;
+                return;
+            }
+
+            LabelForLog = BuildNamesRaw;
+            QueryResult = logInfo.Result;
+        }
+
+        public async Task ShowPodLog()
+        {
             var podNames = PodNamesRaw.Split(",").ToList();
             if (string.IsNullOrWhiteSpace(PodNamesRaw) || !podNames.IsAny())
             {
