@@ -84,5 +84,13 @@ namespace KubeLife.Kubernetes
         /// <param name="buildConfig">name of BuildConfig</param>
         /// <returns></returns>
         Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namepspacePrm, string buildConfig);
+
+        /// <summary>
+        /// Returns the log of build
+        /// </summary>
+        /// <param name="namepspacePrm">kube project name</param>
+        /// <param name="buildConfig">build name </param>
+        /// <returns></returns>
+        Task<KubeLifeResult<string>> GetLogOfBuild(string namepspacePrm, string buildConfig);
     }
 }

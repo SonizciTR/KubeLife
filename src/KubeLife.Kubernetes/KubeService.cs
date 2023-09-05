@@ -195,5 +195,16 @@ namespace KubeLife.Kubernetes
         {
             return await restService.GetAllBuildsOfBuildConfig(namepspacePrm, buildConfig);
         }
+
+        /// <summary>
+        /// Returns the log of build
+        /// </summary>
+        /// <param name="namepspacePrm">kube project name</param>
+        /// <param name="buildConfig">build name </param>
+        /// <returns></returns>
+        public async Task<KubeLifeResult<string>> GetLogOfBuild(string namepspacePrm, string buildConfig)
+        {
+            return await restService.GetLogOfBuild(namepspacePrm, buildConfig);
+        }
     }
 }

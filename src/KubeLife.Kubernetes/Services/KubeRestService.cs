@@ -29,7 +29,7 @@ namespace KubeLife.Kubernetes.Services
 
         public KubeConfigModel Settings { get; }
 
-        private async Task<HttpResponseMessage?> CallApi(string url, bool isPostCall, string body)
+        private async Task<HttpResponseMessage?> CallApi(string url, bool isPostCall = false, string body = "")
         {
             var content = new ByteArrayContent(System.Text.Encoding.UTF8.GetBytes(body));
 
@@ -106,6 +106,18 @@ namespace KubeLife.Kubernetes.Services
             var model = rawModel.ToKubeBuildModelList();
 
             return new KubeLifeResult<List<KubeBuildModel>>(model);
+        }
+
+        public async Task<KubeLifeResult<string>> GetLogOfBuild(string namepspacePrm, string buildConfig)
+        {
+            //https://[Server adress and port]/apis/build.openshift.io/v1/namespaces/standy-prod/builds/cronjob-model-scoring-9/log
+            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namepspacePrm}/builds/{buildConfig}/log";
+
+            var response = await CallApi(url);
+
+            var respJson = await response.Content.ReadAsStringAsync();
+
+            return new KubeLifeResult<string>(respJson);
         }
     }
 }
