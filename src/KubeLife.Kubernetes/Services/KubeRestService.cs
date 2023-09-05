@@ -93,10 +93,10 @@ namespace KubeLife.Kubernetes.Services
             return new KubeLifeResult<KubeRouteModel>(modelRaw.ToKubeRouteModel());
         }
 
-        public async Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namepspacePrm, string buildConfig)
+        public async Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namespacePrm, string buildConfig)
         {
             //https://[Server adress and port]/apis/build.openshift.io/v1/namespaces/standy-prod/builds?labelSelector=buildconfig%3Dcronjob-model-scoring&limit=500
-            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namepspacePrm}/builds?labelSelector=buildconfig%3D{buildConfig}&limit=500";
+            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namespacePrm}/builds?labelSelector=buildconfig%3D{buildConfig}&limit=500";
 
             var response = await CallApi(url, false, "");
 
@@ -108,10 +108,10 @@ namespace KubeLife.Kubernetes.Services
             return new KubeLifeResult<List<KubeBuildModel>>(model);
         }
 
-        public async Task<KubeLifeResult<string>> GetLogOfBuild(string namepspacePrm, string buildConfig)
+        public async Task<KubeLifeResult<string>> GetLogOfBuild(string namespacePrm, string buildConfig)
         {
             //https://[Server adress and port]/apis/build.openshift.io/v1/namespaces/standy-prod/builds/cronjob-model-scoring-9/log
-            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namepspacePrm}/builds/{buildConfig}/log";
+            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namespacePrm}/builds/{buildConfig}/log";
 
             var response = await CallApi(url);
 

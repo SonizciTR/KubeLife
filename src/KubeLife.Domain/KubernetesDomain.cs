@@ -150,9 +150,19 @@ namespace KubeLife.Domain
 
             return new KubeLifeResult<List<KubePodModel>>(pods);
         }
-        public async Task<KubeLifeResult<string>> GetLogOfBuild(string namepspacePrm, string buildConfig)
-        { 
-            return await kubeService.GetLogOfBuild(namepspacePrm, buildConfig);
+
+        public async Task<KubeLifeResult<string>> GetLastBuildLog(string namespacePrm, string buildConfig)
+        {
+            var allBuilds = await kubeService.GetAllBuildsOfBuildConfig(namespacePrm, buildConfig);
+            if(!allBuilds.IsSuccess)
+                return new KubeLifeResult<string>(false, allBuilds.Message);
+
+            if (!allBuilds.Result.IsAny())
+                return new KubeLifeResult<string>(false, $"No builds found for {buildConfig} at {namespacePrm}");
+            
+            var lst = allBuilds.Result[0];
+
+            return await kubeService.GetLogOfBuild(namespacePrm, lst.BuildName);
         }
     }
 }

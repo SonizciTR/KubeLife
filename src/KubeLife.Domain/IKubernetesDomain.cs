@@ -13,6 +13,6 @@ namespace KubeLife.Domain
         Task<List<KubeLifeResult<KubeLogModel>>> GetLogOfAllPods(string kubeNamespace, List<string> podNames);
         Task<KubeLifeResult<List<KubePodModel>>> GetPodsOfRoute(string namepsaceParam, string routeName);
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName);
-        Task<KubeLifeResult<string>> GetLogOfBuild(string namepspacePrm, string buildConfig);
+        Task<KubeLifeResult<string>> GetLastBuildLog(string namespacePrm, string buildConfig);
     }
 }

@@ -16,5 +16,7 @@ namespace KubeLife.Core.Extensions
         {
             return source == null ? "[Not Found]" : (source).ToString(CnstDateTimeFilter);
         }
+
+        public static string TextToHtml(this string text) => text.Replace("\n", "<br/>");
     }
 }

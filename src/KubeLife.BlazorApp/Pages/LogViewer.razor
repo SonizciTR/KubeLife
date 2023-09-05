@@ -20,28 +20,29 @@
         <em>@((MarkupString)QueryResult)</em>
     </p>
 }
-
-@if (LogResults.IsAny())
-{
-    <div>
-        <label for="pods">Pods : </label>
-        <select name="pods" @onchange="PodComboBoxChanged">
-            @foreach (var itm in LogResults)
-            {
-                <option>@itm.Result.PodName</option>
-            }
-        </select>
-    </div>
-    <br/>
-}
-@if (!string.IsNullOrWhiteSpace(LabelForLog))
-{
-    <label>@LabelForLog</label>
-    <br />
-}
-@if (!string.IsNullOrWhiteSpace(LogText))
-{
-    <p style="background-color:black; color:white;">
-        @((MarkupString)LogText)
-    </p>
-}
+<div>
+    @if (LogResults.IsAny())
+    {
+        <div>
+            <label for="pods">Pods : </label>
+            <select name="pods" @onchange="PodComboBoxChanged">
+                @foreach (var itm in LogResults)
+                {
+                    <option>@itm.Result.PodName</option>
+                }
+            </select>
+        </div>
+        <br />
+    }
+    @if (!string.IsNullOrWhiteSpace(LabelForLog))
+    {
+        <label>@LabelForLog</label>
+        <br />
+    }
+    @if (!string.IsNullOrWhiteSpace(LogText))
+    {
+        <p style="background-color:black; color:white;">
+            @((MarkupString)LogText)
+        </p>
+    }
+</div>

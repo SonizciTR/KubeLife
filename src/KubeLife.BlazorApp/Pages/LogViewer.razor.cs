@@ -40,15 +40,18 @@ namespace KubeLife.BlazorApp.Pages
 
         public async Task ShowBuildLog()
         {
-            var logInfo = await domainService.GetLogOfBuild(KubeNamespace, BuildNamesRaw);
+            var logInfo = await domainService.GetLastBuildLog(KubeNamespace, BuildNamesRaw);
+            LabelForLog = $"{DateTime.Now} : {BuildNamesRaw}";
+            LogText = "";
+            QueryResult = "";
+
             if (!logInfo.IsSuccess)
             {
                 QueryResult = logInfo.Message;
                 return;
             }
 
-            LabelForLog = BuildNamesRaw;
-            QueryResult = logInfo.Result;
+            LogText = logInfo.Result.TextToHtml();
         }
 
         public async Task ShowPodLog()
@@ -80,7 +83,7 @@ namespace KubeLife.BlazorApp.Pages
             QueryResult = "";
             var log = await domainService.GetLogOfPod(KubeNamespace, podName);
             if (log.IsSuccess)
-                LogText = log.Result.LogTextHtml;
+                LogText = log.Result.LogText.TextToHtml();
             else
                 QueryResult = log.Message;
         }
