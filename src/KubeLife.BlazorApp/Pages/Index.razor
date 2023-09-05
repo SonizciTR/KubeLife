@@ -31,6 +31,7 @@ else
                 <th>Avg (min)</th>
                 <th>Success</th>
                 <th>Fail</th>
+                <th>Operations</th>
             </tr>
         </thead>
         <tbody>
@@ -51,19 +52,21 @@ else
                     <td>@crnJob.SuccessCount</td>
                     <td>@crnJob.FailureCount</td>
                     <td>
-                        <button class="btn btn-primary" @onclick="() => NavigateToLogView(crnJob.CronJobName, true)">
-                            Log Pod
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-dark" @onclick="() => TriggerBuild(crnJob.Namespace, crnJob.CronJobName)">
-                            Build
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-primary" @onclick="() => NavigateToLogView(crnJob.CronJobName, false)">
-                            Log Build
-                        </button>
+                        <div class="btn-group" role="group" aria-label="Operations">
+                            <button class="btn btn-dark" @onclick="() => TriggerBuild(crnJob.Namespace, crnJob.CronJobName)">
+                                Build
+                            </button>
+
+                            <div class="btn-group" role="group">
+                                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Logs
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <li><a class="dropdown-item" href="#" @onclick="() => NavigateToLogView(crnJob.CronJobName, true)">Pods</a></li>
+                                    <li><a class="dropdown-item" href="#" @onclick="() => NavigateToLogView(crnJob.CronJobName, false)">Last Build</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             }

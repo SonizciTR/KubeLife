@@ -27,6 +27,7 @@ else
                 <th>Name</th>
                 <th>Namespace</th>
                 <th>Link</th>
+                <th>Operations</th>
             </tr>
         </thead>
         <tbody>
@@ -42,14 +43,21 @@ else
                         <button class="btn btn-link" @onclick="() => NavigateToUrl(itmRoute.HostLink)"> @itmRoute.HostLink</button>
                     </td>
                     <td>
-                        <button class="btn btn-primary" @onclick="() => NavigateToLogView(itmRoute.Name)">
-                            Log
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-dark" @onclick="() => TriggerBuild(itmRoute.Namespace, itmRoute.Name)">
-                            Build
-                        </button>
+                        <div class="btn-group" role="group" aria-label="Operations">
+                            <button class="btn btn-dark" @onclick="() => TriggerBuild(itmRoute.Namespace, itmRoute.Name)">
+                                Build
+                            </button>
+
+                            <div class="btn-group" role="group">
+                                <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Logs
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <li><a class="dropdown-item" href="#" @onclick="() => NavigateToLogView(itmRoute.Name, true)">Pods</a></li>
+                                    <li><a class="dropdown-item" href="#" @onclick="() => NavigateToLogView(itmRoute.Name, false)">Last Build</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             }
@@ -98,10 +106,29 @@ else
         await jsRuntime.InvokeVoidAsync("alert", message);
     }
 
-    private async Task NavigateToLogView(string cronJobName)
+    private async Task NavigateToLogView(string cronJobName, bool isPodLog)
     {
-        var tmp = routeItems.FirstOrDefault(x => x.Name == cronJobName);
-        var tmpAllPodsResult = await domainService.GetPodsOfRoute(tmp.Namespace, tmp.Name);
+        var tmpRoute = routeItems.FirstOrDefault(x => x.Name == cronJobName);
+
+        var queryParams = isPodLog ? await GetPodLogQueryString(tmpRoute) : await GetBuildLogQueryString(tmpRoute);
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
+    }
+
+    internal async Task<Dictionary<string, string>> GetBuildLogQueryString(KubeRouteViewModel routeInfo)
+    {
+        var queryParams = new Dictionary<string, string>
+            {
+                ["BuildName"] = routeInfo.Name,
+                ["Namespace"] = routeInfo.Namespace,
+                ["UserMsg"] = ""
+            };
+
+        return queryParams;
+    }
+
+    internal async Task<Dictionary<string, string>> GetPodLogQueryString(KubeRouteViewModel routeInfo)
+    {
+        var tmpAllPodsResult = await domainService.GetPodsOfRoute(routeInfo.Namespace, routeInfo.Name);
         var allPods = tmpAllPodsResult.Result;
         var queryParams = new Dictionary<string, string>
             {
@@ -109,6 +136,6 @@ else
                 ["Namespace"] = allPods[0].Namespace
             };
 
-        NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
+        return queryParams;
     }
 }
