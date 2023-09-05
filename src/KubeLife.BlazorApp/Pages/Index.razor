@@ -38,7 +38,7 @@ else
             {
                 <tr>
                     <td>
-                        <BuildImageShow BuildData="@crnJob.LastBuild"/>
+                        <BuildImageShow BuildData="@crnJob.LastBuild" />
                     </td>
                     <td>@crnJob.CronJobName</td>
                     <td>@crnJob.Namespace</td>
@@ -51,13 +51,18 @@ else
                     <td>@crnJob.SuccessCount</td>
                     <td>@crnJob.FailureCount</td>
                     <td>
-                        <button class="btn btn-primary" @onclick="() => NavigateToLogView(crnJob.CronJobName)">
-                            Log
+                        <button class="btn btn-primary" @onclick="() => NavigateToLogView(crnJob.CronJobName, true)">
+                            Log Pod
                         </button>
                     </td>
                     <td>
                         <button class="btn btn-dark" @onclick="() => TriggerBuild(crnJob.Namespace, crnJob.CronJobName)">
                             Build
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => NavigateToLogView(crnJob.CronJobName, false)">
+                            Log Build
                         </button>
                     </td>
                 </tr>
@@ -98,10 +103,32 @@ else
         }, new System.Threading.AutoResetEvent(false), refreshTimeMs, refreshTimeMs);
     }
 
-    private async Task NavigateToLogView(string cronJobName)
+    private async Task NavigateToLogView(string cronJobName, bool isPodLog)
     {
         var tmp = crnJobItems.FirstOrDefault(x => x.CronJobName == cronJobName);
         var latestJob = tmp.JobDetails.OrderByDescending(x => x.StartTime).FirstOrDefault();
+
+        var queryParams = isPodLog
+                            ? await GetPodLogQueryString(latestJob)
+                            : await GetBuildLogQueryString(latestJob);
+
+        NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
+    }
+
+    internal async Task<Dictionary<string, string>> GetBuildLogQueryString(KubeJobModel latestJob)
+    {
+        var queryParams = new Dictionary<string, string>
+            {
+                ["BuildName"] = latestJob.JobUniqueName,
+                ["Namespace"] = latestJob.KubeNamespace,
+                ["UserMsg"] = ""
+            };
+
+        return queryParams;
+    }
+
+    internal async Task<Dictionary<string, string>> GetPodLogQueryString(KubeJobModel latestJob)
+    {
         var podOfJob = await domainService.GetPodofJob(latestJob.KubeNamespace, latestJob.JobUniqueName);
         var queryParams = new Dictionary<string, string>
             {
@@ -110,7 +137,7 @@ else
                 ["UserMsg"] = podOfJob.Message
             };
 
-        NavManager.NavigateTo(QueryHelpers.AddQueryString("LogViewer", queryParams));
+        return queryParams;
     }
 
     public async Task NavigateToCronTimeView(string cronTiming)

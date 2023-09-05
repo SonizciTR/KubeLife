@@ -117,7 +117,15 @@ namespace KubeLife.Kubernetes.Services
 
             var respJson = await response.Content.ReadAsStringAsync();
 
-            return new KubeLifeResult<string>(respJson);
+            bool isSuccess = response.IsSuccessStatusCode;
+            string errMsg = "";
+            if (!isSuccess)
+            {
+                var errModel = respJson.ToModel<RawKubeResponseStatus>();
+                errMsg = errModel.message;
+            }
+
+            return new KubeLifeResult<string>(response.IsSuccessStatusCode, errMsg, respJson);
         }
     }
 }

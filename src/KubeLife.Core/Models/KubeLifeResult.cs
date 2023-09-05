@@ -25,5 +25,12 @@ namespace KubeLife.Core.Models
             IsSuccess = isSuccess;
             Message = message;
         }
+
+        public KubeLifeResult(bool isSuccess, string errorMessage, T data)
+        {
+            IsSuccess = isSuccess;
+            Message = errorMessage;
+            Result = data;
+        }
     }
 }
