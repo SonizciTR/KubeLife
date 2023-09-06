@@ -153,6 +153,12 @@ else
     {
         var result = await domainService.TriggerBuild(nameSpaceParam, buildName);
         string message = result.IsSuccess ? $"Successfully Triggered : {result.Result.BuildName}" : $"Error : {result.Message}";
+        if (result.IsSuccess)
+        {
+            var indx = crnJobItems.FindIndex(x => x.CronJobName == buildName && x.Namespace == nameSpaceParam);
+            if (indx > -1)
+                crnJobItems[indx].LastBuild.StatusPhase = "Running";
+        }
         await jsRuntime.InvokeVoidAsync("alert", message);
     }
 }

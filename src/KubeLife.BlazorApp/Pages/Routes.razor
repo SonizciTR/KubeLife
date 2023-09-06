@@ -35,7 +35,7 @@ else
             {
                 <tr>
                     <td>
-                        <BuildImageShow BuildData="@itmRoute.LastBuild"/>
+                        <BuildImageShow BuildData="@itmRoute.LastBuild" />
                     </td>
                     <td>@itmRoute.Name</td>
                     <td>@itmRoute.Namespace</td>
@@ -103,6 +103,12 @@ else
     {
         var result = await domainService.TriggerBuild(nameSpaceParam, buildName);
         string message = result.IsSuccess ? $"Successfully Triggered : {result.Result.BuildName}" : $"Error : {result.Message}";
+        if (result.IsSuccess)
+        {
+            var indx = routeItems.FindIndex(x => x.Name == buildName && x.Namespace == nameSpaceParam);
+            if (indx > -1)
+                routeItems[indx].LastBuild.StatusPhase = "Running";
+        }
         await jsRuntime.InvokeVoidAsync("alert", message);
     }
 
