@@ -1,12 +1,12 @@
 ﻿@if (BuildData.StatusPhase == "Complete")
 {
-    <i class="bi bi-check-circle" title="@BuildData.BuildName -> @BuildData.StatusPhase" />
+    <img src="css/pics/check-circle.svg" title="@BuildData.BuildName -> @BuildData.StatusPhase" style="width:24px;height:24px;">
 }
 else if (BuildData.StatusPhase == "Running")
 {
-    <i class="bi bi-play-circle" title="@BuildData.BuildName -> @BuildData.StatusPhase" />
+    <img src="css/pics/play-circle.svg" title="@BuildData.BuildName -> @BuildData.StatusPhase" style="width:24px;height:24px;">
 }
 else
 {
-    <i class="bi bi-x-circle" title="@BuildData.BuildName -> @BuildData.StatusPhase" />
+    <img src="css/pics/alert-circle.svg" title="@BuildData.BuildName -> @BuildData.StatusPhase" style="width:24px;height:24px;">
 }
