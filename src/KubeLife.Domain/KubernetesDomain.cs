@@ -24,6 +24,7 @@ namespace KubeLife.Domain
 
         public async Task<KubeLifeResult<List<KubeCronJobModelView>>> GetCronJobs()
         {
+            await TriggerCronJob("milfraud-prod", "batch-scoring-monthly");
             var crnJobsSource = await kubeService.GetCronJobs(KeyFilterName);
             var target = mapper.Map<List<KubeCronJobModelView>>(crnJobsSource);
 
@@ -163,6 +164,20 @@ namespace KubeLife.Domain
             var lst = allBuilds.Result[0];
 
             return await kubeService.GetLogOfBuild(namespacePrm, lst.BuildName);
+        }
+
+        public async Task<KubeLifeResult<string>> TriggerCronJob(string namespacePrm, string cronJobName)
+        {
+            var tmpAllJobsOfNamespace = await kubeService.GetJobsbyNamespace(namespacePrm);
+            var tmpCronsJob = tmpAllJobsOfNamespace.Where(x => x.OwnerCronJobName == cronJobName)
+                                                    .OrderByDescending(y => y.StartTime)
+                                                    .ToList();
+            if (tmpCronsJob.IsAny() && tmpCronsJob.Any(x => x.IsStillRunning))
+                return new KubeLifeResult<string>(false, "There is still running job. Can not trigger new one.");
+            
+            string tmpJobName = $"Manuel-KubeLife-{DateTime.Now.ToString("yyyMMddHHmmss")}";
+            var rslt = await kubeService.CreateJobFromCronJob(namespacePrm, cronJobName, tmpJobName);
+            return rslt;
         }
     }
 }

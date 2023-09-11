@@ -92,5 +92,14 @@ namespace KubeLife.Kubernetes
         /// <param name="buildConfig">build name </param>
         /// <returns></returns>
         Task<KubeLifeResult<string>> GetLogOfBuild(string namespacePrm, string buildConfig);
+
+        /// <summary>
+        /// Creates job from given Cron Job
+        /// </summary>
+        /// <param name="namespacePrm">Kubernetes namespace</param>
+        /// <param name="cronJobName">Template of Job</param>
+        /// <param name="newJobUnqName">Unique name given to the job</param>
+        /// <returns></returns>
+        Task<KubeLifeResult<string>> CreateJobFromCronJob(string namespacePrm, string cronJobName, string newJobUnqName);
     }
 }

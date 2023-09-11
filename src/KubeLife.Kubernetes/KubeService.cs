@@ -7,6 +7,7 @@ using System.ComponentModel;
 using KubeLife.Core.Extensions;
 using KubeLife.Kubernetes.Services;
 using KubeLife.Core.Models;
+using System.Xml.Linq;
 
 namespace KubeLife.Kubernetes
 {
@@ -30,7 +31,7 @@ namespace KubeLife.Kubernetes
             {
                 SkipTlsVerify = true,
             };
-            
+
             config.Host = Settings.ServerUrl;
             if (!string.IsNullOrEmpty(Settings.AccessToken))
                 config.AccessToken = Settings.AccessToken;
@@ -41,7 +42,7 @@ namespace KubeLife.Kubernetes
             }
 
             var client = new k8s.Kubernetes(config);
-            
+
             return client;
         }
 
@@ -101,7 +102,7 @@ namespace KubeLife.Kubernetes
 
                 return logStream.ToStringForm();
             }
-            catch(k8s.Autorest.HttpOperationException exKube)
+            catch (k8s.Autorest.HttpOperationException exKube)
             {
                 return exKube.Message;
             }
@@ -205,6 +206,37 @@ namespace KubeLife.Kubernetes
         public async Task<KubeLifeResult<string>> GetLogOfBuild(string namespacePrm, string buildConfig)
         {
             return await restService.GetLogOfBuild(namespacePrm, buildConfig);
+        }
+
+        /// <summary>
+        /// Creates job from given Cron Job
+        /// </summary>
+        /// <param name="namespacePrm">Kubernetes namespace</param>
+        /// <param name="cronJobName">Template of Job</param>
+        /// <param name="newJobUnqName">Unique name given to the job</param>
+        /// <returns></returns>
+        public async Task<KubeLifeResult<string>> CreateJobFromCronJob(string namespacePrm, string cronJobName, string newJobUnqName)
+        {
+            var client = GetKubeClient();
+
+            var annoJob = new Dictionary<string, string>()
+            {
+                {  "cronjob.kubernetes.io/instantiate", "manual" },
+            };
+
+            var cron_job = await client.BatchV1.ReadNamespacedCronJobAsync(cronJobName, namespacePrm);
+            var job = new V1Job(apiVersion: "batch/v1", kind: "Job",
+                metadata: new V1ObjectMeta(name: newJobUnqName, annotations: annoJob),
+                spec: cron_job.Spec.JobTemplate.Spec
+            );
+
+            var rslt = await client.BatchV1.CreateNamespacedJobAsync(job, namespacePrm);
+            if (rslt?.Status?.Active > 0)
+            {
+                return new KubeLifeResult<string>(true, "Job created successfully.", cronJobName);
+            }
+
+            return new KubeLifeResult<string>(false, "Job could not created form CronJob.");
         }
     }
 }

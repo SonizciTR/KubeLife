@@ -86,5 +86,20 @@ namespace KubeLife.Domain.Tests.Fakes
         {
             throw new NotImplementedException();
         }
+
+        public Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namespacePrm, string buildConfig)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<KubeLifeResult<string>> GetLogOfBuild(string namespacePrm, string buildConfig)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<KubeLifeResult<string>> CreateJobFromCronJob(string namespacePrm, string cronJobName, string newJobUnqName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

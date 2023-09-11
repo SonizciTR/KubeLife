@@ -52,6 +52,7 @@ namespace KubeLife.Kubernetes.Extensions
                 tmp.StartTime = item.Status.StartTime;
                 tmp.EndTime = item.Status.CompletionTime;
                 tmp.IsSuccess = item.Status.Succeeded == 1;
+                tmp.IsStillRunning = item.Status.Active > 0;
 
                 target.Add(tmp);
             }

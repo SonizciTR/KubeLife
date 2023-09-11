@@ -14,5 +14,6 @@ namespace KubeLife.Kubernetes.Models
         public DateTime? EndTime { get; set; }
         public bool IsSuccess { get; set; }
         public string? OwnerCronJobName { get; set; }
+        public bool IsStillRunning { get; internal set; }
     }
 }
