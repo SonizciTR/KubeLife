@@ -47,7 +47,7 @@ namespace KubeLife.Kubernetes.Extensions
 
                 tmp.JobUniqueName = item.Metadata.Name;
                 tmp.KubeNamespace = item.Metadata.NamespaceProperty;
-                if (item.Metadata.OwnerReferences.Any())
+                if (item.Metadata.OwnerReferences?.Any() ?? false)
                     tmp.OwnerCronJobName = item.Metadata.OwnerReferences[0].Name;
                 tmp.StartTime = item.Status.StartTime;
                 tmp.EndTime = item.Status.CompletionTime;

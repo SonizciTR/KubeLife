@@ -225,13 +225,17 @@ namespace KubeLife.Kubernetes
             };
 
             var cron_job = await client.BatchV1.ReadNamespacedCronJobAsync(cronJobName, namespacePrm);
+            var ownRefs = new List<V1OwnerReference> 
+            { 
+                new V1OwnerReference(apiVersion: "batch/v1", kind:"CronJob", name:cronJobName, uid: cron_job.Uid())
+            };
             var job = new V1Job(apiVersion: "batch/v1", kind: "Job",
-                metadata: new V1ObjectMeta(name: newJobUnqName, annotations: annoJob),
+                metadata: new V1ObjectMeta(name: newJobUnqName, annotations: annoJob, ownerReferences: ownRefs),                
                 spec: cron_job.Spec.JobTemplate.Spec
             );
 
             var rslt = await client.BatchV1.CreateNamespacedJobAsync(job, namespacePrm);
-            if (rslt?.Status?.Active > 0)
+            if (rslt != null)
             {
                 return new KubeLifeResult<string>(true, "Job created successfully.", cronJobName);
             }
