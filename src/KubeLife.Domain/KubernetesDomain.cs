@@ -24,7 +24,7 @@ namespace KubeLife.Domain
 
         public async Task<KubeLifeResult<List<KubeCronJobModelView>>> GetCronJobs()
         {
-            await TriggerCronJob("milfraud-prod", "batch-scoring-monthly");
+            //await TriggerCronJob("milfraud-prod", "batch-scoring-monthly");
             var crnJobsSource = await kubeService.GetCronJobs(KeyFilterName);
             var target = mapper.Map<List<KubeCronJobModelView>>(crnJobsSource);
 
