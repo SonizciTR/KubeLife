@@ -14,5 +14,6 @@ namespace KubeLife.Domain
         Task<KubeLifeResult<List<KubePodModel>>> GetPodsOfRoute(string namepsaceParam, string routeName);
         Task<KubeLifeResult<KubeBuildModel>> TriggerBuild(string namespaceParameter, string buildConfigName);
         Task<KubeLifeResult<string>> GetLastBuildLog(string namespacePrm, string buildConfig);
+        Task<KubeLifeResult<string>> TriggerCronJob(string namespacePrm, string cronJobName);
     }
 }

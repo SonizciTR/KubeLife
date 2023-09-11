@@ -93,5 +93,12 @@ namespace KubeLife.BlazorApp.Pages
             }
             await jsRuntime.InvokeVoidAsync("alert", message);
         }
+
+        public async Task TriggerJob(string nameSpaceParam, string cronJobName)
+        {
+            var rslt = await domainService.TriggerCronJob(nameSpaceParam, cronJobName);
+            string usrMsg = rslt.IsSuccess ? $"Success: {rslt.Result}" : $"Error: {rslt.Message}";
+            await jsRuntime.InvokeVoidAsync("alert", usrMsg);
+        }
     }
 }
