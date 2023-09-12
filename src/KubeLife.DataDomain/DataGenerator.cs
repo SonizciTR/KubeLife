@@ -26,12 +26,12 @@ namespace KubeLife.DataDomain
             Random r = new Random();
             switch(propertyType.Name)
             {
-                case "string":
+                case "String":
                     return Guid.NewGuid().ToString();
-
-                case "int":
+                case "Int32":
                     return r.Next(0, 255);
-
+                case "Double":
+                    return r.NextDouble() * r.Next(0, 255);
                 case "DateTime":
                     return DateTime.Now.AddDays(r.Next(0, 255)).AddMinutes(r.Next(0, 2505));
                 case "Boolean":
