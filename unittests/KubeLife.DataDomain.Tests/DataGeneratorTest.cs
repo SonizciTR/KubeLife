@@ -1,3 +1,5 @@
+using NuGet.Frameworks;
+
 namespace KubeLife.DataDomain.Tests
 {
     public class TestClass1
@@ -15,6 +17,15 @@ namespace KubeLife.DataDomain.Tests
         {
             var data = DataGenerator.GenerateData<TestClass1>();
             Assert.NotNull(data.Name);
+        }
+
+        [Fact]
+        public void DataGenerator_GettingDataAsList_FilliningEachProperty()
+        {
+            int cnt = 10;
+            var data = DataGenerator.GenerateData<TestClass1>(cnt);
+            Assert.Equal(cnt, data.Count);
+            Assert.True(data.All(x => !string.IsNullOrWhiteSpace(x.Name)));
         }
     }
 }

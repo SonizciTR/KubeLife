@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace KubeLife.DataDomain
 {
@@ -24,10 +25,12 @@ namespace KubeLife.DataDomain
         private static object GetRandomValue(Type propertyType)
         {
             Random r = new Random();
-            switch(propertyType.Name)
+            switch (propertyType.Name)
             {
                 case "String":
-                    return Guid.NewGuid().ToString();
+                    var tmp = Guid.NewGuid().ToString();
+                    return new string(Enumerable.Repeat(tmp, r.Next(50, 255))
+                                .Select(s => s[r.Next(s.Length)]).ToArray());
                 case "Int32":
                     return r.Next(0, 255);
                 case "Double":
@@ -39,6 +42,19 @@ namespace KubeLife.DataDomain
             }
 
             return default;
+        }
+
+        public static List<T> GenerateData<T>(int count) where T : class, new()
+        {
+            var target = new List<T>();
+            
+            for (int i = 0; i < count; i++)
+            {
+                var tmp = GenerateData<T>();
+                target.Add(tmp);
+            }
+
+            return target;
         }
     }
 }
