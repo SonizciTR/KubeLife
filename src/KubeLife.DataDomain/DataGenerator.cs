@@ -28,7 +28,7 @@ namespace KubeLife.DataDomain
             switch (propertyType.Name)
             {
                 case "String":
-                    var tmp = Guid.NewGuid().ToString();
+                    var tmp = Guid.NewGuid().ToString().Replace("-", "");
                     return new string(Enumerable.Repeat(tmp, r.Next(50, 255))
                                 .Select(s => s[r.Next(s.Length)]).ToArray());
                 case "Int32":
