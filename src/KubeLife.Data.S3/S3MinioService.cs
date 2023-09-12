@@ -17,6 +17,10 @@ namespace KubeLife.Data.S3
                                     .WithCredentials(accessKey, secretKey)
                                     .WithSSL(useHttps)
                                     .Build();
+
+            var beArgs = new BucketExistsArgs().WithBucket("notexistbucket");
+            bool found = await minioClient.BucketExistsAsync(beArgs);
+
             if (minioClient != null)
             {
                 isInitialized = true;

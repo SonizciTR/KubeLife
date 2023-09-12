@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\KubeLife.Data.S3\KubeLife.Data.S3.csproj" />
     <ProjectReference Include="..\..\src\KubeLife.DataDomain\KubeLife.DataDomain.csproj" />
   </ItemGroup>
 
