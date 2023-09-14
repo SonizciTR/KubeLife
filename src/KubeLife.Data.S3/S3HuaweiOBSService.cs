@@ -23,15 +23,17 @@ namespace KubeLife.Data.S3
             return new KubeLifeResult<string>(true, "Success");
         }
 
-        public async Task<KubeLifeResult<List<S3Bucket>>> GetBuckets()
+        public async Task<KubeLifeResult<List<S3BucketInfo>>> GetBuckets()
         {
-            var target = new List<S3Bucket>();
+            if (!isInitialized) return new KubeLifeResult<List<S3BucketInfo>>(false, "Please initialize before use.");
+
+            var target = new List<S3BucketInfo>();
 
             ListBucketsRequest request = new ListBucketsRequest();
             ListBucketsResponse response = obsClient.ListBuckets(request);
             foreach (ObsBucket bucket in response.Buckets)
             {
-                var tmp = new S3Bucket
+                var tmp = new S3BucketInfo
                 {
                     Name = bucket.BucketName,
                     CreatedDate = bucket.CreationDate ?? DateTime.MinValue,
@@ -39,7 +41,7 @@ namespace KubeLife.Data.S3
                 target.Add(tmp);
             }
 
-            return new KubeLifeResult<List<S3Bucket>>(target);
+            return new KubeLifeResult<List<S3BucketInfo>>(target);
         }
     }
 }

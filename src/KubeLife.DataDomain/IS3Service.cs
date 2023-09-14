@@ -11,6 +11,6 @@ namespace KubeLife.DataDomain
     public interface IS3Service
     {
         Task<KubeLifeResult<string>> Initialize(string endpoint, string accessKey, string secretKey, bool useHttps = true);
-        Task<KubeLifeResult<List<S3Bucket>>> GetBuckets();
+        Task<KubeLifeResult<List<S3BucketInfo>>> GetBuckets();
     }
 }

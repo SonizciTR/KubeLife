@@ -30,21 +30,21 @@ namespace KubeLife.Data.S3
             return new KubeLifeResult<string>(false, "Could not initialized Minio connection to S3.");
         }
 
-        public async Task<KubeLifeResult<List<S3Bucket>>> GetBuckets()
+        public async Task<KubeLifeResult<List<S3BucketInfo>>> GetBuckets()
         {
-            if (!isInitialized) return new KubeLifeResult<List<S3Bucket>>(false, "Please initialize before use.");
+            if (!isInitialized) return new KubeLifeResult<List<S3BucketInfo>>(false, "Please initialize before use.");
 
             var bckts = await minioClient.ListBucketsAsync();
-            var target = new List<S3Bucket>();
+            var target = new List<S3BucketInfo>();
             foreach (var bucket in bckts.Buckets)
             {
-                var tmp = new S3Bucket();
+                var tmp = new S3BucketInfo();
                 tmp.Name = bucket.Name;
                 tmp.CreatedDate = bucket.CreationDateDateTime;
                 target.Add(tmp);
             }
 
-            return new KubeLifeResult<List<S3Bucket>>(target);
+            return new KubeLifeResult<List<S3BucketInfo>>(target);
         }
     }
 }
