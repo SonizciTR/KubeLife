@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KubeLife.DataDomain.Models
 {
-    public class S3BucketInfo
+    public class KubeS3Bucket
     {
         public string Name { get; set; }
         public DateTime CreatedDate { get; set; }

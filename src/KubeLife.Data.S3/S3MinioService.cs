@@ -10,12 +10,12 @@ namespace KubeLife.Data.S3
         private bool isInitialized = false;
         private MinioClient minioClient = null;
 
-        public async Task<KubeLifeResult<string>> Initialize(string endpoint, string accessKey, string secretKey, bool useHttps = true)
+        public async Task<KubeLifeResult<string>> Initialize(KubeS3Configuration config)
         {
             minioClient = new MinioClient()
-                                    .WithEndpoint(endpoint)
-                                    .WithCredentials(accessKey, secretKey)
-                                    .WithSSL(useHttps)
+                                    .WithEndpoint(config.Endpoint)
+                                    .WithCredentials(config.AccessKey, config.SecretKey)
+                                    .WithSSL(config.UseHttps)
                                     .Build();
 
             var beArgs = new BucketExistsArgs().WithBucket("notexistbucket");
@@ -30,21 +30,21 @@ namespace KubeLife.Data.S3
             return new KubeLifeResult<string>(false, "Could not initialized Minio connection to S3.");
         }
 
-        public async Task<KubeLifeResult<List<S3BucketInfo>>> GetBuckets()
+        public async Task<KubeLifeResult<List<KubeS3Bucket>>> GetBuckets()
         {
-            if (!isInitialized) return new KubeLifeResult<List<S3BucketInfo>>(false, "Please initialize before use.");
+            if (!isInitialized) return new KubeLifeResult<List<KubeS3Bucket>>(false, "Please initialize before use.");
 
             var bckts = await minioClient.ListBucketsAsync();
-            var target = new List<S3BucketInfo>();
+            var target = new List<KubeS3Bucket>();
             foreach (var bucket in bckts.Buckets)
             {
-                var tmp = new S3BucketInfo();
+                var tmp = new KubeS3Bucket();
                 tmp.Name = bucket.Name;
                 tmp.CreatedDate = bucket.CreationDateDateTime;
                 target.Add(tmp);
             }
 
-            return new KubeLifeResult<List<S3BucketInfo>>(target);
+            return new KubeLifeResult<List<KubeS3Bucket>>(target);
         }
     }
 }

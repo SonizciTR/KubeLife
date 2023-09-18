@@ -5,6 +5,7 @@ using Amazon.S3.Util;
 using KubeLife.Core.Models;
 using KubeLife.DataDomain;
 using KubeLife.DataDomain.Models;
+using Minio;
 using Minio.DataModel;
 using System;
 using System.Collections.Generic;
@@ -20,14 +21,16 @@ namespace KubeLife.Data.S3
         private bool isInitialized = false;
         private IAmazonS3 awsClient = null;
 
-        public async Task<KubeLifeResult<string>> Initialize(string endpoint, string accessKey, string secretKey, bool useHttps = true)
+        public async Task<KubeLifeResult<string>> Initialize(KubeS3Configuration config)
         {
-            AmazonS3Config config = new AmazonS3Config();
+            awsClient = GetClientByRegion(config);
+            if (awsClient == null)
+            {
+                AmazonS3Config cnfAws = new AmazonS3Config();
+                cnfAws.ServiceURL = config.Endpoint;
+                awsClient = new AmazonS3Client(config.AccessKey, config.SecretKey, cnfAws);
+            }
             
-            config.ServiceURL = endpoint;
-
-            awsClient = new AmazonS3Client(accessKey, secretKey, config);
-
             var isExist = await AmazonS3Util.DoesS3BucketExistV2Async(awsClient, "nonexistendbucket");
             if (!isExist)
             {
@@ -38,22 +41,36 @@ namespace KubeLife.Data.S3
             return new KubeLifeResult<string>(false, "Could not initialized AWS connection to S3.");
         }
 
-        public async Task<KubeLifeResult<List<S3BucketInfo>>> GetBuckets()
+        private IAmazonS3 GetClientByRegion(KubeS3Configuration config)
         {
-            if (!isInitialized) return new KubeLifeResult<List<DataDomain.Models.S3BucketInfo>>(false, "Please initialize before use.");
+            try
+            {
+                var regionIdentifier = RegionEndpoint.GetBySystemName(config.Endpoint);
+                return new AmazonS3Client(config.AccessKey, config.SecretKey, regionIdentifier);
+            }
+            catch
+            {
+            }
+
+            return null;
+        }
+
+        public async Task<KubeLifeResult<List<KubeS3Bucket>>> GetBuckets()
+        {
+            if (!isInitialized) return new KubeLifeResult<List<DataDomain.Models.KubeS3Bucket>>(false, "Please initialize before use.");
 
             ListBucketsResponse response = await awsClient.ListBucketsAsync();
 
-            var target = new List<S3BucketInfo>();
+            var target = new List<KubeS3Bucket>();
             foreach (S3Bucket bucket in response.Buckets)
             {
-                var tmp = new S3BucketInfo();
+                var tmp = new KubeS3Bucket();
                 tmp.Name = bucket.BucketName;
                 tmp.CreatedDate = bucket.CreationDate;
                 target.Add(tmp);
             }
 
-            return new KubeLifeResult<List<S3BucketInfo>>(target);
+            return new KubeLifeResult<List<KubeS3Bucket>>(target);
         }
     }
 }

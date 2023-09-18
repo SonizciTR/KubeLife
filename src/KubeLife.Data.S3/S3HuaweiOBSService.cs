@@ -16,24 +16,24 @@ namespace KubeLife.Data.S3
         private bool isInitialized = false;
         private ObsClient obsClient = null;
 
-        public async Task<KubeLifeResult<string>> Initialize(string endpoint, string accessKey, string secretKey, bool useHttps = true)
+        public async Task<KubeLifeResult<string>> Initialize(KubeS3Configuration config)
         {
-            obsClient = new ObsClient(accessKey, secretKey, endpoint);
+            obsClient = new ObsClient(config.AccessKey, config.SecretKey, config.Endpoint);
 
             return new KubeLifeResult<string>(true, "Success");
         }
 
-        public async Task<KubeLifeResult<List<S3BucketInfo>>> GetBuckets()
+        public async Task<KubeLifeResult<List<KubeS3Bucket>>> GetBuckets()
         {
-            if (!isInitialized) return new KubeLifeResult<List<S3BucketInfo>>(false, "Please initialize before use.");
+            if (!isInitialized) return new KubeLifeResult<List<KubeS3Bucket>>(false, "Please initialize before use.");
 
-            var target = new List<S3BucketInfo>();
+            var target = new List<KubeS3Bucket>();
 
             ListBucketsRequest request = new ListBucketsRequest();
             ListBucketsResponse response = obsClient.ListBuckets(request);
             foreach (ObsBucket bucket in response.Buckets)
             {
-                var tmp = new S3BucketInfo
+                var tmp = new KubeS3Bucket
                 {
                     Name = bucket.BucketName,
                     CreatedDate = bucket.CreationDate ?? DateTime.MinValue,
@@ -41,7 +41,7 @@ namespace KubeLife.Data.S3
                 target.Add(tmp);
             }
 
-            return new KubeLifeResult<List<S3BucketInfo>>(target);
+            return new KubeLifeResult<List<KubeS3Bucket>>(target);
         }
     }
 }
