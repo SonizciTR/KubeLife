@@ -1,10 +1,11 @@
 ﻿using Amazon;
+using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Util;
 using KubeLife.Core.Models;
-using KubeLife.DataDomain;
-using KubeLife.DataDomain.Models;
+using KubeLife.DataCenter;
+using KubeLife.DataCenter.Models;
 using Minio;
 using Minio.DataModel;
 using System;
@@ -57,7 +58,7 @@ namespace KubeLife.Data.S3
 
         public async Task<KubeLifeResult<List<KubeS3Bucket>>> GetBuckets()
         {
-            if (!isInitialized) return new KubeLifeResult<List<DataDomain.Models.KubeS3Bucket>>(false, "Please initialize before use.");
+            if (!isInitialized) return new KubeLifeResult<List<KubeS3Bucket>>(false, "Please initialize before use.");
 
             ListBucketsResponse response = await awsClient.ListBucketsAsync();
 
@@ -71,6 +72,35 @@ namespace KubeLife.Data.S3
             }
 
             return new KubeLifeResult<List<KubeS3Bucket>>(target);
+        }
+
+        public async Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo)
+        {
+            PutObjectRequest request = new PutObjectRequest
+            {
+                BucketName = createInfo.BucketName,
+                Key = createInfo.FileName,
+                ContentBody = Encoding.UTF8.GetString(createInfo.ContentData)
+            };
+
+            var resp = await awsClient.PutObjectAsync(request);
+            bool isSucc = resp.HttpStatusCode == System.Net.HttpStatusCode.OK;
+            string respBody = resp.ETag;
+
+            return new KubeLifeResult<string>(isSucc, respBody);
+        }
+
+        public async Task<KubeLifeResult<string>> DeleteObject(S3RequestDelete deleteInfo)
+        {
+            var req = new DeleteObjectRequest();
+            req.BucketName = deleteInfo.BucketName;
+            req.Key = deleteInfo.FileName;
+            
+            var resp = await awsClient.DeleteObjectAsync(req);
+            bool isSucc = resp.HttpStatusCode == System.Net.HttpStatusCode.OK;
+            string respBody = resp.DeleteMarker;
+
+            return new KubeLifeResult<string>(isSucc, respBody);
         }
     }
 }

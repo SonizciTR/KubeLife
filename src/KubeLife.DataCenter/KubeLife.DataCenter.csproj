@@ -10,4 +10,8 @@
     <ProjectReference Include="..\KubeLife.Core\KubeLife.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using k8s.KubeConfigModels;
+using KubeLife.Data.Services;
 using KubeLife.Kubernetes;
 using KubeLife.Kubernetes.Models;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +15,9 @@ namespace KubeLife.Domain
             var kubeSetting = GetFromConfig(config);
 
             services.AddSingleton<IKubeService>(new KubeService(kubeSetting, null));
+            services.AddSingleton<IKubeS3Factory, KubeS3Factory>();
             services.AddSingleton<IKubernetesDomain, KubernetesDomain>();
+            services.AddSingleton<IDataDomain, DataDomain>();
 
             AddAutoMapper(services);
         }

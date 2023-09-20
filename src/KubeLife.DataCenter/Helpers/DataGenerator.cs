@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace KubeLife.DataDomain
+namespace KubeLife.DataCenter.Helpers
 {
     public static class DataGenerator
     {
@@ -47,7 +47,7 @@ namespace KubeLife.DataDomain
         public static List<T> GenerateData<T>(int count) where T : class, new()
         {
             var target = new List<T>();
-            
+
             for (int i = 0; i < count; i++)
             {
                 var tmp = GenerateData<T>();

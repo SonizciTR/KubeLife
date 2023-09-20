@@ -1,7 +1,10 @@
 ﻿using KubeLife.Core.Models;
-using KubeLife.DataDomain;
-using KubeLife.DataDomain.Models;
+using KubeLife.DataCenter;
+using KubeLife.DataCenter.Models;
 using Minio;
+using System;
+using System.Security.AccessControl;
+using System.Text;
 
 namespace KubeLife.Data.S3
 {
@@ -45,6 +48,37 @@ namespace KubeLife.Data.S3
             }
 
             return new KubeLifeResult<List<KubeS3Bucket>>(target);
+        }
+
+        public async Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo)
+        {
+            var data = Encoding.UTF8.GetString(createInfo.ContentData);
+            var args = new PutObjectArgs()
+            .WithBucket(createInfo.BucketName)
+                .WithObject(data)
+                .WithContentType(createInfo.ContentType)
+                .WithFileName(createInfo.FileName);
+            
+            var resp = await minioClient.PutObjectAsync(args);
+
+            bool isSucc = !string.IsNullOrWhiteSpace(resp.Etag);
+            string respBody = resp.ObjectName;
+
+            return new KubeLifeResult<string>(isSucc, respBody);
+        }
+
+        public async Task<KubeLifeResult<string>> DeleteObject(S3RequestDelete deleteInfo)
+        {
+            var args = new RemoveObjectArgs()
+               .WithBucket(deleteInfo.BucketName)
+               .WithObject(deleteInfo.FileName);
+
+            await minioClient.RemoveObjectAsync(args);
+
+            bool isSucc = true;
+            string respBody = $"Deleted : {deleteInfo.FileName}";
+
+            return new KubeLifeResult<string>(isSucc, respBody);
         }
     }
 }

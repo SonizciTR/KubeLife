@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\KubeLife.DataDomain\KubeLife.DataDomain.csproj" />
+    <ProjectReference Include="..\KubeLife.Core\KubeLife.Core.csproj" />
+    <ProjectReference Include="..\KubeLife.DataCenter\KubeLife.DataCenter.csproj" />
   </ItemGroup>
 
 </Project>

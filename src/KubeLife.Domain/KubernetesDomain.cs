@@ -7,6 +7,7 @@ using KubeLife.Kubernetes.Models;
 using NCrontab;
 using KubeLife.Core.Extensions;
 using System.Collections.Generic;
+using KubeLife.Data.Services;
 
 namespace KubeLife.Domain
 {
@@ -24,6 +25,8 @@ namespace KubeLife.Domain
 
         public async Task<KubeLifeResult<List<KubeCronJobModelView>>> GetCronJobs()
         {
+            
+
             var crnJobsSource = await kubeService.GetCronJobs(KeyFilterName);
             var target = mapper.Map<List<KubeCronJobModelView>>(crnJobsSource);
 

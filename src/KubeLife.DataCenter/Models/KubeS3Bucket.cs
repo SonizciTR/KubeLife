@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KubeLife.DataDomain.Models
+namespace KubeLife.DataCenter.Models
 {
     public class KubeS3Bucket
     {
