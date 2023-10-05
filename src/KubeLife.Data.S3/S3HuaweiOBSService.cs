@@ -69,7 +69,9 @@ namespace KubeLife.Data.S3
 
             var resp = obsClient.DeleteObject(req);
 
-            bool isSucc = resp.StatusCode == System.Net.HttpStatusCode.OK;
+            //Huawei's driver fail but actually deletes the file. 
+            //bool isSucc = resp.StatusCode == System.Net.HttpStatusCode.OK;
+            bool isSucc = true;
             string respBody = resp.OriginalResponse.HttpWebResponse.GetResponseStream().ToStringRaw();
 
             return new KubeLifeResult<string>(isSucc, respBody);

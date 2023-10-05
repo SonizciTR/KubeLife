@@ -28,25 +28,46 @@ namespace KubeLife.Domain
             this.s3Factory = kubeS3Factory;
         }
 
-        public async Task<KubeLifeResult<S3BenchmarkResult>> StartS3Benchmark(S3BenchmarkRequest benchmarkDetail)
+        public async Task<KubeLifeResult<S3BenchmarkContainer>> StartS3Benchmark(S3BenchmarkRequest benchmarkDetail)
         {
-            var response = new S3BenchmarkResult();
+            var response = new S3BenchmarkContainer();
             var data = DataGenerator.GenerateData<S3BenchmarkData>(benchmarkDetail.RecordCount);
             var csvString = CsvSerializer.ToCsv(";", data);
             var csvBinary = Encoding.UTF8.GetBytes(csvString);
 
             IS3Service s3Service = s3Factory.Get(benchmarkDetail.S3TypeSelection);
             var rsltConnection = await ConnectS3(s3Service, benchmarkDetail);
-            if (!rsltConnection.IsSuccess) return new KubeLifeResult<S3BenchmarkResult>(false, rsltConnection.Message);
+            if (!rsltConnection.IsSuccess) return new KubeLifeResult<S3BenchmarkContainer>(false, rsltConnection.Message);
 
+            var filesCreated = GetTestFileNames(benchmarkDetail);
+
+            response.SaveResult = await RunSaveSenario(benchmarkDetail, csvBinary, s3Service, filesCreated);
+            response.DeleteResult = await RunDeleteSenario(s3Service, benchmarkDetail, filesCreated);
+
+            return new KubeLifeResult<S3BenchmarkContainer>(response);
+        }
+
+        internal List<string> GetTestFileNames(S3BenchmarkRequest benchmarkDetail)
+        {
+            var names = new List<string>();
             string verCode = $"{DateTime.Now.ToString("yyyMMddHHmmss")}";
-            var filesCreated = new List<string>();
-            var timeSaveStart = Stopwatch.StartNew();
             for (var i = 0; i < benchmarkDetail.RepeatCount; ++i)
             {
                 string tmpFileName = $"TestFile.{verCode}.{i + 1}.csv";
+                names.Add(tmpFileName);
+            }
+            return names;
+        }
+
+        internal async Task<S3BenchmarkResult> RunSaveSenario(S3BenchmarkRequest benchmarkDetail, byte[] csvBinary, IS3Service s3Service, List<string> filesCreated)
+        {
+            var result = new S3BenchmarkResult();
+            var timeSaveStart = Stopwatch.StartNew();
+            for (var i = 0; i < benchmarkDetail.RepeatCount; ++i)
+            {
                 try
                 {
+                    var tmpFileName = filesCreated[i];
                     var tmpReq = new S3RequestCreate
                     {
                         BucketName = benchmarkDetail.BucketName,
@@ -60,27 +81,28 @@ namespace KubeLife.Domain
                 }
                 catch (Exception ex)
                 {
-                    response.Errors.Add(ex);
+                    result.Errors.Add(ex);
                 }
             }
             timeSaveStart.Stop();
 
-            await DeleteCreatedFiles(s3Service, benchmarkDetail, filesCreated);
-            
-            response.TimeTotalSec = timeSaveStart.Elapsed.TotalSeconds;
-            response.TimePerFileSec = timeSaveStart.Elapsed.TotalSeconds / benchmarkDetail.RepeatCount;
-            response.TimePerRowMs = timeSaveStart.Elapsed.TotalMilliseconds / (benchmarkDetail.RepeatCount * benchmarkDetail.RecordCount);
+            result.TimeTotalSec = timeSaveStart.Elapsed.TotalSeconds;
+            result.TimePerFileSec = timeSaveStart.Elapsed.TotalSeconds / benchmarkDetail.RepeatCount;
+            result.TimePerItemMs = timeSaveStart.Elapsed.TotalMilliseconds / (benchmarkDetail.RepeatCount * benchmarkDetail.RecordCount);
 
-            response.FileSizeKB = csvBinary.Length / 1024;
-            response.SuccessCount = benchmarkDetail.RepeatCount - response.Errors.Count;
-            response.ErrorCount = response.Errors.Count;
+            result.FileSizeKB = csvBinary.Length / 1024;
+            result.SuccessCount = benchmarkDetail.RepeatCount - result.Errors.Count;
+            result.ErrorCount = result.Errors.Count;
 
-            return new KubeLifeResult<S3BenchmarkResult>(response);
+            return result;
         }
 
-        private async Task<bool> DeleteCreatedFiles(IS3Service s3StorageService, S3BenchmarkRequest benchmarkDetail, List<string> filesCreated)
+        internal async Task<S3BenchmarkResult> RunDeleteSenario(IS3Service s3StorageService, S3BenchmarkRequest benchmarkDetail, List<string> filesCreated)
         {
             bool isSucc = true;
+            var result = new S3BenchmarkResult();
+            var timeSaveStart = Stopwatch.StartNew();
+
             for (int i = 0; i < filesCreated.Count; i++)
             {
                 try
@@ -99,10 +121,19 @@ namespace KubeLife.Domain
                 }
             }
 
-            return isSucc;
+            timeSaveStart.Stop();
+
+            result.TimeTotalSec = timeSaveStart.Elapsed.TotalSeconds;
+            result.TimePerFileSec = timeSaveStart.Elapsed.TotalSeconds / benchmarkDetail.RepeatCount;
+            result.TimePerItemMs = timeSaveStart.Elapsed.TotalMilliseconds / (benchmarkDetail.RepeatCount * benchmarkDetail.RecordCount);
+
+            result.SuccessCount = benchmarkDetail.RepeatCount - result.Errors.Count;
+            result.ErrorCount = result.Errors.Count;
+
+            return result;
         }
 
-        internal async Task<KubeLifeResult<S3BenchmarkResult>> ConnectS3(IS3Service s3StorageService, S3BenchmarkRequest benchmarkDetail)
+        internal async Task<KubeLifeResult<S3BenchmarkContainer>> ConnectS3(IS3Service s3StorageService, S3BenchmarkRequest benchmarkDetail)
         {
             try
             {
@@ -112,13 +143,13 @@ namespace KubeLife.Domain
                 confS3.Endpoint = benchmarkDetail.S3Endpoint;
 
                 var resultS3 = await s3StorageService.Initialize(confS3);
-                if (!resultS3.IsSuccess) return new KubeLifeResult<S3BenchmarkResult>(false, resultS3.Message);
+                if (!resultS3.IsSuccess) return new KubeLifeResult<S3BenchmarkContainer>(false, resultS3.Message);
 
-                return new KubeLifeResult<S3BenchmarkResult>(true, "");
+                return new KubeLifeResult<S3BenchmarkContainer>(true, "");
             }
             catch (Exception ex)
             {
-                return new KubeLifeResult<S3BenchmarkResult>(false, $"Exception on S3 connection : {ex.Message}");
+                return new KubeLifeResult<S3BenchmarkContainer>(false, $"Exception on S3 connection : {ex.Message}");
             }
         }
     }
