@@ -40,7 +40,7 @@ namespace KubeLife.Domain
             var rsltConnection = await ConnectS3(s3Service, benchmarkDetail);
             if (!rsltConnection.IsSuccess) return new KubeLifeResult<S3BenchmarkContainer>(false, rsltConnection.Message);
 
-            response.FileSizeKB = csvBinary.Length / 1024;
+            response.FileSizeKB = (double)csvBinary.Length / 1024;
             var filesCreated = GetTestFileNames(benchmarkDetail);
 
             response.SaveResult = await RunSaveSenario(benchmarkDetail, csvBinary, s3Service, filesCreated);
