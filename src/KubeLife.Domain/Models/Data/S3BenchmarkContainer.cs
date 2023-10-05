@@ -12,6 +12,7 @@ namespace KubeLife.Domain.Models.Data
         public S3BenchmarkResult SaveResult { get; set; }
         public S3BenchmarkResult DeleteResult { get; set; }
         public S3BenchmarkResult ReadResult { get; set; }
+        public int FileSizeKB { get; internal set; }
     }
 
     public class S3BenchmarkResult

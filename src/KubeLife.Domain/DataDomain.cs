@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IdentityModel.OidcClient;
 
 namespace KubeLife.Domain
 {
@@ -39,6 +40,7 @@ namespace KubeLife.Domain
             var rsltConnection = await ConnectS3(s3Service, benchmarkDetail);
             if (!rsltConnection.IsSuccess) return new KubeLifeResult<S3BenchmarkContainer>(false, rsltConnection.Message);
 
+            response.FileSizeKB = csvBinary.Length / 1024;
             var filesCreated = GetTestFileNames(benchmarkDetail);
 
             response.SaveResult = await RunSaveSenario(benchmarkDetail, csvBinary, s3Service, filesCreated);
@@ -84,13 +86,20 @@ namespace KubeLife.Domain
                     result.Errors.Add(ex);
                 }
             }
-            timeSaveStart.Stop();
+            result = SetTheTimingResult(benchmarkDetail, result, timeSaveStart);
+
+            return result;
+        }
+
+        internal S3BenchmarkResult SetTheTimingResult(S3BenchmarkRequest benchmarkDetail, S3BenchmarkResult result, Stopwatch timeSaveStart)
+        {
+            if(timeSaveStart.IsRunning)
+                timeSaveStart.Stop();
 
             result.TimeTotalSec = timeSaveStart.Elapsed.TotalSeconds;
             result.TimePerFileSec = timeSaveStart.Elapsed.TotalSeconds / benchmarkDetail.RepeatCount;
             result.TimePerItemMs = timeSaveStart.Elapsed.TotalMilliseconds / (benchmarkDetail.RepeatCount * benchmarkDetail.RecordCount);
 
-            result.FileSizeKB = csvBinary.Length / 1024;
             result.SuccessCount = benchmarkDetail.RepeatCount - result.Errors.Count;
             result.ErrorCount = result.Errors.Count;
 
@@ -123,12 +132,7 @@ namespace KubeLife.Domain
 
             timeSaveStart.Stop();
 
-            result.TimeTotalSec = timeSaveStart.Elapsed.TotalSeconds;
-            result.TimePerFileSec = timeSaveStart.Elapsed.TotalSeconds / benchmarkDetail.RepeatCount;
-            result.TimePerItemMs = timeSaveStart.Elapsed.TotalMilliseconds / (benchmarkDetail.RepeatCount * benchmarkDetail.RecordCount);
-
-            result.SuccessCount = benchmarkDetail.RepeatCount - result.Errors.Count;
-            result.ErrorCount = result.Errors.Count;
+            result = SetTheTimingResult(benchmarkDetail, result, timeSaveStart);
 
             return result;
         }
