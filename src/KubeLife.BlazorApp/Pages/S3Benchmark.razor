@@ -64,7 +64,7 @@
 @code {
     public string S3TypeSelection = "Huawei";
 
-    private int RecordCount = 100000;
+    private int RecordCount = 10000;
     private int RepeatCount = 10;
 
     private string AccessKey = "";
@@ -118,6 +118,15 @@
         WrtScreen($"For Delete : Error Count(%) : {(double)result.Result.DeleteResult.ErrorCount / RepeatCount * 100}");
         WrtScreen($"For Delete : Total Time (sec) for {RepeatCount} items : {result.Result.DeleteResult.TimeTotalSec}");
         WrtScreen($"For Delete : Total Time (ms) for Single item : {result.Result.DeleteResult.TimePerItemMs}");
+
+        if (result.Result.SaveResult.Errors.IsAny())
+        {
+            WrtScreen($"Error on Save = {result.Result.SaveResult.Errors[0].ToString()}");
+        }
+        if (result.Result.DeleteResult.Errors.IsAny())
+        {
+            WrtScreen($"Error on Delete = {result.Result.SaveResult.Errors[0].ToString()}");
+        }
     }
 
     private async Task<S3BenchmarkRequest> CheckandGetInputs()
