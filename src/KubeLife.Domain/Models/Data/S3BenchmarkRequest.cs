@@ -12,8 +12,8 @@ namespace KubeLife.Domain.Models.Data
         public int RecordCount { get; set; }
         public int RepeatCount { get; set; }
         public string BucketName { get; set; }
-        public string S3AccessKey { get; internal set; }
-        public string S3SecretKey { get; internal set; }
-        public string S3Endpoint { get; internal set; }
+        public string S3AccessKey { get; set; }
+        public string S3SecretKey { get; set; }
+        public string S3Endpoint { get; set; }
     }
 }

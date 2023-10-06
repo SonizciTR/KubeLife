@@ -12,7 +12,6 @@ namespace KubeLife.Domain.Models.Data
         public double TimeTotalSec { get; internal set; }
         public double TimePerFileSec { get; internal set; }
         public double TimePerItemMs { get; internal set; }
-        public int FileSizeKB { get; internal set; }
         public int SuccessCount { get; internal set; }
         public int ErrorCount { get; internal set; }
     }

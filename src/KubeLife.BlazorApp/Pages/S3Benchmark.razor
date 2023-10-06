@@ -1,0 +1,153 @@
+﻿@page "/S3Benchmark"
+
+@using KubeLife.BlazorApp.Components
+@using KubeLife.Core.Models;
+@using KubeLife.Domain.Models;
+@using KubeLife.Domain.Models.Data;
+@using Microsoft.AspNetCore.WebUtilities
+
+@inject NavigationManager NavManager
+@inject IJSRuntime jsRuntime
+
+@using KubeLife.Domain;
+@using KubeLife.Kubernetes.Models;
+@using KubeLife.Core.Extensions;
+
+@inject IDataDomain dataService;
+
+<h3>Wellcome to S3 Benchmark Page</h3>
+<p>
+    This will generate a CSV file and try to write to targeted S3 storage. Record Count is how many lines of data will be in the file. Repeat Count is how many times that it is going to do process again and again.
+</p>
+<div>
+    <label for="fname">Select S3 Type :</label>
+    <br>
+    <div>
+        <select name="pods" @bind="S3TypeSelection">
+            <option value="Huawei">Huawei</option>
+            <option value="AWS">AWS</option>
+            <option value="Minio">Minio</option>
+        </select>
+    </div>
+    <br>
+    <label for="fname">S3 Access Key :</label>
+    <br>
+    <input type="text" id="accesskey" name="accesskey" @bind="@AccessKey">
+    <br>
+    <label for="lname">S3 Secret : </label>
+    <br>
+    <input type="text" id="s3secret" name="s3secret" @bind="@SecretKey">
+    <br>
+    <label for="lname">S3 Endpoint : </label>
+    <br>
+    <input type="text" id="s3endpoint" name="s3endpoint" @bind="@EndpointUrl">
+    <br>
+    <br>
+    <label for="RecordCount">Record Count per File: </label>
+    <input type="number" id="RecordCount" name="quantity" min="1" max="99999999999" @bind="@RecordCount">
+    <label for="RepeatCount">Repeat Count: </label>
+    <input type="number" id="RepeatCount" name="quantity" min="1" max="99999999999" @bind="@RepeatCount">
+    <br>
+    <br>
+    <button class="btn btn-primary" @onclick="RunBenchmark">
+        Run Benchmark
+    </button>
+    <p></p>
+    <p>
+        <label id="lblResults">Results :</label>
+        <br>
+        <textarea id="w3review" name="w3review" rows="10" cols="100" @bind="ScreenOuput">            
+        </textarea>
+    </p>
+</div>
+
+@code {
+    public string S3TypeSelection = "Huawei";
+
+    private int RecordCount = 100000;
+    private int RepeatCount = 10;
+
+    private string AccessKey = "";
+    private string SecretKey = "";
+    private string BucketName = "";
+    private string EndpointUrl = "";
+
+    private string ScreenOuput = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    private void WrtScreen(string msg)
+    {
+        string tmpLine = $"[{DateTime.Now.ToString()}] => {msg}";
+        if (msg == null)
+            ScreenOuput = "";
+        else if (string.IsNullOrWhiteSpace(ScreenOuput))
+            ScreenOuput += tmpLine;
+        else
+            ScreenOuput += "\n" + tmpLine;
+    }
+
+    private async Task RunBenchmark()
+    {
+        WrtScreen(null);
+        S3BenchmarkRequest req = await CheckandGetInputs();
+        if (req == null) return;
+
+        WrtScreen("Starting the Benchmark. Please wait.");
+
+        var result = await dataService.StartS3Benchmark(req);
+
+        DisplayResults(result);
+    }
+
+    private void DisplayResults(KubeLifeResult<S3BenchmarkContainer> result)
+    {
+        WrtScreen($"Benchmark finished. Number of rows in a file : {RecordCount}. Operation Repeat Count : {RepeatCount}.");
+        WrtScreen($"Single File Size (KB) : {result.Result.FileSizeKB}");
+        WrtScreen($"Single File Size (MB) : {result.Result.FileSizeMB}");
+
+        WrtScreen($"For Save : Success Count(%) : {(double)result.Result.SaveResult.SuccessCount / RepeatCount * 100}");
+        WrtScreen($"For Save : Error Count(%) : {(double)result.Result.SaveResult.ErrorCount / RepeatCount * 100}");
+        WrtScreen($"For Save : Total Time (sec) for {RepeatCount} items : {result.Result.SaveResult.TimeTotalSec}");
+        WrtScreen($"For Save : Total Time (ms) for Single item : {result.Result.SaveResult.TimePerItemMs}");
+
+        WrtScreen($"For Delete : Success Count(%) : {(double)result.Result.DeleteResult.SuccessCount / RepeatCount * 100}");
+        WrtScreen($"For Delete : Error Count(%) : {(double)result.Result.DeleteResult.ErrorCount / RepeatCount * 100}");
+        WrtScreen($"For Delete : Total Time (sec) for {RepeatCount} items : {result.Result.DeleteResult.TimeTotalSec}");
+        WrtScreen($"For Delete : Total Time (ms) for Single item : {result.Result.DeleteResult.TimePerItemMs}");
+    }
+
+    private async Task<S3BenchmarkRequest> CheckandGetInputs()
+    {
+        if (string.IsNullOrWhiteSpace(S3TypeSelection)) return await WrtError<S3BenchmarkRequest>("Please Select 'S3 Type'");
+        if (string.IsNullOrWhiteSpace(BucketName)) return await WrtError<S3BenchmarkRequest>("Please enter target 'Bucket Name'");
+        if (string.IsNullOrWhiteSpace(BucketName)) return await WrtError<S3BenchmarkRequest>("Please enter target 'Access Key'");
+        if (string.IsNullOrWhiteSpace(BucketName)) return await WrtError<S3BenchmarkRequest>("Please enter target 'Secret Key'");
+        if (string.IsNullOrWhiteSpace(BucketName)) return await WrtError<S3BenchmarkRequest>("Please enter target 'Endpoint Url'");
+
+
+        var target = new S3BenchmarkRequest
+            {
+                S3TypeSelection = S3TypeSelection,
+                BucketName = BucketName,
+
+                S3AccessKey = AccessKey,
+                S3SecretKey = SecretKey,
+                S3Endpoint = EndpointUrl,
+
+                RecordCount = RecordCount,
+                RepeatCount = RepeatCount
+            };
+
+        return target;
+    }
+
+    private async Task<T> WrtError<T>(string message, T returnValue = default)
+    {
+        await jsRuntime.InvokeVoidAsync("alert", message);
+        return returnValue;
+    }
+}

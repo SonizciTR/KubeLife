@@ -16,10 +16,6 @@ using IdentityModel.OidcClient;
 
 namespace KubeLife.Domain
 {
-    public interface IDataDomain
-    {
-    }
-
     public class DataDomain : IDataDomain
     {
         private readonly IKubeS3Factory s3Factory;
