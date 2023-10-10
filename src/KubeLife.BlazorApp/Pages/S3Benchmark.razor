@@ -15,50 +15,55 @@
 
 @inject IDataDomain dataService;
 
-<h3>Wellcome to S3 Benchmark Page</h3>
-<p>
-    This will generate a CSV file and try to write to targeted S3 storage. Record Count is how many lines of data will be in the file. Repeat Count is how many times that it is going to do process again and again.
-</p>
 <div>
-    <label for="fname">Select S3 Type :</label>
-    <br>
-    <div>
-        <select name="pods" @bind="S3TypeSelection">
-            <option value="Huawei">Huawei</option>
-            <option value="AWS">AWS</option>
-            <option value="Minio">Minio</option>
-        </select>
-    </div>
-    <br>
-    <label for="fname">S3 Access Key :</label>
-    <br>
-    <input type="text" id="accesskey" name="accesskey" @bind="@AccessKey">
-    <br>
-    <label for="lname">S3 Secret : </label>
-    <br>
-    <input type="text" id="s3secret" name="s3secret" @bind="@SecretKey">
-    <br>
-    <label for="lname">S3 Endpoint : </label>
-    <br>
-    <input type="text" id="s3endpoint" name="s3endpoint" @bind="@EndpointUrl">
-    <br>
-    <br>
-    <label for="RecordCount">Record Count per File: </label>
-    <input type="number" id="RecordCount" name="quantity" min="1" max="99999999999" @bind="@RecordCount">
-    <label for="RepeatCount">Repeat Count: </label>
-    <input type="number" id="RepeatCount" name="quantity" min="1" max="99999999999" @bind="@RepeatCount">
-    <br>
-    <br>
-    <button class="btn btn-primary" @onclick="RunBenchmark">
-        Run Benchmark
-    </button>
-    <p></p>
+    <h3>Wellcome to S3 Benchmark Page</h3>
     <p>
-        <label id="lblResults">Results :</label>
-        <br>
-        <textarea id="w3review" name="w3review" rows="10" cols="100" @bind="ScreenOuput">            
-        </textarea>
+        This will generate a CSV file and try to write to targeted S3 storage. Record Count is how many lines of data will be in the file. Repeat Count is how many times that it is going to do process again and again.
     </p>
+    <form>
+        <fieldset>
+            <div class="mb-2">
+                <label for="cmbS3Types" class="form-label">Select S3 Type :</label>
+                <div>
+                    <select class="form-select" id="cmbS3Types" name="pods" @bind="S3TypeSelection">
+                        <option value="Huawei">Huawei</option>
+                        <option value="AWS">AWS</option>
+                        <option value="Minio">Minio</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label for="accesskey" class="form-label">S3 Access Key :</label>
+                <input type="text" id="accesskey" class="form-control" name="accesskey" @bind="@AccessKey">
+            </div>
+            <div class="mb-2">
+                <label for="s3secret" class="form-label">S3 Secret : </label>
+                <input type="text" id="s3secret" class="form-control" name="s3secret" @bind="@SecretKey">
+            </div>
+            <div class="mb-2">
+                <label for="s3endpoint" class="form-label">S3 Endpoint : </label>
+                <input type="text" id="s3endpoint" class="form-control" name="s3endpoint" @bind="@EndpointUrl">
+            </div>
+            <div class="mb-2">
+                <label for="RecordCount" class="form-label">Record Count per File: </label>
+                <input type="number" id="RecordCount" class="form-control" name="quantity" min="1" max="99999999999" @bind="@RecordCount">
+            </div>
+            <div class="mb-2">
+                <label for="RepeatCount" class="form-label">Repeat Count: </label>
+                <input type="number" id="RepeatCount" class="form-control" name="quantity" min="1" max="99999999999" @bind="@RepeatCount">
+            </div>
+        </fieldset>
+        <button class="btn btn-primary" @onclick="RunBenchmark">
+            Run Benchmark
+        </button>
+        <p></p>
+        <p>
+            <label id="lblResults">Results :</label>
+            <br>
+            <textarea id="w3review" name="w3review" rows="10" cols="100" @bind="ScreenOuput" readonly>            
+        </textarea>
+        </p>
+    </form>
 </div>
 
 @code {
@@ -67,10 +72,10 @@
     private int RecordCount = 10000;
     private int RepeatCount = 10;
 
-    private string AccessKey = "";
-    private string SecretKey = "";
-    private string BucketName = "";
-    private string EndpointUrl = "";
+    private string AccessKey = "BB690C1D2764F9AA0586";
+    private string SecretKey = "rbmAprPOitJqfRM2erSzWH6d8scAAAGKJ2T5qmXg";
+    private string BucketName = "test_ozan_bucket";
+    private string EndpointUrl = "10.11.91.61";
 
     private string ScreenOuput = "";
 
