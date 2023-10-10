@@ -20,50 +20,48 @@
     <p>
         This will generate a CSV file and try to write to targeted S3 storage. Record Count is how many lines of data will be in the file. Repeat Count is how many times that it is going to do process again and again.
     </p>
-    <form>
-        <fieldset>
-            <div class="mb-2">
-                <label for="cmbS3Types" class="form-label">Select S3 Type :</label>
-                <div>
-                    <select class="form-select" id="cmbS3Types" name="pods" @bind="S3TypeSelection">
-                        <option value="Huawei">Huawei</option>
-                        <option value="AWS">AWS</option>
-                        <option value="Minio">Minio</option>
-                    </select>
-                </div>
-            </div>
-            <div class="mb-2">
-                <label for="accesskey" class="form-label">S3 Access Key :</label>
-                <input type="text" id="accesskey" class="form-control" name="accesskey" @bind="@AccessKey">
-            </div>
-            <div class="mb-2">
-                <label for="s3secret" class="form-label">S3 Secret : </label>
-                <input type="text" id="s3secret" class="form-control" name="s3secret" @bind="@SecretKey">
-            </div>
-            <div class="mb-2">
-                <label for="s3endpoint" class="form-label">S3 Endpoint : </label>
-                <input type="text" id="s3endpoint" class="form-control" name="s3endpoint" @bind="@EndpointUrl">
-            </div>
-            <div class="mb-2">
-                <label for="RecordCount" class="form-label">Record Count per File: </label>
-                <input type="number" id="RecordCount" class="form-control" name="quantity" min="1" max="99999999999" @bind="@RecordCount">
-            </div>
-            <div class="mb-2">
-                <label for="RepeatCount" class="form-label">Repeat Count: </label>
-                <input type="number" id="RepeatCount" class="form-control" name="quantity" min="1" max="99999999999" @bind="@RepeatCount">
-            </div>
-        </fieldset>
-        <button class="btn btn-primary" @onclick="RunBenchmark">
-            Run Benchmark
-        </button>
-        <p></p>
-        <p>
-            <label id="lblResults">Results :</label>
-            <br>
-            <textarea id="w3review" name="w3review" rows="10" cols="100" @bind="ScreenOuput" readonly>            
+
+    <div class="mb-2">
+        <label for="cmbS3Types" class="form-label">Select S3 Type :</label>
+        <div>
+            <select class="form-select" id="cmbS3Types" name="pods" @bind="S3TypeSelection">
+                <option value="Huawei">Huawei</option>
+                <option value="AWS">AWS</option>
+                <option value="Minio">Minio</option>
+            </select>
+        </div>
+    </div>
+    <div class="mb-2">
+        <label for="accesskey" class="form-label">S3 Access Key :</label>
+        <input type="text" id="accesskey" class="form-control" name="accesskey" @bind="@AccessKey">
+    </div>
+    <div class="mb-2">
+        <label for="s3secret" class="form-label">S3 Secret : </label>
+        <input type="text" id="s3secret" class="form-control" name="s3secret" @bind="@SecretKey">
+    </div>
+    <div class="mb-2">
+        <label for="s3endpoint" class="form-label">S3 Endpoint : </label>
+        <input type="text" id="s3endpoint" class="form-control" name="s3endpoint" @bind="@EndpointUrl">
+    </div>
+    <div class="mb-2">
+        <label for="RecordCount" class="form-label">Record Count per File: </label>
+        <input type="number" id="RecordCount" class="form-control" name="quantity" min="1" max="99999999999" @bind="@RecordCount">
+    </div>
+    <div class="mb-2">
+        <label for="RepeatCount" class="form-label">Repeat Count: </label>
+        <input type="number" id="RepeatCount" class="form-control" name="quantity" min="1" max="99999999999" @bind="@RepeatCount">
+    </div>
+    <button class="btn btn-primary" @onclick="RunBenchmark">
+        Run Benchmark
+    </button>
+    <p></p>
+    <p>
+        <label id="lblResults">Results :</label>
+        <br>
+        <textarea id="w3review" name="w3review" rows="10" cols="100" @bind="ScreenOuput" readonly>            
         </textarea>
-        </p>
-    </form>
+    </p>
+
 </div>
 
 @code {
