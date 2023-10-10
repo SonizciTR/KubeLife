@@ -32,6 +32,10 @@
         </div>
     </div>
     <div class="mb-2">
+        <label for="s3endpoint" class="form-label">S3 Endpoint : </label>
+        <input type="text" id="s3endpoint" class="form-control" name="s3endpoint" @bind="@EndpointUrl">
+    </div>
+    <div class="mb-2">
         <label for="accesskey" class="form-label">S3 Access Key :</label>
         <input type="text" id="accesskey" class="form-control" name="accesskey" @bind="@AccessKey">
     </div>
@@ -40,8 +44,8 @@
         <input type="text" id="s3secret" class="form-control" name="s3secret" @bind="@SecretKey">
     </div>
     <div class="mb-2">
-        <label for="s3endpoint" class="form-label">S3 Endpoint : </label>
-        <input type="text" id="s3endpoint" class="form-control" name="s3endpoint" @bind="@EndpointUrl">
+        <label for="s3bucketname" class="form-label">Bucket Name : </label>
+        <input type="text" id="s3bucketname" class="form-control" name="s3bucketname" @bind="@BucketName">
     </div>
     <div class="mb-2">
         <label for="RecordCount" class="form-label">Record Count per File: </label>
