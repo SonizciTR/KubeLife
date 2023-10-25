@@ -116,10 +116,11 @@
         WrtScreen($"Single File Size (KB) : {result.Result.FileSizeKB}");
         WrtScreen($"Single File Size (MB) : {result.Result.FileSizeMB}");
 
-        WrtScreen($"For Save : Success Count(%) : {(double)result.Result.SaveResult.SuccessCount / RepeatCount * 100}");
-        WrtScreen($"For Save : Error Count(%) : {(double)result.Result.SaveResult.ErrorCount / RepeatCount * 100}");
-        WrtScreen($"For Save : Total Time (sec) for {RepeatCount} items : {result.Result.SaveResult.TimeTotalSec}");
-        WrtScreen($"For Save : Total Time (ms) for Single item : {result.Result.SaveResult.TimePerItemMs}");
+        WrtScreen($"For Write : Success Count(%) : {(double)result.Result.SaveResult.SuccessCount / RepeatCount * 100}");
+        WrtScreen($"For Write : Error Count(%) : {(double)result.Result.SaveResult.ErrorCount / RepeatCount * 100}");
+        WrtScreen($"For Write : Total Time (sec) for {RepeatCount} items : {result.Result.SaveResult.TimeTotalSec}");
+        WrtScreen($"For Write : Total Time (ms) for Single item : {result.Result.SaveResult.TimePerItemMs}");
+        WrtScreen($"For Write : Performance (MB/msec) : {(double)result.Result.FileSizeMB / result.Result.SaveResult.TimePerItemMs}");
 
         WrtScreen($"For Delete : Success Count(%) : {(double)result.Result.DeleteResult.SuccessCount / RepeatCount * 100}");
         WrtScreen($"For Delete : Error Count(%) : {(double)result.Result.DeleteResult.ErrorCount / RepeatCount * 100}");
