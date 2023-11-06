@@ -26,5 +26,14 @@ namespace KubeLife.Core.Extensions
             StreamReader reader = new StreamReader(source);
             return reader.ReadToEnd();
         }
+
+        public static byte[] ToByteArray(this Stream source)
+        {
+            using(var ms = new MemoryStream())
+            {
+                source.CopyTo(ms);
+                return ms.ToArray();
+            }
+        }
     }
 }

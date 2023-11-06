@@ -3,6 +3,7 @@ using Amazon.Runtime.Internal;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Util;
+using KubeLife.Core.Extensions;
 using KubeLife.Core.Models;
 using KubeLife.DataCenter;
 using KubeLife.DataCenter.Models;
@@ -74,6 +75,22 @@ namespace KubeLife.Data.S3
             return new KubeLifeResult<List<KubeS3Bucket>>(target);
         }
 
+        public async Task<KubeLifeResult<byte[]>> GetObject(S3RequestGet fileGetInfo)
+        {
+            var req = new GetObjectRequest
+            {
+                BucketName = fileGetInfo.BucketName,
+                Key = fileGetInfo.ObjectKey
+            };
+            var resp = await awsClient.GetObjectAsync(req);
+            bool isSucc = resp.HttpStatusCode == System.Net.HttpStatusCode.OK;
+            byte[] fileArray = null;
+            if(isSucc)
+                fileArray = resp.ResponseStream.ToByteArray();
+
+            return new KubeLifeResult<byte[]>(isSucc, $"Error Code : {resp.HttpStatusCode}", fileArray);
+        }
+
         public async Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo)
         {
             PutObjectRequest request = new PutObjectRequest
@@ -87,7 +104,7 @@ namespace KubeLife.Data.S3
             bool isSucc = resp.HttpStatusCode == System.Net.HttpStatusCode.OK;
             string respBody = resp.ETag;
 
-            return new KubeLifeResult<string>(isSucc, respBody);
+            return new KubeLifeResult<string>(isSucc, $"Error Code : {resp.HttpStatusCode}", respBody);
         }
 
         public async Task<KubeLifeResult<string>> DeleteObject(S3RequestDelete deleteInfo)
@@ -100,7 +117,9 @@ namespace KubeLife.Data.S3
             bool isSucc = resp.HttpStatusCode == System.Net.HttpStatusCode.OK;
             string respBody = resp.DeleteMarker;
 
-            return new KubeLifeResult<string>(isSucc, respBody);
+            return new KubeLifeResult<string>(isSucc, $"Error Code : {resp.HttpStatusCode}", respBody);
         }
+
+        
     }
 }

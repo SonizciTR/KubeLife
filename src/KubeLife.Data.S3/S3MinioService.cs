@@ -50,6 +50,22 @@ namespace KubeLife.Data.S3
             return new KubeLifeResult<List<KubeS3Bucket>>(target);
         }
 
+        public async Task<KubeLifeResult<byte[]>> GetObject(S3RequestGet fileGetInfo)
+        {
+            var bufferStream = new MemoryStream();
+            var arg = new GetObjectArgs()
+                .WithBucket(fileGetInfo.BucketName)
+                .WithFile(fileGetInfo.ObjectKey)
+                .WithCallbackStream((stream) => stream.CopyTo(bufferStream));
+
+            var resp = await minioClient.GetObjectAsync(arg);
+
+            bool isSucc = !string.IsNullOrWhiteSpace(resp.ETag);
+            var respBody = bufferStream.ToArray();
+
+            return new KubeLifeResult<byte[]>(isSucc, $"Error Etag : {resp.ETag}", respBody);
+        }
+
         public async Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo)
         {
             var data = Encoding.UTF8.GetString(createInfo.ContentData);
@@ -64,7 +80,7 @@ namespace KubeLife.Data.S3
             bool isSucc = !string.IsNullOrWhiteSpace(resp.Etag);
             string respBody = resp.ObjectName;
 
-            return new KubeLifeResult<string>(isSucc, respBody);
+            return new KubeLifeResult<string>(isSucc, $"Error Etag : {resp.Etag}", respBody);
         }
 
         public async Task<KubeLifeResult<string>> DeleteObject(S3RequestDelete deleteInfo)
@@ -78,7 +94,7 @@ namespace KubeLife.Data.S3
             bool isSucc = true;
             string respBody = $"Deleted : {deleteInfo.FileName}";
 
-            return new KubeLifeResult<string>(isSucc, respBody);
+            return new KubeLifeResult<string>(isSucc, $"No error code could be returned.", respBody);
         }
     }
 }

@@ -46,6 +46,22 @@ namespace KubeLife.Data.S3
             return new KubeLifeResult<List<KubeS3Bucket>>(target);
         }
 
+        public async Task<KubeLifeResult<byte[]>> GetObject(S3RequestGet fileGetInfo)
+        {
+            var req = new GetObjectRequest();
+            req.BucketName = fileGetInfo.BucketName;
+            req.ObjectKey = fileGetInfo.ObjectKey;
+
+            var resp = obsClient.GetObject(req);
+            bool isSucc = resp.StatusCode == System.Net.HttpStatusCode.OK;
+            var tmpStream = resp.OriginalResponse.HttpWebResponse.GetResponseStream();
+            byte[] respFile = null;
+            if(isSucc)
+                respFile = tmpStream.ToByteArray();
+
+            return new KubeLifeResult<byte[]>(isSucc, $"Error Code : {resp.StatusCode}", respFile);
+        }
+
         public async Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo)
         {
             var req = new PutObjectRequest();

@@ -8,6 +8,8 @@ using NCrontab;
 using KubeLife.Core.Extensions;
 using System.Collections.Generic;
 using KubeLife.Data.Services;
+using KubeLife.Data.S3;
+using KubeLife.DataCenter.Models;
 
 namespace KubeLife.Domain
 {

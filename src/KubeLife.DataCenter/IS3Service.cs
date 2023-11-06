@@ -12,6 +12,7 @@ namespace KubeLife.DataCenter
     {
         Task<KubeLifeResult<string>> Initialize(KubeS3Configuration config);
         Task<KubeLifeResult<List<KubeS3Bucket>>> GetBuckets();
+        Task<KubeLifeResult<byte[]>> GetObject(S3RequestGet fileGetInfo);
         Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo);
         Task<KubeLifeResult<string>> DeleteObject(S3RequestDelete deleteInfo);
 
