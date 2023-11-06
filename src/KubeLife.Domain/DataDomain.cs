@@ -40,6 +40,7 @@ namespace KubeLife.Domain
             var filesCreated = GetTestFileNames(benchmarkDetail);
 
             response.SaveResult = await RunSaveSenario(benchmarkDetail, csvBinary, s3Service, filesCreated);
+            response.ReadResult = await RunDeleteSenario(s3Service, benchmarkDetail, filesCreated);
             response.DeleteResult = await RunDeleteSenario(s3Service, benchmarkDetail, filesCreated);
 
             return new KubeLifeResult<S3BenchmarkContainer>(response);
@@ -82,6 +83,37 @@ namespace KubeLife.Domain
                     result.Errors.Add(ex);
                 }
             }
+            result = SetTheTimingResult(benchmarkDetail, result, timeSaveStart);
+
+            return result;
+        }
+
+        internal async Task<S3BenchmarkResult> RuGetSenario(IS3Service s3StorageService, S3BenchmarkRequest benchmarkDetail, List<string> filesCreated)
+        {
+            bool isSucc = true;
+            var result = new S3BenchmarkResult();
+            var timeSaveStart = Stopwatch.StartNew();
+
+            for (int i = 0; i < filesCreated.Count; i++)
+            {
+                try
+                {
+
+                    var tmpReq = new S3RequestGet
+                    {
+                        BucketName = benchmarkDetail.BucketName,
+                        FileName = filesCreated[i]
+                    };
+                    await s3StorageService.GetObject(tmpReq);
+                }
+                catch
+                {
+                    isSucc = false;
+                }
+            }
+
+            timeSaveStart.Stop();
+
             result = SetTheTimingResult(benchmarkDetail, result, timeSaveStart);
 
             return result;

@@ -9,6 +9,6 @@ namespace KubeLife.DataCenter.Models
     public class S3RequestGet
     {
         public string BucketName { get; set; }
-        public string ObjectKey { get; set; }
+        public string FileName { get; set; }
     }
 }

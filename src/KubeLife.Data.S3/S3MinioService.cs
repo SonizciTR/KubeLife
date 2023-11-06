@@ -55,7 +55,7 @@ namespace KubeLife.Data.S3
             var bufferStream = new MemoryStream();
             var arg = new GetObjectArgs()
                 .WithBucket(fileGetInfo.BucketName)
-                .WithFile(fileGetInfo.ObjectKey)
+                .WithFile(fileGetInfo.FileName)
                 .WithCallbackStream((stream) => stream.CopyTo(bufferStream));
 
             var resp = await minioClient.GetObjectAsync(arg);

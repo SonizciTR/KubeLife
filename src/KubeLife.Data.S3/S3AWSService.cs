@@ -80,7 +80,7 @@ namespace KubeLife.Data.S3
             var req = new GetObjectRequest
             {
                 BucketName = fileGetInfo.BucketName,
-                Key = fileGetInfo.ObjectKey
+                Key = fileGetInfo.FileName
             };
             var resp = await awsClient.GetObjectAsync(req);
             bool isSucc = resp.HttpStatusCode == System.Net.HttpStatusCode.OK;
