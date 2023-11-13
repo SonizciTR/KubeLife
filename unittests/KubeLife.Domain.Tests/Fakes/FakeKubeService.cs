@@ -87,9 +87,10 @@ namespace KubeLife.Domain.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namespacePrm, string buildConfig)
+        public async Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namespacePrm, string buildConfig)
         {
-            throw new NotImplementedException();
+            var result = new KubeLifeResult<List<KubeBuildModel>>();
+            return result;
         }
 
         public Task<KubeLifeResult<string>> GetLogOfBuild(string namespacePrm, string buildConfig)
