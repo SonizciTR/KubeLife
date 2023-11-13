@@ -14,7 +14,7 @@ namespace KubeLife.Core.Extensions
             if (string.IsNullOrWhiteSpace(jsonString)) return default;
 
             return JsonSerializer.Deserialize<T>(jsonString);
-        }//var dynamicObject = JsonConvert.DeserializeObject<dynamic>(jsonString)!;
+        }
 
         public static string GetNodeValueAsString(this string jsonString, params string[] keys)
         {

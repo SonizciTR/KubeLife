@@ -20,5 +20,37 @@ namespace KubeLife.Core.Tests.Extensions
 
             Assert.Equal(expected, rslt);
         }
+
+        [Fact]
+        public void ToModel_JsonToModelConversion_CreateAModelThenConvertToJsonAndGetModel()
+        {
+            var modelOrg = DummyJsonFake.Generate();
+            var jsn = modelOrg.ToJson();
+            var modelConverted = jsn.ToModel<DummyJsonFake>();
+
+            Assert.Equal(modelOrg.ToJson(), modelConverted.ToJson());
+        }
+
+        [Fact]
+        public void GetNodeValueAsString_GetPropValueWithKey_GetModelsPropertValuebyKey()
+        {
+            var modelOrg = DummyJsonFake.Generate();
+            var jsn = modelOrg.ToJson();
+            var orgValue = modelOrg.Name;
+
+            var targetValue = jsn.GetNodeValueAsString("Name");
+
+            Assert.Equal(orgValue, targetValue);
+        }
+
+        [Fact]
+        public void DeepCopyJson_CopyTarget_ChangeShouldNotAffectOrginalModel()
+        {
+            var modelOrg = DummyJsonFake.Generate();
+            var modelCopied = modelOrg.DeepCopyJson();
+            modelCopied.Name = "ThisShouldChangeOnly";
+
+            Assert.NotEqual(modelOrg.Name, modelCopied.Name);
+        }
     }
 }
