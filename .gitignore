@@ -441,3 +441,5 @@ About
 
 #Custom
 /src/KubeLife.BlazorApp/appsettings.Development.json
+helm/dev/templates/secret.app.yaml
+helm/prod/templates/secret.app.yaml
