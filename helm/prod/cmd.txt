@@ -1,0 +1,1 @@
+helm install kubelifeapp C:\CSharp\KubeLife\helm
