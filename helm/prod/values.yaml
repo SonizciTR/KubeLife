@@ -1,4 +1,0 @@
-appname: kubelifeapp
-replicacount: 1
-gitadress: "https://github.com/SonizciTR/KubeLife.git"
-dockerpath: "/src/"
