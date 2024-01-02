@@ -42,7 +42,7 @@ namespace KubeLife.Domain.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public async Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace)
+        public async Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace, string jobName)
         {
             var target = new List<KubeJobModel>();
 

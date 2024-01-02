@@ -21,8 +21,9 @@ namespace KubeLife.Kubernetes
         /// Get the Jobs Information
         /// </summary>
         /// <param name="kubeNamespace">Filters by kubernetes namespace</param>
+        /// <param name="cronJobName">Filters the jobs by Cronjob name</param>
         /// <returns>Jobs detail</returns>
-        Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace);
+        Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace, string cronJobName);
         
         /// <summary>
         /// Gives the pod's terminal log as string

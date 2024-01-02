@@ -63,7 +63,7 @@ namespace KubeLife.Domain
                     tmpDetail = jobDetails[tmpKey];
                 else
                 {
-                    tmpDetail = await kubeService.GetJobsbyNamespace(tmpKey);
+                    tmpDetail = await kubeService.GetJobsbyNamespace(tmpKey, itm.CronJobName);
                     jobDetails.Add(tmpKey, tmpDetail);
                 }
 
@@ -170,7 +170,7 @@ namespace KubeLife.Domain
 
         public async Task<KubeLifeResult<string>> TriggerCronJob(string namespacePrm, string cronJobName)
         {
-            var tmpAllJobsOfNamespace = await kubeService.GetJobsbyNamespace(namespacePrm);
+            var tmpAllJobsOfNamespace = await kubeService.GetJobsbyNamespace(namespacePrm, cronJobName);
             var tmpCronsJob = tmpAllJobsOfNamespace.Where(x => x.OwnerCronJobName == cronJobName)
                                                     .OrderByDescending(y => y.StartTime)
                                                     .ToList();

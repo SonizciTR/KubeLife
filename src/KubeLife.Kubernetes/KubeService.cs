@@ -66,12 +66,22 @@ namespace KubeLife.Kubernetes
         /// Get the Jobs Information
         /// </summary>
         /// <param name="kubeNamespace">Filters by kubernetes namespace</param>
+        /// <param name="cronJobName">Filters the jobs by Cronjob name</param>
         /// <returns>Jobs detail</returns>
-        public async Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace)
+        public async Task<List<KubeJobModel>> GetJobsbyNamespace(string kubeNamespace, string cronJobName)
         {
             using k8s.Kubernetes client = GetKubeClient();
+            var selector_val = $"job-name={cronJobName}";
+            //var selector_val = $"metadata.ownerReferences[0].name={cronJobName}";
+            //var selector_val = $"name={cronJobName}";
+            //var selector_val = $"metadata.app=cronjob-retrain-score";
+
             var jbs = await client.ListNamespacedJobAsync(kubeNamespace);
-            return jbs.ToKubeJobModelList();
+            //var jbsFiltered = await client.ListNamespacedJobAsync(kubeNamespace, labelSelector: selector_val);
+            
+            var allJobs = jbs.ToKubeJobModelList();
+            var jobs = allJobs.Where(x => x.OwnerCronJobName == cronJobName).OrderByDescending(y => y.StartTime).ToList();
+            return jobs;
         }
 
         /// <summary>
