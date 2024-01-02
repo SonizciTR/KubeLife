@@ -14,7 +14,11 @@
 @inject IKubernetesDomain domainService;
 
 <h3>Routes</h3>
-@if (routeItems == null)
+@if (!string.IsNullOrEmpty(ErrorMsg))
+{
+    <p>Error : <em>@ErrorMsg</em></p>
+}
+else if (routeItems == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -69,10 +73,11 @@ else
     private List<KubeRouteViewModel> routeItems;
     private const int refreshTimeMs = 10 * 1000;
     private System.Threading.Timer? timer;
+    private string ErrorMsg = null;
 
     protected override async Task OnInitializedAsync()
     {
-        await CallCronJobs();
+        await GetRouteList();
         await CreateTimer();
     }
 
@@ -80,7 +85,7 @@ else
     {
         timer = new System.Threading.Timer(async (object? stateInfo) =>
         {
-            await CallCronJobs();
+            await GetRouteList();
             await InvokeAsync(() =>
             {
                 this.StateHasChanged();
@@ -88,10 +93,11 @@ else
         }, new System.Threading.AutoResetEvent(false), refreshTimeMs, refreshTimeMs);
     }
 
-    private async Task CallCronJobs()
+    private async Task GetRouteList()
     {
         var rslt = await domainService.GetAllRoutesForCluster();
         routeItems = rslt.Result;
+        ErrorMsg = rslt.IsSuccess ? null : rslt.Message;
     }
 
     public async Task NavigateToUrl(string url)
