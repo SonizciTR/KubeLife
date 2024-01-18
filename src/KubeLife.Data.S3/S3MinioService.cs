@@ -1,10 +1,13 @@
 ﻿using KubeLife.Core.Models;
+using KubeLife.Data.S3.Model;
 using KubeLife.DataCenter;
 using KubeLife.DataCenter.Models;
 using Minio;
 using System;
 using System.Security.AccessControl;
 using System.Text;
+using System.Xml.Linq;
+using KubeLife.Core.Extensions;
 
 namespace KubeLife.Data.S3
 {
@@ -55,7 +58,7 @@ namespace KubeLife.Data.S3
             var bufferStream = new MemoryStream();
             var arg = new GetObjectArgs()
                 .WithBucket(fileGetInfo.BucketName)
-                .WithFile(fileGetInfo.FileName)
+                .WithObject(fileGetInfo.FileName)
                 .WithCallbackStream((stream) => stream.CopyTo(bufferStream));
 
             var resp = await minioClient.GetObjectAsync(arg);
@@ -64,6 +67,44 @@ namespace KubeLife.Data.S3
             var respBody = bufferStream.ToArray();
 
             return new KubeLifeResult<byte[]>(isSucc, $"Error Etag : {resp.ETag}", respBody);
+
+            //var statArgs = new StatObjectArgs()
+            //                    .WithObject(fileGetInfo.FileName)
+            //                    .WithBucket(fileGetInfo.BucketName);
+            //var stat = await minioClient.StatObjectAsync(statArgs);
+
+            //var res = new MinioReleaseableFileStreamModel
+            //{
+            //    ContentType = stat.ContentType,
+            //    FileName = fileGetInfo.FileName,
+            //};
+
+            //// the magic begins here
+            //var getArgs = new GetObjectArgs()
+            //    .WithObject(fileGetInfo.FileName)
+            //    .WithBucket(fileGetInfo.BucketName)
+            //    .WithCallbackStream(res.SetStreamAsync);
+
+            //await res.HandleAsync(minioClient.GetObjectAsync(getArgs));
+            //// the magic partially ends here
+            //var respBody = res.StreamHolder.ToByteArray();
+
+            //return new KubeLifeResult<byte[]>(respBody?.Length > 0, $"Data Length : {respBody?.Length}", respBody);
+        }
+
+        public async Task<KubeLifeResult<Stream>> GetStream(S3RequestGet fileGetInfo)
+        {
+            var bufferStream = new MemoryStream();
+            var arg = new GetObjectArgs()
+                .WithBucket(fileGetInfo.BucketName)
+                .WithObject(fileGetInfo.FileName)
+                .WithCallbackStream((stream) => stream.CopyTo(bufferStream));
+
+            var resp = await minioClient.GetObjectAsync(arg);
+
+            bool isSucc = !string.IsNullOrWhiteSpace(resp.ETag);
+
+            return new KubeLifeResult<Stream>(isSucc, $"Error Etag : {resp.ETag}", bufferStream);
         }
 
         public async Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo)

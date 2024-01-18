@@ -29,11 +29,22 @@ namespace KubeLife.Core.Extensions
 
         public static byte[] ToByteArray(this Stream source)
         {
-            using(var ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 source.CopyTo(ms);
                 return ms.ToArray();
             }
+
+            //byte[] buffer = new byte[16 * 1024];
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    int read;
+            //    while ((read = source.Read(buffer, 0, buffer.Length)) > 0)
+            //    {
+            //        ms.Write(buffer, 0, read);
+            //    }
+            //    return ms.ToArray();
+            //}
         }
     }
 }

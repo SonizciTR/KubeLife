@@ -8,9 +8,12 @@ namespace KubeLife.Kubernetes.Models
 {
     public class KubeConfigModel
     {
-        public string ServerUrl { get; set; }
-        public string AccessToken { get; set; }
-        public string UserName { get; set; }
-        public string PassWord { get; set; }
+        public string KubeServerUrl { get; set; }
+        public string KubeAccessToken { get; set; }
+        public string KubeUserName { get; set; }
+        public string KubePassWord { get; set; }
+        public string? S3ModelAccessKey { get; set; }
+        public string? S3ModelEndpoint { get; set; }
+        public string? S3ModelSecretKey { get; set; }
     }
 }

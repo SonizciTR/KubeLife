@@ -91,6 +91,19 @@ namespace KubeLife.Data.S3
             return new KubeLifeResult<byte[]>(isSucc, $"Error Code : {resp.HttpStatusCode}", fileArray);
         }
 
+        public async Task<KubeLifeResult<Stream>> GetStream(S3RequestGet fileGetInfo)
+        {
+            var req = new GetObjectRequest
+            {
+                BucketName = fileGetInfo.BucketName,
+                Key = fileGetInfo.FileName
+            };
+            var resp = await awsClient.GetObjectAsync(req);
+            bool isSucc = resp.HttpStatusCode == System.Net.HttpStatusCode.OK;
+            
+            return new KubeLifeResult<Stream>(isSucc, $"Error Code : {resp.HttpStatusCode}", resp.ResponseStream);
+        }
+
         public async Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo)
         {
             PutObjectRequest request = new PutObjectRequest
@@ -119,7 +132,5 @@ namespace KubeLife.Data.S3
 
             return new KubeLifeResult<string>(isSucc, $"Error Code : {resp.HttpStatusCode}", respBody);
         }
-
-        
     }
 }

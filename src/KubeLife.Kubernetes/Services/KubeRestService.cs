@@ -43,7 +43,7 @@ namespace KubeLife.Kubernetes.Services
                     return true;
                 };
             HttpClient client = new HttpClient(handler);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Settings.AccessToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Settings.KubeAccessToken);
 
             return await (isPostCall ? client.PostAsync(url, content) : client.GetAsync(url));
         }
@@ -52,7 +52,7 @@ namespace KubeLife.Kubernetes.Services
         public async Task<KubeLifeResult<KubeBuildModel>> TriggerBuildConfig(string namespaceParameter, string buildConfigName)
         {
             //https://[Server adress and port]/apis/build.openshift.io/v1/namespaces/kubelife/buildconfigs/kubelifeapp/instantiate
-            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namespaceParameter}/buildconfigs/{buildConfigName}/instantiate";
+            string url = $"{Settings.KubeServerUrl}/apis/build.openshift.io/v1/namespaces/{namespaceParameter}/buildconfigs/{buildConfigName}/instantiate";
 
             string tmpBody = BodyTriggerBuildConfig.Replace("REPLACE_NAME", buildConfigName).Replace("REPLACE_PROJECT", namespaceParameter);
             var response = await CallApi(url, true, tmpBody);
@@ -70,7 +70,7 @@ namespace KubeLife.Kubernetes.Services
         public async Task<KubeLifeResult<List<KubeRouteModel>>> GetAllRoutesForCluster(int routeCount = 500, string filterbyLabel = null)
         {
             //https://[Server adress and port]/apis/route.openshift.io/v1/routes?limit=500
-            string url = $"{Settings.ServerUrl}/apis/route.openshift.io/v1/routes?limit={500}";
+            string url = $"{Settings.KubeServerUrl}/apis/route.openshift.io/v1/routes?limit={500}";
             var response = await CallApi(url, false, "");
 
             var respJson = await response.Content.ReadAsStringAsync();
@@ -83,7 +83,7 @@ namespace KubeLife.Kubernetes.Services
         public async Task<KubeLifeResult<KubeRouteModel>> GetRouteByNamespace(string namespacePrm, string serviceName)
         {
             //https:/[Server adress and port]/apis/route.openshift.io/v1/namespaces/standy-prod/routes/streamlit-standby
-            string url = $"{Settings.ServerUrl}/apis/route.openshift.io/v1/namespaces/{namespacePrm}/routes/{serviceName}";
+            string url = $"{Settings.KubeServerUrl}/apis/route.openshift.io/v1/namespaces/{namespacePrm}/routes/{serviceName}";
             var response = await CallApi(url, false, "");
 
             var respJson = await response.Content.ReadAsStringAsync();
@@ -96,7 +96,7 @@ namespace KubeLife.Kubernetes.Services
         public async Task<KubeLifeResult<List<KubeBuildModel>>> GetAllBuildsOfBuildConfig(string namespacePrm, string buildConfig)
         {
             //https://[Server adress and port]/apis/build.openshift.io/v1/namespaces/standy-prod/builds?labelSelector=buildconfig%3Dcronjob-model-scoring&limit=500
-            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namespacePrm}/builds?labelSelector=buildconfig%3D{buildConfig}&limit=500";
+            string url = $"{Settings.KubeServerUrl}/apis/build.openshift.io/v1/namespaces/{namespacePrm}/builds?labelSelector=buildconfig%3D{buildConfig}&limit=500";
 
             var response = await CallApi(url, false, "");
 
@@ -111,7 +111,7 @@ namespace KubeLife.Kubernetes.Services
         public async Task<KubeLifeResult<string>> GetLogOfBuild(string namespacePrm, string buildConfig)
         {
             //https://[Server adress and port]/apis/build.openshift.io/v1/namespaces/standy-prod/builds/cronjob-model-scoring-9/log
-            string url = $"{Settings.ServerUrl}/apis/build.openshift.io/v1/namespaces/{namespacePrm}/builds/{buildConfig}/log";
+            string url = $"{Settings.KubeServerUrl}/apis/build.openshift.io/v1/namespaces/{namespacePrm}/builds/{buildConfig}/log";
 
             var response = await CallApi(url);
 

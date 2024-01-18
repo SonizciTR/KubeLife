@@ -32,13 +32,13 @@ namespace KubeLife.Kubernetes
                 SkipTlsVerify = true,
             };
 
-            config.Host = Settings.ServerUrl;
-            if (!string.IsNullOrEmpty(Settings.AccessToken))
-                config.AccessToken = Settings.AccessToken;
+            config.Host = Settings.KubeServerUrl;
+            if (!string.IsNullOrEmpty(Settings.KubeAccessToken))
+                config.AccessToken = Settings.KubeAccessToken;
             else
             {
-                config.Password = Settings.PassWord;
-                config.Username = Settings.UserName;
+                config.Password = Settings.KubePassWord;
+                config.Username = Settings.KubeUserName;
             }
 
             var client = new k8s.Kubernetes(config);

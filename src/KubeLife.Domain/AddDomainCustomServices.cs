@@ -14,6 +14,7 @@ namespace KubeLife.Domain
         {
             var kubeSetting = GetFromConfig(config);
 
+            services.AddSingleton<KubeConfigModel>(kubeSetting);
             services.AddSingleton<IKubeService>(new KubeService(kubeSetting, null));
             services.AddSingleton<IKubeS3Factory, KubeS3Factory>();
             services.AddSingleton<IKubernetesDomain, KubernetesDomain>();
@@ -36,10 +37,15 @@ namespace KubeLife.Domain
         private static KubeConfigModel GetFromConfig(IConfiguration config)
         {
             var target = new KubeConfigModel();
-            target.ServerUrl = config.GetValue<string>("KubeServerUrl");
-            target.AccessToken = config.GetValue<string>("KubeAccessToken");
-            target.UserName = config.GetValue<string>("KubeUserName");
-            target.PassWord = config.GetValue<string>("KubePassWord");
+            target.KubeServerUrl = config.GetValue<string>("KubeServerUrl");
+            target.KubeAccessToken = config.GetValue<string>("KubeAccessToken");
+            target.KubeUserName = config.GetValue<string>("KubeUserName");
+            target.KubePassWord = config.GetValue<string>("KubePassWord");
+
+            target.S3ModelAccessKey = config.GetValue<string>("S3ModelAccessKey");
+            target.S3ModelEndpoint = config.GetValue<string>("S3ModelEndpoint");
+            target.S3ModelSecretKey = config.GetValue<string>("S3ModelSecretKey");
+
             return target;
         }
     }

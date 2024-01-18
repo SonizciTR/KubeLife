@@ -10,6 +10,7 @@ using KubeLife.DataCenter;
 using KubeLife.DataCenter.Models;
 using System.IO;
 using KubeLife.Core.Extensions;
+using Amazon.Runtime.Internal;
 
 namespace KubeLife.Data.S3
 {
@@ -20,7 +21,11 @@ namespace KubeLife.Data.S3
 
         public async Task<KubeLifeResult<string>> Initialize(KubeS3Configuration config)
         {
-            obsClient = new ObsClient(config.AccessKey, config.SecretKey, config.Endpoint);
+            ObsConfig obsConfig = new ObsConfig();
+            obsConfig.Endpoint = config.Endpoint;
+            obsConfig.SecurityProtocolType = System.Net.SecurityProtocolType.Tls;
+
+            obsClient = new ObsClient(accessKeyId: config.AccessKey, secretAccessKey: config.SecretKey, obsConfig);
 
             return new KubeLifeResult<string>(true, "Success");
         }
@@ -52,15 +57,55 @@ namespace KubeLife.Data.S3
             req.BucketName = fileGetInfo.BucketName;
             req.ObjectKey = fileGetInfo.FileName;
 
+            //byte[] data = null;
+            //string msg = "";
+            //var rsltx = obsClient.BeginGetObject(req, delegate (IAsyncResult ar) {
+            //    try
+            //    {
+            //        using (GetObjectResponse response = obsClient.EndGetObject(ar))
+            //        {
+            //            //string dest = "savepath";
+            //            //if (!File.Exists(dest))
+            //            //{
+            //            //    // Write the data streams into the file.
+            //            //    //response.WriteResponseStreamToFile(dest);
+
+            //            //}
+            //            data = response.OutputStream.ToByteArray();
+            //            msg = null;
+            //        }
+            //    }
+            //    catch (ObsException ex)
+            //    {
+            //        msg = $"ErrorCode: {ex.ErrorCode}. Msg = [{ex.ErrorMessage}]. {ex}";
+            //    }
+            //}, null);
+
+            //return new KubeLifeResult<byte[]>(msg == null, msg, data);
+
             var resp = obsClient.GetObject(req);
             
             bool isSucc = resp.StatusCode == System.Net.HttpStatusCode.OK;
             var tmpStream = resp.OriginalResponse.HttpWebResponse.GetResponseStream();
             byte[] respFile = null;
-            if(isSucc)
+            if (isSucc)
                 respFile = tmpStream.ToByteArray();
 
             return new KubeLifeResult<byte[]>(isSucc, $"Error Code : {resp.StatusCode}", respFile);
+        }
+
+        public async Task<KubeLifeResult<Stream>> GetStream(S3RequestGet fileGetInfo)
+        {
+            var req = new GetObjectRequest();
+            req.BucketName = fileGetInfo.BucketName;
+            req.ObjectKey = fileGetInfo.FileName;
+
+            var resp = obsClient.GetObject(req);
+
+            bool isSucc = resp.StatusCode == System.Net.HttpStatusCode.OK;
+            var tmpStream = resp.OriginalResponse.HttpWebResponse.GetResponseStream();
+
+            return new KubeLifeResult<Stream>(isSucc, $"Error Code : {resp.StatusCode}", tmpStream);
         }
 
         public async Task<KubeLifeResult<string>> SaveObject(S3RequestCreate createInfo)
