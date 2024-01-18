@@ -53,6 +53,7 @@ namespace KubeLife.Data.S3
             req.ObjectKey = fileGetInfo.FileName;
 
             var resp = obsClient.GetObject(req);
+            
             bool isSucc = resp.StatusCode == System.Net.HttpStatusCode.OK;
             var tmpStream = resp.OriginalResponse.HttpWebResponse.GetResponseStream();
             byte[] respFile = null;
