@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
@@ -34,6 +35,17 @@ namespace KubeLife.Core.Extensions
                 source.CopyTo(ms);
                 return ms.ToArray();
             }
+
+            //byte[] bytes;
+            //List<byte> totalStream = new List<byte>();
+            //byte[] buffer = new byte[32];
+            //int read;
+            //while ((read = source.Read(buffer, 0, buffer.Length)) > 0)
+            //{
+            //    totalStream.AddRange(buffer.Take(read));
+            //}
+            //bytes = totalStream.ToArray();
+            //return bytes;
 
             //byte[] buffer = new byte[16 * 1024];
             //using (MemoryStream ms = new MemoryStream())

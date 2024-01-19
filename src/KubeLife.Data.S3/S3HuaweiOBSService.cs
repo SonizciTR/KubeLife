@@ -23,7 +23,9 @@ namespace KubeLife.Data.S3
         {
             ObsConfig obsConfig = new ObsConfig();
             obsConfig.Endpoint = config.Endpoint;
-            obsConfig.SecurityProtocolType = System.Net.SecurityProtocolType.Tls;
+            //obsConfig.SecurityProtocolType = System.Net.SecurityProtocolType.Tls13;
+            obsConfig.ValidateCertificate = false;
+            obsConfig.PathStyle = true;
 
             obsClient = new ObsClient(accessKeyId: config.AccessKey, secretAccessKey: config.SecretKey, obsConfig);
 
@@ -84,6 +86,7 @@ namespace KubeLife.Data.S3
             //return new KubeLifeResult<byte[]>(msg == null, msg, data);
 
             var resp = obsClient.GetObject(req);
+            //var resp = obsClient.DownloadFile(new DownloadFileRequest { ObjectKey = fileGetInfo.FileName, BucketName = fileGetInfo.BucketName });
             
             bool isSucc = resp.StatusCode == System.Net.HttpStatusCode.OK;
             var tmpStream = resp.OriginalResponse.HttpWebResponse.GetResponseStream();
