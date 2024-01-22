@@ -30,8 +30,7 @@ namespace KubeLife.BlazorApp.Controllers
             var s3Config = new DataCenter.Models.KubeS3Configuration
             {
                 AccessKey = config.S3ModelAccessKey,
-                //Endpoint = config.S3ModelEndpoint,
-                Endpoint = $"https://{config.S3ModelEndpoint}/",
+                Endpoint = config.S3ModelEndpoint,
                 SecretKey = config.S3ModelSecretKey,
                 UseHttps = true
             };
@@ -66,8 +65,8 @@ namespace KubeLife.BlazorApp.Controllers
             var s3Config = new DataCenter.Models.KubeS3Configuration
             {
                 AccessKey = config.S3ModelAccessKey,
-                //Endpoint = config.S3ModelEndpoint,
-                Endpoint = $"https://{config.S3ModelEndpoint}/",
+                Endpoint = config.S3ModelEndpoint,
+                //Endpoint = $"https://{config.S3ModelEndpoint}/",
                 SecretKey = config.S3ModelSecretKey,
                 UseHttps = true
             };
