@@ -44,7 +44,7 @@ namespace KubeLife.Domain
             foreach (var itm in target)
             {
                 var allBuilds = await kubeService.GetAllBuildsOfBuildConfig(itm.Namespace, itm.CronJobName);
-                if (!allBuilds.IsSuccess) continue;
+                if (!allBuilds.IsSuccess || !allBuilds.Result.IsAny()) continue;
 
                 itm.LastBuild = allBuilds.Result[0];
             }
