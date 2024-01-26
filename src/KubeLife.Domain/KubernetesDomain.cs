@@ -44,7 +44,18 @@ namespace KubeLife.Domain
             foreach (var itm in target)
             {
                 var allBuilds = await kubeService.GetAllBuildsOfBuildConfig(itm.Namespace, itm.CronJobName);
-                if (!allBuilds.IsSuccess || !allBuilds.Result.IsAny()) continue;
+                if (!allBuilds.IsSuccess) continue;
+
+                if (!allBuilds.Result.IsAny())
+                {
+                    itm.LastBuild = new KubeBuildModel { 
+                        BuildName = "Not Runned Yet", 
+                        CompletationTime = DateTime.MaxValue, 
+                        CreateDate = itm.NextRunTime, 
+                        Namespace = itm.Namespace, 
+                        StatusPhase = "Active" };
+                    continue;
+                }
 
                 itm.LastBuild = allBuilds.Result[0];
             }
@@ -139,6 +150,18 @@ namespace KubeLife.Domain
                 var allBuilds = await kubeService.GetAllBuildsOfBuildConfig(route.Namespace, route.Name);
                 if (!allBuilds.IsSuccess) continue;
 
+                if(!allBuilds.Result.IsAny())
+                {
+                    route.LastBuild = new KubeBuildModel
+                    {
+                        BuildName = "Not Builded",
+                        CompletationTime = DateTime.MaxValue,
+                        CreateDate = DateTime.MinValue,
+                        Namespace = route.Namespace,
+                        StatusPhase = "Activate"
+                    };
+                }
+
                 route.LastBuild = allBuilds.Result[0];
             }
 
@@ -157,12 +180,12 @@ namespace KubeLife.Domain
         public async Task<KubeLifeResult<string>> GetLastBuildLog(string namespacePrm, string buildConfig)
         {
             var allBuilds = await kubeService.GetAllBuildsOfBuildConfig(namespacePrm, buildConfig);
-            if(!allBuilds.IsSuccess)
+            if (!allBuilds.IsSuccess)
                 return new KubeLifeResult<string>(false, allBuilds.Message);
 
             if (!allBuilds.Result.IsAny())
                 return new KubeLifeResult<string>(false, $"No builds found for {buildConfig} at {namespacePrm}");
-            
+
             var lst = allBuilds.Result[0];
 
             return await kubeService.GetLogOfBuild(namespacePrm, lst.BuildName);
@@ -176,7 +199,7 @@ namespace KubeLife.Domain
                                                     .ToList();
             if (tmpCronsJob.IsAny() && tmpCronsJob.Any(x => x.IsStillRunning))
                 return new KubeLifeResult<string>(false, "There is still running job. Can not trigger new one.");
-            
+
             string tmpJobName = $"{cronJobName}-kubelife-{DateTime.Now.ToString("yyyMMddHHmmss")}";
             var rslt = await kubeService.CreateJobFromCronJob(namespacePrm, cronJobName, tmpJobName);
             return rslt;
