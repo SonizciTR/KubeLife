@@ -160,6 +160,7 @@ namespace KubeLife.Domain
                         Namespace = route.Namespace,
                         StatusPhase = "Activate"
                     };
+                    continue;
                 }
 
                 route.LastBuild = allBuilds.Result[0];
