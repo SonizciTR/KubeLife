@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using k8s.KubeConfigModels;
+using KubeLife.Core.Logging;
 using KubeLife.Data.Services;
 using KubeLife.Kubernetes;
 using KubeLife.Kubernetes.Models;
+using KubeLife.Kubernetes.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,8 +16,11 @@ namespace KubeLife.Domain
         {
             var kubeSetting = GetFromConfig(config);
 
+            services.AddSingleton<IKubeLogger, KubeConsoleLogger>();
+
             services.AddSingleton<KubeConfigModel>(kubeSetting);
-            services.AddSingleton<IKubeService>(new KubeService(kubeSetting, null));
+            //services.AddSingleton<IKubeService>(new KubeService(kubeSetting, null, null));
+            services.AddSingleton<IKubeService, KubeService>();
             services.AddSingleton<IKubeS3Factory, KubeS3Factory>();
             services.AddSingleton<IKubernetesDomain, KubernetesDomain>();
             services.AddSingleton<IDataDomain, DataDomain>();

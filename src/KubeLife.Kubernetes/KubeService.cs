@@ -8,6 +8,7 @@ using KubeLife.Core.Extensions;
 using KubeLife.Kubernetes.Services;
 using KubeLife.Core.Models;
 using System.Xml.Linq;
+using KubeLife.Core.Logging;
 
 namespace KubeLife.Kubernetes
 {
@@ -17,10 +18,13 @@ namespace KubeLife.Kubernetes
     public class KubeService : IKubeService
     {
         private readonly IKubeRestService restService;
-        public KubeService(KubeConfigModel settings, IKubeRestService kubeRestService)
+        private readonly IKubeLogger logger;
+
+        public KubeService(KubeConfigModel settings, IKubeRestService kubeRestService, IKubeLogger logger)
         {
             Settings = settings;
             restService = kubeRestService ?? new KubeRestService(Settings);
+            this.logger = logger ?? new KubeConsoleLogger();
         }
 
         public KubeConfigModel Settings { get; }
@@ -254,10 +258,12 @@ namespace KubeLife.Kubernetes
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"CreateJobFromCronJob hata.", ex);
+                logger.Error($"CreateJobFromCronJob hata.", ex);
+
+                return new KubeLifeResult<string>(false, $"Error during job creation. Detail=[{ex.Message}]");
             }
 
-            return new KubeLifeResult<string>(false, "Job could not created form CronJob.");
+            return new KubeLifeResult<string>(false, $"Job could not created form CronJob.");
         }
     }
 }
