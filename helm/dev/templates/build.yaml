@@ -19,6 +19,7 @@ spec:
     type: Git
     git:
       uri: {{ .Values.gitadress }}
+      ref: {{ .Values.branchname }}
     contextDir: {{ .Values.dockerpath }}
   triggers:
     - type: "Generic"
