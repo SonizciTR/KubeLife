@@ -8,6 +8,7 @@ using System.Security.AccessControl;
 using System.Text;
 using System.Xml.Linq;
 using KubeLife.Core.Extensions;
+using Minio.DataModel.Args;
 
 namespace KubeLife.Data.S3
 {
@@ -18,7 +19,7 @@ namespace KubeLife.Data.S3
 
         public async Task<KubeLifeResult<string>> Initialize(KubeS3Configuration config)
         {
-            minioClient = new MinioClient()
+            minioClient = (MinioClient)new MinioClient()
                                     .WithEndpoint(config.Endpoint)
                                     .WithCredentials(config.AccessKey, config.SecretKey)
                                     .WithSSL(config.UseHttps)
