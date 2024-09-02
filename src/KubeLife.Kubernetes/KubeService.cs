@@ -63,7 +63,8 @@ namespace KubeLife.Kubernetes
             var allCronnJobs = await client.ListCronJobForAllNamespacesAsync();
             var tmpCrns = filterbyLabel == null ? allCronnJobs : allCronnJobs.WhereLabelContains(filterbyLabel);
 
-            return tmpCrns.ToKubeCronJobModelList();
+            var jbs = tmpCrns.ToKubeCronJobModelList();
+            return jbs.OrderByDescending(x => x.LastStartTime).ToList();
         }
 
         /// <summary>
