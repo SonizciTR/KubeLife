@@ -25,11 +25,9 @@ else
                 <th> </th>
                 <th>Name (Namespace)</th>
                 <th>Timing</th>
-                <th>Last Run(UTC)</th>
-                <th>Next Run(UTC)</th>
+                <th>Last / Next Run(UTC)</th>
                 <th>Avg (min)</th>
-                <th>Success</th>
-                <th>Fail</th>
+                <th>Success / Fail</th>
                 <th>Operations</th>
             </tr>
         </thead>
@@ -45,11 +43,9 @@ else
                     <td>
                         <button class="btn btn-link" @onclick="() => NavigateToCronTimeView(crnJob.TimingRaw)"> @crnJob.TimingRaw</button>
                     </td>
-                    <td>@crnJob.LastStartTimeLatest.ToDateFormat()</td>
-                    <td>@crnJob.NextRunTime.ToDateFormat()</td>
+                    <td>@crnJob.LastStartTimeLatest.ToDateFormat() / @crnJob.NextRunTime.ToDateFormat()</td>
                     <td>@crnJob.AvgRunTimeMinutes</td>
-                    <td>@crnJob.SuccessCount</td>
-                    <td>@crnJob.FailureCount</td>
+                    <td>@crnJob.SuccessCount / @crnJob.FailureCount</td>
                     <td>
                         <div class="btn-group" role="group" aria-label="Operations">
                             @* <button class="btn btn-outline-primary" @onclick="() => TriggerBuild(crnJob.Namespace, crnJob.CronJobName)">
