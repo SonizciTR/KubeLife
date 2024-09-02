@@ -1,0 +1,13 @@
+﻿@if (!CronJobDetail.IsSuspended)
+{
+    <img src="css/pics/check-circle.svg" title="Active" style="width:24px;height:24px;">
+}
+else
+{
+    <img src="css/pics/alert-circle.svg" title="Suspended" style="width:24px;height:24px;">
+}
+@* else
+{
+<img src="css/pics/play-circle.svg" title="Last Run Failed" style="width:24px;height:24px;">
+
+} *@

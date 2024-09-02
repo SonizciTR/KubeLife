@@ -38,7 +38,8 @@ else
             {
                 <tr>
                     <td>
-                        <BuildImageShow BuildData="@crnJob.LastBuild" />
+                        @* <BuildImageShow BuildData="@crnJob.LastBuild" /> *@
+                        <CronJobImageShow CronJobDetail=@crnJob />
                     </td>
                     <td>@crnJob.CronJobName (@crnJob.Namespace)</td>
                     <td>
