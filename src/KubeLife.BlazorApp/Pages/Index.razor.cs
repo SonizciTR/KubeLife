@@ -2,6 +2,9 @@
 using KubeLife.Kubernetes.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
+using PSC.Blazor.Components.Chartjs.Models.Bar;
+using PSC.Blazor.Components.Chartjs;
+using PSC.Blazor.Components.Chartjs.Models.Common;
 
 namespace KubeLife.BlazorApp.Pages
 {
@@ -11,6 +14,7 @@ namespace KubeLife.BlazorApp.Pages
         private DateTime LastUpdateTime = DateTime.Now;
         private System.Threading.Timer? timer;
         private const int refreshTimeMs = 10 * 1000;
+
 
         protected override async Task OnInitializedAsync()
         {

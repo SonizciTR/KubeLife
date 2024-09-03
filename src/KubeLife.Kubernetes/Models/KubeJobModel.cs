@@ -15,5 +15,17 @@ namespace KubeLife.Kubernetes.Models
         public bool IsSuccess { get; set; }
         public string? OwnerCronJobName { get; set; }
         public bool IsStillRunning { get; internal set; }
+
+        public double? Duration
+        {
+            get
+            {
+                if (EndTime == null || StartTime == null)
+                    return 0;
+
+                TimeSpan diff = (TimeSpan)(EndTime - StartTime);
+                return diff.TotalMinutes;
+            }
+        }
     }
 }

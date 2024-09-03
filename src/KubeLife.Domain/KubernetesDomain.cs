@@ -79,6 +79,7 @@ namespace KubeLife.Domain
                 }
 
                 itm.IsJobDetailSet = true;
+                tmpDetail = tmpDetail.OrderByDescending(x => x.StartTime).ToList();
                 itm.JobDetails = tmpDetail;
             }
 

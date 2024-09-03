@@ -13,6 +13,8 @@
 
 @inject IKubernetesDomain domainService;
 
+
+
 @if (crnJobItems == null)
 {
     <p><em>Loading...</em></p>
@@ -28,6 +30,7 @@ else
                 <th>Last / Next Run(UTC)</th>
                 <th>Avg (min)</th>
                 <th>Success / Fail</th>
+                <th>Past 10</th>
                 <th>Operations</th>
             </tr>
         </thead>
@@ -46,6 +49,9 @@ else
                     <td>@crnJob.LastStartTimeLatest.ToDateFormat() / @crnJob.NextRunTime.ToDateFormat()</td>
                     <td>@crnJob.AvgRunTimeMinutes</td>
                     <td>@crnJob.SuccessCount / @crnJob.FailureCount</td>
+                    <td>
+                        <HistoryChartShow CronJobDetail=@crnJob />
+                    </td>
                     <td>
                         <div class="btn-group" role="group" aria-label="Operations">
                             @* <button class="btn btn-outline-primary" @onclick="() => TriggerBuild(crnJob.Namespace, crnJob.CronJobName)">
