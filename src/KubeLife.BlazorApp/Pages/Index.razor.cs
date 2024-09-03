@@ -26,7 +26,7 @@ namespace KubeLife.BlazorApp.Pages
         private async Task CallCronJobs()
         {
             var tmpCrns = await domainService.GetCronJobs();
-            crnJobItems = tmpCrns.Result;
+            crnJobItems = tmpCrns.Result.OrderBy(x => x.Namespace).ToList();
             LastUpdateTime = DateTime.Now;
         }
 
