@@ -68,13 +68,13 @@ namespace KubeLife.Domain
             var jobDetails = new Dictionary<string, List<KubeJobModel>>();
             foreach (var itm in target)
             {
-                string tmpKey = itm.Namespace;
+                string tmpKey = $"{itm.Namespace}###{itm.CronJobName}";
                 List<KubeJobModel> tmpDetail;
                 if (jobDetails.ContainsKey(tmpKey))
                     tmpDetail = jobDetails[tmpKey];
                 else
                 {
-                    tmpDetail = await kubeService.GetJobsbyNamespace(tmpKey, itm.CronJobName);
+                    tmpDetail = await kubeService.GetJobsbyNamespace(itm.Namespace, itm.CronJobName);
                     jobDetails.Add(tmpKey, tmpDetail);
                 }
 
